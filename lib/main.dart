@@ -106,22 +106,26 @@ class MyCustomFormState extends State<MyCustomForm> {
     });
   }
 
-  void onPDFChanged(double pdf) {
+  void _onPDFChanged(double pdf) {
     setState(() {
       _pdf = pdf;
     });
   }
 
-  void onCCChanged(double cc) {
+  void _onCCChanged(double cc) {
     setState(() {
       _cc = cc;
     });
   }
 
-  void onCBHChanged(double cbh) {
+  void _onCBHChanged(double cbh) {
     setState(() {
       _cbh = cbh;
     });
+  }
+
+  double _calculateRateOfSpread() {
+    return 0.0;
   }
 
   @override
@@ -160,7 +164,9 @@ class MyCustomFormState extends State<MyCustomForm> {
               decoration: const InputDecoration(labelText: "ISI"),
               keyboardType: TextInputType.number,
               onChanged: (value) {
-                _onISIChanged(double.parse(value));
+                if (double.tryParse(value) != null) {
+                  _onISIChanged(double.parse(value));
+                }
               },
             ))
           ]),
@@ -171,17 +177,94 @@ class MyCustomFormState extends State<MyCustomForm> {
               decoration: const InputDecoration(labelText: "BUI"),
               keyboardType: TextInputType.number,
               onChanged: (value) {
-                _onBUIChanged(double.parse(value));
+                if (double.tryParse(value) != null) {
+                  _onBUIChanged(double.parse(value));
+                }
               },
             ))
           ]),
-          Row(children: const [Text('FMC')]),
-          Row(children: const [Text('SFC')]),
-          Row(children: const [Text('PC')]),
-          Row(children: const [Text('PDF')]),
-          Row(children: const [Text('CC')]),
-          Row(children: const [Text('CBH')]),
-          Text('fuel: ${fuelType}, isi: ${_isi}, bui: ${_bui}')
+          // FMC field
+          Row(children: [
+            Expanded(
+                child: TextField(
+              decoration: const InputDecoration(labelText: "FMC"),
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                if (double.tryParse(value) != null) {
+                  _onFMCChanged(double.parse(value));
+                }
+              },
+            ))
+          ]),
+          // SFC field
+          Row(children: [
+            Expanded(
+                child: TextField(
+              decoration: const InputDecoration(labelText: "SFC"),
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                if (double.tryParse(value) != null) {
+                  _onSFCChanged(double.parse(value));
+                }
+              },
+            ))
+          ]),
+          // PC field
+          Row(children: [
+            Expanded(
+                child: TextField(
+              decoration: const InputDecoration(labelText: "PC"),
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                if (double.tryParse(value) != null) {
+                  _onPCChanged(double.parse(value));
+                }
+              },
+            ))
+          ]),
+          // PDF field
+          Row(children: [
+            Expanded(
+                child: TextField(
+              decoration: const InputDecoration(labelText: "PDF"),
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                if (double.tryParse(value) != null) {
+                  _onPDFChanged(double.parse(value));
+                }
+              },
+            ))
+          ]),
+          // CC field
+          Row(children: [
+            Expanded(
+                child: TextField(
+              decoration: const InputDecoration(labelText: "CC"),
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                if (double.tryParse(value) != null) {
+                  _onCCChanged(double.parse(value));
+                }
+              },
+            ))
+          ]),
+          // CBH field
+          Row(children: [
+            Expanded(
+                child: TextField(
+              decoration: const InputDecoration(labelText: "CBH"),
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                if (double.tryParse(value) != null) {
+                  _onCBHChanged(double.parse(value));
+                }
+              },
+            ))
+          ]),
+          Text(
+              // ignore: unnecessary_brace_in_string_interps
+              'fuel: ${fuelType}, isi: ${_isi}, bui: ${_bui}, fmc: ${_fmc}, sfc: ${_sfc}, pc: ${_pc}, pdf: ${_pdf}, cc: ${_cc}, cbh: ${_cbh}'),
+          Text('Rate of spread: ${_calculateRateOfSpread()}'),
 
           // TextFormField(
           //   // The validator receives the text that the user has entered.
