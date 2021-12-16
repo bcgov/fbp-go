@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_application_1/cffdrs/ROScalc.dart';
 
 void main() => runApp(const MyApp());
@@ -125,8 +126,54 @@ class MyCustomFormState extends State<MyCustomForm> {
     });
   }
 
-  double _calculateRateOfSpread() {
-    return ROScalc(fuelType, _isi, _bui, _fmc, _sfc, _pc, _pdf, _cc, _cbh);
+  double? _calculateRateOfSpread() {
+    try {
+      return ROScalc(fuelType, _isi, _bui, _fmc, _sfc, _pc, _pdf, _cc, _cbh);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  final isiController = TextEditingController();
+  final buiController = TextEditingController();
+  final fmcContoller = TextEditingController();
+  final ccController = TextEditingController();
+  final sfcController = TextEditingController();
+  final pcController = TextEditingController();
+  final pdfController = TextEditingController();
+  final cbhController = TextEditingController();
+
+  void _isiListener() {
+    print('_isiListener');
+  }
+
+  @override
+  void initState() {
+    isiController.text = _isi.toString();
+    buiController.text = _bui.toString();
+    fmcContoller.text = _fmc.toString();
+    ccController.text = _cc.toString();
+    sfcController.text = _sfc.toString();
+    pcController.text = _pc.toString();
+    pdfController.text = _pdf.toString();
+    cbhController.text = _cbh.toString();
+    isiController.addListener(_isiListener);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the
+    // widget tree.
+    isiController.dispose();
+    buiController.dispose();
+    fmcContoller.dispose();
+    ccController.dispose();
+    sfcController.dispose();
+    pcController.dispose();
+    pdfController.dispose();
+    cbhController.dispose();
+    super.dispose();
   }
 
   @override
@@ -158,63 +205,81 @@ class MyCustomFormState extends State<MyCustomForm> {
               )
             ],
           ),
-          // ISI field
+
           Row(children: [
+            // ISI field
             Expanded(
                 child: TextField(
-              decoration: const InputDecoration(labelText: "ISI"),
+              controller: isiController,
+              decoration:
+                  const InputDecoration(labelText: "Initial Spread Index"),
               keyboardType: TextInputType.number,
               onChanged: (value) {
                 if (double.tryParse(value) != null) {
                   _onISIChanged(double.parse(value));
                 }
               },
-            ))
-          ]),
-          // BUI field
-          Row(children: [
+            )),
+            // BUI field
             Expanded(
                 child: TextField(
-              decoration: const InputDecoration(labelText: "BUI"),
+              controller: buiController,
+              decoration: const InputDecoration(labelText: "Buildup Index"),
               keyboardType: TextInputType.number,
               onChanged: (value) {
                 if (double.tryParse(value) != null) {
                   _onBUIChanged(double.parse(value));
                 }
               },
-            ))
+            )),
           ]),
-          // FMC field
           Row(children: [
+            // FMC field
             Expanded(
                 child: TextField(
-              decoration: const InputDecoration(labelText: "FMC"),
+              controller: fmcContoller,
+              decoration:
+                  const InputDecoration(labelText: "Foliar Moisture Content"),
               keyboardType: TextInputType.number,
               onChanged: (value) {
                 if (double.tryParse(value) != null) {
                   _onFMCChanged(double.parse(value));
                 }
               },
-            ))
-          ]),
-          // SFC field
-          Row(children: [
+            )),
+            // CC Field
             Expanded(
                 child: TextField(
-              decoration: const InputDecoration(labelText: "SFC"),
+              controller: ccController,
+              decoration: const InputDecoration(labelText: "CC"),
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                if (double.tryParse(value) != null) {
+                  _onCCChanged(double.parse(value));
+                }
+              },
+            ))
+          ]),
+
+          Row(children: [
+            // SFC field
+            Expanded(
+                child: TextField(
+              controller: sfcController,
+              decoration: const InputDecoration(
+                  labelText: "Surface Fuel Consumption (kg/m^2)"),
               keyboardType: TextInputType.number,
               onChanged: (value) {
                 if (double.tryParse(value) != null) {
                   _onSFCChanged(double.parse(value));
                 }
               },
-            ))
-          ]),
-          // PC field
-          Row(children: [
+            )),
+            // PC field
             Expanded(
                 child: TextField(
-              decoration: const InputDecoration(labelText: "PC"),
+              controller: pcController,
+              decoration: const InputDecoration(labelText: "Percent Conifer"),
               keyboardType: TextInputType.number,
               onChanged: (value) {
                 if (double.tryParse(value) != null) {
@@ -227,33 +292,22 @@ class MyCustomFormState extends State<MyCustomForm> {
           Row(children: [
             Expanded(
                 child: TextField(
-              decoration: const InputDecoration(labelText: "PDF"),
+              controller: pdfController,
+              decoration:
+                  const InputDecoration(labelText: "Percent Dead Balsam Fir"),
               keyboardType: TextInputType.number,
               onChanged: (value) {
                 if (double.tryParse(value) != null) {
                   _onPDFChanged(double.parse(value));
                 }
               },
-            ))
-          ]),
-          // CC field
-          Row(children: [
+            )),
+            // CBH field
             Expanded(
                 child: TextField(
-              decoration: const InputDecoration(labelText: "CC"),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                if (double.tryParse(value) != null) {
-                  _onCCChanged(double.parse(value));
-                }
-              },
-            ))
-          ]),
-          // CBH field
-          Row(children: [
-            Expanded(
-                child: TextField(
-              decoration: const InputDecoration(labelText: "CBH"),
+              controller: cbhController,
+              decoration:
+                  const InputDecoration(labelText: "Crown to base height (m)"),
               keyboardType: TextInputType.number,
               onChanged: (value) {
                 if (double.tryParse(value) != null) {
