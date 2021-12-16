@@ -6,7 +6,7 @@ import 'package:flutter_application_1/cffdrs/C6calc.dart';
 import 'package:flutter_application_1/cffdrs/BEcalc.dart';
 
 double ROScalc(String fuelType, double ISI, double BUI, double FMC, double SFC,
-    double PC, double PDF, double CC, double CBH) {
+    double PC, double? PDF, double CC, double CBH) {
   /**
   #############################################################################
   # Description:
@@ -144,6 +144,9 @@ double ROScalc(String fuelType, double ISI, double BUI, double FMC, double SFC,
   }
   // #Initial Rate of Spread for M3 Mixedwood
   else if (fuelType == 'M3') {
+    if (PDF == null) {
+      throw Exception("PDF is null");
+    }
     // #Eq. 30 (Wotton et. al 2009)
     double RSI_m3 =
         a[FUELTYPE] * (pow((1 - exp(-b[FUELTYPE] * ISI)), c0[FUELTYPE]));
@@ -153,6 +156,9 @@ double ROScalc(String fuelType, double ISI, double BUI, double FMC, double SFC,
   }
   // #Initial Rate of Spread for M4 Mixedwood
   else if (fuelType == 'M4') {
+    if (PDF == null) {
+      throw Exception("PDF is null");
+    }
     // #Eq. 30 (Wotton et. al 2009)
     double RSI_m4 =
         a[FUELTYPE] * (pow((1 - exp(-b[FUELTYPE] * ISI)), c0[FUELTYPE]));
