@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/cffdrs/ROScalc.dart';
 
 void main() => runApp(const MyApp());
 
@@ -125,7 +126,7 @@ class MyCustomFormState extends State<MyCustomForm> {
   }
 
   double _calculateRateOfSpread() {
-    return 0.0;
+    return ROScalc(fuelType, _isi, _bui, _fmc, _sfc, _pc, _pdf, _cc, _cbh);
   }
 
   @override
