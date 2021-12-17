@@ -6,7 +6,7 @@ import 'package:flutter_application_1/cffdrs/C6calc.dart';
 import 'package:flutter_application_1/cffdrs/BEcalc.dart';
 
 double ROScalc(String fuelType, double ISI, double BUI, double FMC, double SFC,
-    double PC, double? PDF, double CC, double CBH) {
+    double? PC, double? PDF, double CC, double? CBH) {
   /**
   #############################################################################
   # Description:
@@ -129,6 +129,9 @@ double ROScalc(String fuelType, double ISI, double BUI, double FMC, double SFC,
   }
   // #Eq. 27 (FCFDG 1992) - Initial Rate of Spread for M1 Mixedwood type
   else if (fuelType == "M1") {
+    if (PC == null) {
+      throw Exception("PC is required for M1 fuel type");
+    }
     RSI = PC / 100 * ROScalc("C2", ISI, NoBUI, FMC, SFC, PC, PDF, CC, CBH) +
         (100 - PC) /
             100 *
@@ -136,6 +139,9 @@ double ROScalc(String fuelType, double ISI, double BUI, double FMC, double SFC,
   }
   // #Eq. 27 (FCFDG 1992) - Initial Rate of Spread for M2 Mixedwood type
   else if (fuelType == 'M2') {
+    if (PC == null) {
+      throw Exception("PC is required for M2 fuel type");
+    }
     RSI = PC / 100 * ROScalc("C2", ISI, NoBUI, FMC, SFC, PC, PDF, CC, CBH) +
         0.2 *
             (100 - PC) /
@@ -177,6 +183,9 @@ double ROScalc(String fuelType, double ISI, double BUI, double FMC, double SFC,
   // #Calculate C6 separately
   double ROS;
   if (fuelType == 'C6') {
+    if (CBH == null) {
+      throw Exception("C6 requires CBH");
+    }
     ROS = C6calc(fuelType, ISI, BUI, FMC, SFC, CBH, option: "ROS");
   } else {
     ROS = BEcalc(fuelType, BUI) * RSI;
