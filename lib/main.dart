@@ -59,7 +59,7 @@ class MyCustomFormState extends State<MyCustomForm> {
   double? _cbh = 0;
   double _cfl = 0;
 
-  bool _expanded = true;
+  bool _expanded = false;
 
   final _presetState = GlobalKey<FormFieldState>();
 
