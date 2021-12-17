@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_application_1/cffdrs/FMCcalc.dart';
 import 'package:flutter_application_1/cffdrs/ROScalc.dart';
 import 'package:flutter_application_1/cffdrs/FIcalc.dart';
 import 'package:flutter_application_1/cffdrs/TFCcalc.dart';
@@ -7,6 +8,12 @@ import 'package:flutter_application_1/cffdrs/CFBcalc.dart';
 import 'package:flutter_application_1/cffdrs/SFCcalc.dart';
 
 void main() => runApp(const MyApp());
+
+int getDayOfYear() {
+  final now = DateTime.now();
+  final diff = now.difference(DateTime(now.year, 1, 1, 0, 0));
+  return diff.inDays;
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -52,12 +59,14 @@ class MyCustomFormState extends State<MyCustomForm> {
   double _isi = 0;
   double _bui = 0;
   double _ffmc = 0;
-  double _fmc = 0;
   double? _pc = 0;
   double? _pdf = 0;
   double _cc = 0;
   double? _cbh = 0;
   double _cfl = 0;
+  double _latitude = 0;
+  double _longitude = 0;
+  double _elevation = 0;
 
   bool _expanded = false;
 
@@ -220,12 +229,6 @@ class MyCustomFormState extends State<MyCustomForm> {
     });
   }
 
-  void _onFMCChanged(double fmc) {
-    setState(() {
-      _fmc = fmc;
-    });
-  }
-
   void _onPCChanged(double pc) {
     setState(() {
       _pc = pc;
@@ -256,15 +259,35 @@ class MyCustomFormState extends State<MyCustomForm> {
     });
   }
 
+  void _onLongitudeChanged(double longitude) {
+    setState(() {
+      _longitude = longitude;
+    });
+  }
+
+  void _onLatitudeChanged(double latitude) {
+    setState(() {
+      _latitude = latitude;
+    });
+  }
+
+  void _onElevationChanged(double elevation) {
+    setState(() {
+      _elevation = elevation;
+    });
+  }
+
   final isiController = TextEditingController();
   final buiController = TextEditingController();
   final _ffmcController = TextEditingController();
-  final fmcContoller = TextEditingController();
   final ccController = TextEditingController();
   final pcController = TextEditingController();
   final pdfController = TextEditingController();
   final cbhController = TextEditingController();
   final _cflController = TextEditingController();
+  final _latitudeController = TextEditingController();
+  final _longitudeController = TextEditingController();
+  final _elevationController = TextEditingController();
 
   // double ros = _calculateRateOfSpread()
 
@@ -276,7 +299,6 @@ class MyCustomFormState extends State<MyCustomForm> {
   void initState() {
     isiController.text = _isi.toString();
     buiController.text = _bui.toString();
-    fmcContoller.text = _fmc.toString();
     ccController.text = _cc.toString();
     pcController.text = _pc.toString();
     pdfController.text = _pdf.toString();
@@ -284,6 +306,9 @@ class MyCustomFormState extends State<MyCustomForm> {
     isiController.addListener(_isiListener);
     _cflController.text = _cfl.toString();
     _ffmcController.text = _ffmc.toString();
+    _latitudeController.text = _latitude.toString();
+    _longitudeController.text = _longitude.toString();
+    _elevationController.text = _elevation.toString();
     super.initState();
   }
 
@@ -293,7 +318,6 @@ class MyCustomFormState extends State<MyCustomForm> {
     // widget tree.
     isiController.dispose();
     buiController.dispose();
-    fmcContoller.dispose();
     ccController.dispose();
     pcController.dispose();
     pdfController.dispose();
@@ -310,13 +334,18 @@ class MyCustomFormState extends State<MyCustomForm> {
     double? cfb;
     double? fc;
     double? sfc;
+    double? fmc;
     try {
       print('ffmc: $_ffmc');
+      print('day of year: ${getDayOfYear()}');
+      fmc = FMCcalc(_latitude, _longitude < 0 ? -_longitude : _longitude,
+          _elevation, getDayOfYear(), 0);
+      print('fmc: $fmc');
       sfc = SFCcalc(fuelType, _ffmc, _bui, _pc, _cc);
       print('sfc: ${sfc}');
-      ros = ROScalc(fuelType, _isi, _bui, _fmc, sfc, _pc, _pdf, _cc, _cbh);
+      ros = ROScalc(fuelType, _isi, _bui, fmc, sfc, _pc, _pdf, _cc, _cbh);
       print('ros: $ros');
-      cfb = CFBcalc(fuelType, _fmc, sfc, ros, _cbh ?? 0);
+      cfb = CFBcalc(fuelType, fmc, sfc, ros, _cbh ?? 0);
       print('cfb: {$cfb}');
       fc = TFCcalc(fuelType, _cfl, cfb, sfc, _pc, _pdf);
       print('fc: {$fc}');
@@ -446,21 +475,6 @@ class MyCustomFormState extends State<MyCustomForm> {
                       },
                     ))
                   ]),
-                  Row(children: [
-                    // FMC field
-                    Expanded(
-                        child: TextField(
-                      controller: fmcContoller,
-                      decoration: const InputDecoration(
-                          labelText: "Foliar Moisture Content"),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        if (double.tryParse(value) != null) {
-                          _onFMCChanged(double.parse(value));
-                        }
-                      },
-                    )),
-                  ]),
                 ]),
                 isExpanded: _expanded,
                 canTapOnHeader: true,
@@ -525,7 +539,47 @@ class MyCustomFormState extends State<MyCustomForm> {
               },
             ))
           ]),
-          Text('Surface Fuel Consumption (kg/m^2) = ${sfc}'),
+          // lat, long, elevation
+          Row(children: [
+            // latitude Field
+            Expanded(
+                child: TextField(
+              controller: _latitudeController,
+              decoration: const InputDecoration(labelText: "Latitude"),
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                if (double.tryParse(value) != null) {
+                  _onLatitudeChanged(double.parse(value));
+                }
+              },
+            )),
+            // longitude Field
+            Expanded(
+                child: TextField(
+              controller: _longitudeController,
+              decoration: const InputDecoration(labelText: "Longitude"),
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                if (double.tryParse(value) != null) {
+                  _onLongitudeChanged(double.parse(value));
+                }
+              },
+            )),
+            // elevation Field
+            Expanded(
+                child: TextField(
+              controller: _elevationController,
+              decoration: const InputDecoration(labelText: "Elevation"),
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                if (double.tryParse(value) != null) {
+                  _onElevationChanged(double.parse(value));
+                }
+              },
+            )),
+          ]),
+          Text('Foliar Moisture Content: ${fmc}'),
+          Text('Surface Fuel Consumption (kg/m^2): ${sfc}'),
           Text('Crown fraction burned: ${cfb}'),
           Text('Fuel Consumption (kg/m^2): ${fc}'),
           Text('Rate of spread: ${ros} (m/min)'),
