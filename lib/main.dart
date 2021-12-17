@@ -3,9 +3,11 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_application_1/cffdrs/FMCcalc.dart';
 import 'package:flutter_application_1/cffdrs/ROScalc.dart';
 import 'package:flutter_application_1/cffdrs/FIcalc.dart';
+import 'package:flutter_application_1/cffdrs/Slopecalc.dart';
 import 'package:flutter_application_1/cffdrs/TFCcalc.dart';
 import 'package:flutter_application_1/cffdrs/CFBcalc.dart';
 import 'package:flutter_application_1/cffdrs/SFCcalc.dart';
+import 'package:flutter_application_1/cffdrs/ISIcalc.dart';
 
 void main() => runApp(const MyApp());
 
@@ -56,7 +58,6 @@ class MyCustomFormState extends State<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
   String? _fuelType;
   FuelTypeStruct? _preset;
-  double _isi = 0;
   double _bui = 0;
   double _ffmc = 0;
   double? _pc = 0;
@@ -67,6 +68,7 @@ class MyCustomFormState extends State<MyCustomForm> {
   double _latitude = 0;
   double _longitude = 0;
   double _elevation = 0;
+  double _ws = 0;
 
   bool _expanded = false;
 
@@ -211,9 +213,9 @@ class MyCustomFormState extends State<MyCustomForm> {
     });
   }
 
-  void _onISIChanged(double isi) {
+  void _onWSChanged(double ws) {
     setState(() {
-      _isi = isi;
+      _ws = ws;
     });
   }
 
@@ -277,7 +279,7 @@ class MyCustomFormState extends State<MyCustomForm> {
     });
   }
 
-  final isiController = TextEditingController();
+  final _wsController = TextEditingController();
   final buiController = TextEditingController();
   final _ffmcController = TextEditingController();
   final ccController = TextEditingController();
@@ -291,19 +293,14 @@ class MyCustomFormState extends State<MyCustomForm> {
 
   // double ros = _calculateRateOfSpread()
 
-  void _isiListener() {
-    print('_isiListener');
-  }
-
   @override
   void initState() {
-    isiController.text = _isi.toString();
+    _wsController.text = _ws.toString();
     buiController.text = _bui.toString();
     ccController.text = _cc.toString();
     pcController.text = _pc.toString();
     pdfController.text = _pdf.toString();
     cbhController.text = _cbh.toString();
-    isiController.addListener(_isiListener);
     _cflController.text = _cfl.toString();
     _ffmcController.text = _ffmc.toString();
     _latitudeController.text = _latitude.toString();
@@ -316,7 +313,7 @@ class MyCustomFormState extends State<MyCustomForm> {
   void dispose() {
     // Clean up the controller when the widget is removed from the
     // widget tree.
-    isiController.dispose();
+    _wsController.dispose();
     buiController.dispose();
     ccController.dispose();
     pcController.dispose();
@@ -329,6 +326,7 @@ class MyCustomFormState extends State<MyCustomForm> {
 
   @override
   Widget build(BuildContext context) {
+    double? isi;
     double? ros;
     double? hfi;
     double? cfb;
@@ -336,6 +334,10 @@ class MyCustomFormState extends State<MyCustomForm> {
     double? sfc;
     double? fmc;
     try {
+      // TODO: you were here!
+      // double WAZ = 0.0; // TODO: Wind Azimuth
+      // double GS = 0.0; //
+      // Slopecalc(fuelType, _ffmc, _bui, _ws, WAZ, GS, SAZ, FMC, SFC, PC, PDF, CC, CBH, ISI)
       print('ffmc: $_ffmc');
       print('day of year: ${getDayOfYear()}');
       fmc = FMCcalc(_latitude, _longitude < 0 ? -_longitude : _longitude,
@@ -343,7 +345,9 @@ class MyCustomFormState extends State<MyCustomForm> {
       print('fmc: $fmc');
       sfc = SFCcalc(fuelType, _ffmc, _bui, _pc, _cc);
       print('sfc: ${sfc}');
-      ros = ROScalc(fuelType, _isi, _bui, fmc, sfc, _pc, _pdf, _cc, _cbh);
+      isi = ISIcalc(_ffmc, _ws);
+      print('isi: ${isi}');
+      ros = ROScalc(fuelType, isi, _bui, fmc, sfc, _pc, _pdf, _cc, _cbh);
       print('ros: $ros');
       cfb = CFBcalc(fuelType, fmc, sfc, ros, _cbh ?? 0);
       print('cfb: {$cfb}');
@@ -486,16 +490,15 @@ class MyCustomFormState extends State<MyCustomForm> {
             },
           )),
           Row(children: [
-            // ISI field
+            // Wind Speed
             Expanded(
                 child: TextField(
-              controller: isiController,
-              decoration:
-                  const InputDecoration(labelText: "Initial Spread Index"),
+              controller: _wsController,
+              decoration: const InputDecoration(labelText: "Wind Speed (km/h)"),
               keyboardType: TextInputType.number,
               onChanged: (value) {
                 if (double.tryParse(value) != null) {
-                  _onISIChanged(double.parse(value));
+                  _onWSChanged(double.parse(value));
                 }
               },
             )),
@@ -578,6 +581,7 @@ class MyCustomFormState extends State<MyCustomForm> {
               },
             )),
           ]),
+          Text('Initial Spread Index: ${isi}'),
           Text('Foliar Moisture Content: ${fmc}'),
           Text('Surface Fuel Consumption (kg/m^2): ${sfc}'),
           Text('Crown fraction burned: ${cfb}'),
