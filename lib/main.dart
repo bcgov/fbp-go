@@ -57,7 +57,6 @@ class MyCustomFormState extends State<MyCustomForm> {
   double _cc = 0;
   double? _cbh = 0;
   double _cfl = 0;
-  double _fc = 0;
 
   bool _expanded = true;
 
@@ -265,7 +264,6 @@ class MyCustomFormState extends State<MyCustomForm> {
   final pdfController = TextEditingController();
   final cbhController = TextEditingController();
   final _cflController = TextEditingController();
-  final _fcController = TextEditingController();
 
   // double ros = _calculateRateOfSpread()
 
@@ -285,7 +283,6 @@ class MyCustomFormState extends State<MyCustomForm> {
     cbhController.text = _cbh.toString();
     isiController.addListener(_isiListener);
     _cflController.text = _cfl.toString();
-    _fcController.text = _fc.toString();
     super.initState();
   }
 
@@ -302,7 +299,6 @@ class MyCustomFormState extends State<MyCustomForm> {
     pdfController.dispose();
     cbhController.dispose();
     _cflController.dispose();
-    _fcController.dispose();
     super.dispose();
   }
 
@@ -310,13 +306,17 @@ class MyCustomFormState extends State<MyCustomForm> {
   Widget build(BuildContext context) {
     double? ros;
     double? hfi;
+    double? cfb;
+    double? fc;
     try {
       ros = ROScalc(fuelType, _isi, _bui, _fmc, _sfc, _pc, _pdf, _cc, _cbh);
-      // double _cfb = CFBcalc(fuelType, _fmc, _sfc, ros, _cbh);
-      // _fc = TFCcalc(fuelType, _cfl, _cfb, _sfc, _pc, _pdf);
-      _fcController.text = _fc.toString();
-      hfi = FIcalc(_fc, ros);
-      print('build - ros: $ros');
+      print('ros: $ros');
+      cfb = CFBcalc(fuelType, _fmc, _sfc, ros, _cbh ?? 0);
+      print('cfb: {$cfb}');
+      fc = TFCcalc(fuelType, _cfl, cfb, _sfc, _pc, _pdf);
+      print('fc: {$fc}');
+      hfi = FIcalc(fc, ros);
+      print('hfi: {$hfi}');
     } catch (e) {
       print('error $e');
     }
@@ -397,14 +397,6 @@ class MyCustomFormState extends State<MyCustomForm> {
                         }
                       },
                     )),
-                    Expanded(
-                        child: TextField(
-                      controller: _fcController,
-                      readOnly: true,
-                      decoration: const InputDecoration(
-                          labelText: "Fuel Consumption (kg/m^2)"),
-                      keyboardType: TextInputType.number,
-                    ))
                   ]),
                   // PDF field
                   Row(children: [
@@ -475,7 +467,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                           _onFMCChanged(double.parse(value));
                         }
                       },
-                    ))
+                    )),
                   ]),
                 ]),
                 isExpanded: _expanded,
@@ -528,7 +520,8 @@ class MyCustomFormState extends State<MyCustomForm> {
               },
             ))
           ]),
-
+          Text('Crown fraction burned: ${cfb}'),
+          Text('Fuel Consumption (kg/m^2): ${fc}'),
           Text('Rate of spread: ${ros} (m/min)'),
           Text('Head fire intensity: ${hfi} (kW/m)'),
           // Text(
