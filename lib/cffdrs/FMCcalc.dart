@@ -25,6 +25,9 @@ double FMCcalc(double LAT, double LONG, double ELV, int DJ, double D0) {
   #
   #############################################################################
   */
+  if (LONG < 0) {
+    throw Exception('Longitude must be greater than 0');
+  }
   double FMC = -1;
   double LATN = 0;
   // #Calculate Normalized Latitude

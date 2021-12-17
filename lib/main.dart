@@ -338,7 +338,8 @@ class MyCustomFormState extends State<MyCustomForm> {
     try {
       print('ffmc: $_ffmc');
       print('day of year: ${getDayOfYear()}');
-      fmc = FMCcalc(_latitude, _longitude, _elevation, getDayOfYear(), 0);
+      fmc = FMCcalc(_latitude, _longitude < 0 ? -_longitude : _longitude,
+          _elevation, getDayOfYear(), 0);
       print('fmc: $fmc');
       sfc = SFCcalc(fuelType, _ffmc, _bui, _pc, _cc);
       print('sfc: ${sfc}');
