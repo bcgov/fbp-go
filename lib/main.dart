@@ -4,6 +4,7 @@ import 'package:flutter_application_1/cffdrs/ROScalc.dart';
 import 'package:flutter_application_1/cffdrs/FIcalc.dart';
 import 'package:flutter_application_1/cffdrs/TFCcalc.dart';
 import 'package:flutter_application_1/cffdrs/CFBcalc.dart';
+import 'package:flutter_application_1/cffdrs/SFCcalc.dart';
 
 void main() => runApp(const MyApp());
 
@@ -50,8 +51,8 @@ class MyCustomFormState extends State<MyCustomForm> {
   FuelTypeStruct? _preset;
   double _isi = 0;
   double _bui = 0;
+  double _ffmc = 0;
   double _fmc = 0;
-  double _sfc = 0;
   double? _pc = 0;
   double? _pdf = 0;
   double _cc = 0;
@@ -213,15 +214,15 @@ class MyCustomFormState extends State<MyCustomForm> {
     });
   }
 
-  void _onFMCChanged(double fmc) {
+  void _onFFMCChanged(double ffmc) {
     setState(() {
-      _fmc = fmc;
+      _ffmc = ffmc;
     });
   }
 
-  void _onSFCChanged(double sfc) {
+  void _onFMCChanged(double fmc) {
     setState(() {
-      _sfc = sfc;
+      _fmc = fmc;
     });
   }
 
@@ -257,9 +258,9 @@ class MyCustomFormState extends State<MyCustomForm> {
 
   final isiController = TextEditingController();
   final buiController = TextEditingController();
+  final _ffmcController = TextEditingController();
   final fmcContoller = TextEditingController();
   final ccController = TextEditingController();
-  final sfcController = TextEditingController();
   final pcController = TextEditingController();
   final pdfController = TextEditingController();
   final cbhController = TextEditingController();
@@ -277,12 +278,12 @@ class MyCustomFormState extends State<MyCustomForm> {
     buiController.text = _bui.toString();
     fmcContoller.text = _fmc.toString();
     ccController.text = _cc.toString();
-    sfcController.text = _sfc.toString();
     pcController.text = _pc.toString();
     pdfController.text = _pdf.toString();
     cbhController.text = _cbh.toString();
     isiController.addListener(_isiListener);
     _cflController.text = _cfl.toString();
+    _ffmcController.text = _ffmc.toString();
     super.initState();
   }
 
@@ -294,11 +295,11 @@ class MyCustomFormState extends State<MyCustomForm> {
     buiController.dispose();
     fmcContoller.dispose();
     ccController.dispose();
-    sfcController.dispose();
     pcController.dispose();
     pdfController.dispose();
     cbhController.dispose();
     _cflController.dispose();
+    _ffmcController.dispose();
     super.dispose();
   }
 
@@ -308,12 +309,16 @@ class MyCustomFormState extends State<MyCustomForm> {
     double? hfi;
     double? cfb;
     double? fc;
+    double? sfc;
     try {
-      ros = ROScalc(fuelType, _isi, _bui, _fmc, _sfc, _pc, _pdf, _cc, _cbh);
+      print('ffmc: $_ffmc');
+      sfc = SFCcalc(fuelType, _ffmc, _bui, _pc, _cc);
+      print('sfc: ${sfc}');
+      ros = ROScalc(fuelType, _isi, _bui, _fmc, sfc, _pc, _pdf, _cc, _cbh);
       print('ros: $ros');
-      cfb = CFBcalc(fuelType, _fmc, _sfc, ros, _cbh ?? 0);
+      cfb = CFBcalc(fuelType, _fmc, sfc, ros, _cbh ?? 0);
       print('cfb: {$cfb}');
-      fc = TFCcalc(fuelType, _cfl, cfb, _sfc, _pc, _pdf);
+      fc = TFCcalc(fuelType, _cfl, cfb, sfc, _pc, _pdf);
       print('fc: {$fc}');
       hfi = FIcalc(fc, ros);
       print('hfi: {$hfi}');
@@ -427,19 +432,6 @@ class MyCustomFormState extends State<MyCustomForm> {
                     ))
                   ]),
                   Row(children: [
-                    // SFC field
-                    Expanded(
-                        child: TextField(
-                      controller: sfcController,
-                      decoration: const InputDecoration(
-                          labelText: "Surface Fuel Consumption (kg/m^2)"),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        if (double.tryParse(value) != null) {
-                          _onSFCChanged(double.parse(value));
-                        }
-                      },
-                    )),
                     // PC field
                     Expanded(
                         child: TextField(
@@ -518,8 +510,22 @@ class MyCustomFormState extends State<MyCustomForm> {
                   _onCCChanged(double.parse(value));
                 }
               },
+            )),
+            // FFMC Field
+            Expanded(
+                child: TextField(
+              controller: _ffmcController,
+              decoration:
+                  const InputDecoration(labelText: "Fine Fuel Moisture Code"),
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                if (double.tryParse(value) != null) {
+                  _onFFMCChanged(double.parse(value));
+                }
+              },
             ))
           ]),
+          Text('Surface Fuel Consumption (kg/m^2) = ${sfc}'),
           Text('Crown fraction burned: ${cfb}'),
           Text('Fuel Consumption (kg/m^2): ${fc}'),
           Text('Rate of spread: ${ros} (m/min)'),
@@ -527,16 +533,6 @@ class MyCustomFormState extends State<MyCustomForm> {
           // Text(
           //     // ignore: unnecessary_brace_in_string_interps
           //     'fuel: ${fuelType}, isi: ${_isi}, bui: ${_bui}, fmc: ${_fmc}, sfc: ${_sfc}, pc: ${_pc}, pdf: ${_pdf}, cc: ${_cc}, cbh: ${_cbh}, cfl: ${_cfl}'),
-
-          // TextFormField(
-          //   // The validator receives the text that the user has entered.
-          //   validator: (value) {
-          //     if (value == null || value.isEmpty) {
-          //       return 'Please enter some text';
-          //     }
-          //     return null;
-          //   },
-          // ),
         ],
       ),
     );
