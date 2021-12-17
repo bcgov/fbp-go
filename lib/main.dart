@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_application_1/cffdrs/ROScalc.dart';
+import 'package:flutter_application_1/cffdrs/FIcalc.dart';
+import 'package:flutter_application_1/cffdrs/TFCcalc.dart';
+import 'package:flutter_application_1/cffdrs/CFBcalc.dart';
 
 void main() => runApp(const MyApp());
 
@@ -26,10 +29,12 @@ class MyCustomForm extends StatefulWidget {
 class FuelTypeStruct {
   final String code;
   final String description;
+  final double cfl;
   final double? pc;
   final double? pdf;
   final double? cbh;
-  FuelTypeStruct(this.code, this.description, {this.pc, this.pdf, this.cbh});
+  FuelTypeStruct(this.code, this.description,
+      {required this.cfl, this.pc, this.pdf, this.cbh});
 }
 
 // Define a corresponding State class.
@@ -51,6 +56,10 @@ class MyCustomFormState extends State<MyCustomForm> {
   double? _pdf = 0;
   double _cc = 0;
   double? _cbh = 0;
+  double _cfl = 0;
+  double _fc = 0;
+
+  bool _expanded = true;
 
   final _presetState = GlobalKey<FormFieldState>();
 
@@ -94,76 +103,81 @@ class MyCustomFormState extends State<MyCustomForm> {
   ];
 
   final List<FuelTypeStruct> _presets = [
-    FuelTypeStruct('C1', 'C-1 spruce-lichen woodland', pc: 100, cbh: 2),
-    FuelTypeStruct('C2', 'C-2 boreal spruce', pc: 100, cbh: 3),
-    FuelTypeStruct('C3', 'C-3 mature jack or lodgepole pine', pc: 100, cbh: 3),
+    FuelTypeStruct('C1', 'C-1 spruce-lichen woodland',
+        cfl: 0.75, pc: 100, cbh: 2),
+    FuelTypeStruct('C2', 'C-2 boreal spruce', cfl: 0.8, pc: 100, cbh: 3),
+    FuelTypeStruct('C3', 'C-3 mature jack or lodgepole pine',
+        cfl: 1.15, pc: 100, cbh: 3),
     FuelTypeStruct('C4', 'C-4 immature jack or lodgepole pine',
-        pc: 100, cbh: 4),
-    FuelTypeStruct('C5', 'C-5 red and white pine', pc: 100, cbh: 18),
-    FuelTypeStruct('C6', 'C-6 conifer plantation, 7-m CBH', pc: 100, cbh: 7),
-    FuelTypeStruct('C6', 'C-6 conifer plantation, 2-m CBH', pc: 100, cbh: 7),
-    FuelTypeStruct('C7', 'C-7 ponderosa pine/Douglas-far', pc: 100, cbh: 10),
-    FuelTypeStruct('D1', 'D-1 leafless aspen'),
-    FuelTypeStruct('D2', 'D-2 green aspen'),
+        cfl: 1.2, pc: 100, cbh: 4),
+    FuelTypeStruct('C5', 'C-5 red and white pine', cfl: 1.2, pc: 100, cbh: 18),
+    FuelTypeStruct('C6', 'C-6 conifer plantation, 7-m CBH',
+        cfl: 1.8, pc: 100, cbh: 7),
+    FuelTypeStruct('C6', 'C-6 conifer plantation, 2-m CBH',
+        cfl: 1.8, pc: 100, cbh: 7),
+    FuelTypeStruct('C7', 'C-7 ponderosa pine/Douglas-far',
+        cfl: 0.5, pc: 100, cbh: 10),
+    FuelTypeStruct('D1', 'D-1 leafless aspen', cfl: 1.0),
+    FuelTypeStruct('D2', 'D-2 green aspen', cfl: 1.0),
     FuelTypeStruct(
         'M1', 'M-1 boreal mixedwood-leafless, 75% conifer / 25 % deciduous',
-        pc: 75, cbh: 6),
+        cfl: 0.8, pc: 75, cbh: 6),
     FuelTypeStruct(
         'M1', 'M-1 boreal mixedwood-leafless, 50% conifer / 50 % deciduous',
-        pc: 50, cbh: 6),
+        cfl: 0.8, pc: 50, cbh: 6),
     FuelTypeStruct(
         'M1', 'M-1 boreal mixedwood-leafless, 25% conifer / 75 % deciduous',
-        pc: 25, cbh: 6),
+        cfl: 0.8, pc: 25, cbh: 6),
     FuelTypeStruct(
         'M2', 'M-2 boreal mixedwood-green, 75% conifer / 25 % deciduous',
-        pc: 75, cbh: 6),
+        cfl: 0.8, pc: 75, cbh: 6),
     FuelTypeStruct(
         'M2', 'M-2 boreal mixedwood-green, 50% conifer / 50 % deciduous',
-        pc: 50, cbh: 6),
+        cfl: 0.8, pc: 50, cbh: 6),
     FuelTypeStruct(
         'M2', 'M-2 boreal mixedwood-green, 25% conifer / 75 % deciduous',
-        pc: 25, cbh: 6),
+        cfl: 0.8, pc: 25, cbh: 6),
     FuelTypeStruct('M3', 'M-3 dead balsam fir mixedwood-leafless, 30% dead fir',
-        pdf: 30, cbh: 6),
+        cfl: 0.8, pdf: 30, cbh: 6),
     FuelTypeStruct('M3', 'M-3 dead balsam fir mixedwood-leafless, 60% dead fir',
-        pdf: 60, cbh: 6),
+        cfl: 0.8, pdf: 60, cbh: 6),
     FuelTypeStruct(
         'M3', 'M-3 dead balsam fir mixedwood-leafless, 100% dead fir',
-        pdf: 100, cbh: 6),
+        cfl: 0.8, pdf: 100, cbh: 6),
     FuelTypeStruct('M4', 'M-4 dead balsam fir mixedwood-green, 30% dead fir',
-        pdf: 30, cbh: 6),
+        cfl: 0.8, pdf: 30, cbh: 6),
     FuelTypeStruct('M4', 'M-4 dead balsam fir mixedwood-green, 60% dead fir',
-        pdf: 60, cbh: 6),
+        cfl: 0.8, pdf: 60, cbh: 6),
     FuelTypeStruct('M4', 'M-4 dead balsam fir mixedwood-green, 100% dead fir',
-        pdf: 100, cbh: 6),
-    FuelTypeStruct('O1A', 'O-1a matted grass'),
-    FuelTypeStruct('O1B', 'O-1b standing grass'),
-    FuelTypeStruct('S1', 'S-1 jack or lodgepole pine slash'),
-    FuelTypeStruct('S2', 'S-2 white spruce/balsam slash'),
-    FuelTypeStruct('S3', 'S-3 coastal cedar/hemlock/Douglas-fir slash'),
+        cfl: 0.8, pdf: 100, cbh: 6),
+    FuelTypeStruct('O1A', 'O-1a matted grass', cfl: 1.0),
+    FuelTypeStruct('O1B', 'O-1b standing grass', cfl: 1.0),
+    FuelTypeStruct('S1', 'S-1 jack or lodgepole pine slash', cfl: 1.0),
+    FuelTypeStruct('S2', 'S-2 white spruce/balsam slash', cfl: 1.0),
+    FuelTypeStruct('S3', 'S-3 coastal cedar/hemlock/Douglas-fir slash',
+        cfl: 1.0),
   ];
 
-  void setPreset(
-      {required String fuelType,
-      required double? pc,
-      double? pdf,
-      required double? cbh}) {
+  void setPreset(FuelTypeStruct preset) {
     setState(() {
-      _fuelType = fuelType;
+      _fuelType = preset.code;
       _fuelTypeState.currentState?.didChange(_fuelType);
 
-      _pc = pc;
+      _pc = preset.pc;
       pcController.text = _pc.toString();
 
-      _pdf = pdf;
+      _pdf = preset.pdf;
       if (_pdf == null) {
         pdfController.text = '';
       } else {
         pdfController.text = _pdf.toString();
       }
 
-      _cbh = cbh;
+      _cbh = preset.cbh;
       cbhController.text = _cbh.toString();
+
+      _cfl = preset.cfl;
+      _cflController.text = _cfl.toString();
     });
   }
 
@@ -171,11 +185,7 @@ class MyCustomFormState extends State<MyCustomForm> {
     print('_onPresetChanged ${preset}');
     if (preset != null) {
       _preset = preset;
-      setPreset(
-          fuelType: preset.code,
-          pc: preset.pc,
-          cbh: preset.cbh,
-          pdf: preset.pdf);
+      setPreset(preset);
     }
   }
 
@@ -240,16 +250,10 @@ class MyCustomFormState extends State<MyCustomForm> {
     });
   }
 
-  double? _calculateRateOfSpread() {
-    try {
-      return ROScalc(fuelType, _isi, _bui, _fmc, _sfc, _pc, _pdf, _cc, _cbh);
-    } catch (e) {
-      return null;
-    }
-  }
-
-  double? _calculateHeadFireIntensity() {
-    return null;
+  void _onCFLChanged(double cfl) {
+    setState(() {
+      _cfl = cfl;
+    });
   }
 
   final isiController = TextEditingController();
@@ -260,6 +264,10 @@ class MyCustomFormState extends State<MyCustomForm> {
   final pcController = TextEditingController();
   final pdfController = TextEditingController();
   final cbhController = TextEditingController();
+  final _cflController = TextEditingController();
+  final _fcController = TextEditingController();
+
+  // double ros = _calculateRateOfSpread()
 
   void _isiListener() {
     print('_isiListener');
@@ -276,6 +284,8 @@ class MyCustomFormState extends State<MyCustomForm> {
     pdfController.text = _pdf.toString();
     cbhController.text = _cbh.toString();
     isiController.addListener(_isiListener);
+    _cflController.text = _cfl.toString();
+    _fcController.text = _fc.toString();
     super.initState();
   }
 
@@ -291,11 +301,25 @@ class MyCustomFormState extends State<MyCustomForm> {
     pcController.dispose();
     pdfController.dispose();
     cbhController.dispose();
+    _cflController.dispose();
+    _fcController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    double? ros;
+    double? hfi;
+    try {
+      ros = ROScalc(fuelType, _isi, _bui, _fmc, _sfc, _pc, _pdf, _cc, _cbh);
+      // double _cfb = CFBcalc(fuelType, _fmc, _sfc, ros, _cbh);
+      // _fc = TFCcalc(fuelType, _cfl, _cfb, _sfc, _pc, _pdf);
+      _fcController.text = _fc.toString();
+      hfi = FIcalc(_fc, ros);
+      print('build - ros: $ros');
+    } catch (e) {
+      print('error $e');
+    }
     // Build a Form widget using the _formKey created above.
     return Form(
       key: _formKey,
@@ -324,28 +348,145 @@ class MyCustomFormState extends State<MyCustomForm> {
                       }))
             ],
           ),
-          // Fuel type dropdown.
-          Row(
+          Container(
+              child: ExpansionPanelList(
             children: [
-              Expanded(
-                  child: DropdownButtonFormField(
-                      key: _fuelTypeState,
-                      decoration: const InputDecoration(labelText: "Fuel Type"),
-                      items: _fuelTypes.map((String value) {
-                        return DropdownMenuItem(
-                            value: value,
-                            child: Row(
-                              children: [
-                                // const Icon(Icons.park_outlined),
-                                Text(value)
-                              ],
-                            ));
-                      }).toList(),
-                      onChanged: (String? value) {
-                        _onFuelTypeChanged(value);
-                      }))
+              ExpansionPanel(
+                headerBuilder: (context, isExpanded) {
+                  return const ListTile(
+                    title: Text(
+                      'Detail',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  );
+                },
+                body: Column(children: <Widget>[
+                  Row(
+                    children: [
+                      Expanded(
+                          child: DropdownButtonFormField(
+                              key: _fuelTypeState,
+                              decoration:
+                                  const InputDecoration(labelText: "Fuel Type"),
+                              items: _fuelTypes.map((String value) {
+                                return DropdownMenuItem(
+                                    value: value,
+                                    child: Row(
+                                      children: [
+                                        // const Icon(Icons.park_outlined),
+                                        Text(value)
+                                      ],
+                                    ));
+                              }).toList(),
+                              onChanged: (String? value) {
+                                _onFuelTypeChanged(value);
+                              }))
+                    ],
+                  ),
+                  Row(children: [
+                    // CFL field
+                    Expanded(
+                        child: TextField(
+                      controller: _cflController,
+                      decoration: const InputDecoration(
+                          labelText: "Crown Fuel Load (kg/m^2)"),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        if (double.tryParse(value) != null) {
+                          _onCFLChanged(double.parse(value));
+                        }
+                      },
+                    )),
+                    Expanded(
+                        child: TextField(
+                      controller: _fcController,
+                      readOnly: true,
+                      decoration: const InputDecoration(
+                          labelText: "Fuel Consumption (kg/m^2)"),
+                      keyboardType: TextInputType.number,
+                    ))
+                  ]),
+                  // PDF field
+                  Row(children: [
+                    Expanded(
+                        child: TextField(
+                      controller: pdfController,
+                      decoration: const InputDecoration(
+                          labelText: "Percent Dead Balsam Fir"),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        if (double.tryParse(value) != null) {
+                          _onPDFChanged(double.parse(value));
+                        }
+                      },
+                    )),
+                    // CBH field
+                    Expanded(
+                        child: TextField(
+                      controller: cbhController,
+                      decoration: const InputDecoration(
+                          labelText: "Crown to base height (m)"),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        if (double.tryParse(value) != null) {
+                          _onCBHChanged(double.parse(value));
+                        }
+                      },
+                    ))
+                  ]),
+                  Row(children: [
+                    // SFC field
+                    Expanded(
+                        child: TextField(
+                      controller: sfcController,
+                      decoration: const InputDecoration(
+                          labelText: "Surface Fuel Consumption (kg/m^2)"),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        if (double.tryParse(value) != null) {
+                          _onSFCChanged(double.parse(value));
+                        }
+                      },
+                    )),
+                    // PC field
+                    Expanded(
+                        child: TextField(
+                      controller: pcController,
+                      decoration:
+                          const InputDecoration(labelText: "Percent Conifer"),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        if (double.tryParse(value) != null) {
+                          _onPCChanged(double.parse(value));
+                        }
+                      },
+                    ))
+                  ]),
+                  Row(children: [
+                    // FMC field
+                    Expanded(
+                        child: TextField(
+                      controller: fmcContoller,
+                      decoration: const InputDecoration(
+                          labelText: "Foliar Moisture Content"),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        if (double.tryParse(value) != null) {
+                          _onFMCChanged(double.parse(value));
+                        }
+                      },
+                    ))
+                  ]),
+                ]),
+                isExpanded: _expanded,
+                canTapOnHeader: true,
+              ),
             ],
-          ),
+            expansionCallback: (panelIndex, isExpanded) {
+              _expanded = !_expanded;
+              setState(() {});
+            },
+          )),
           Row(children: [
             // ISI field
             Expanded(
@@ -374,19 +515,6 @@ class MyCustomFormState extends State<MyCustomForm> {
             )),
           ]),
           Row(children: [
-            // FMC field
-            Expanded(
-                child: TextField(
-              controller: fmcContoller,
-              decoration:
-                  const InputDecoration(labelText: "Foliar Moisture Content"),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                if (double.tryParse(value) != null) {
-                  _onFMCChanged(double.parse(value));
-                }
-              },
-            )),
             // CC Field
             Expanded(
                 child: TextField(
@@ -401,66 +529,11 @@ class MyCustomFormState extends State<MyCustomForm> {
             ))
           ]),
 
-          Row(children: [
-            // SFC field
-            Expanded(
-                child: TextField(
-              controller: sfcController,
-              decoration: const InputDecoration(
-                  labelText: "Surface Fuel Consumption (kg/m^2)"),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                if (double.tryParse(value) != null) {
-                  _onSFCChanged(double.parse(value));
-                }
-              },
-            )),
-            // PC field
-            Expanded(
-                child: TextField(
-              controller: pcController,
-              decoration: const InputDecoration(labelText: "Percent Conifer"),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                if (double.tryParse(value) != null) {
-                  _onPCChanged(double.parse(value));
-                }
-              },
-            ))
-          ]),
-          // PDF field
-          Row(children: [
-            Expanded(
-                child: TextField(
-              controller: pdfController,
-              decoration:
-                  const InputDecoration(labelText: "Percent Dead Balsam Fir"),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                if (double.tryParse(value) != null) {
-                  _onPDFChanged(double.parse(value));
-                }
-              },
-            )),
-            // CBH field
-            Expanded(
-                child: TextField(
-              controller: cbhController,
-              decoration:
-                  const InputDecoration(labelText: "Crown to base height (m)"),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                if (double.tryParse(value) != null) {
-                  _onCBHChanged(double.parse(value));
-                }
-              },
-            ))
-          ]),
-          Text('Rate of spread: ${_calculateRateOfSpread()} (m/min)'),
-          Text('Head fire intensity: ${_calculateHeadFireIntensity()} (kW/m)'),
-          Text(
-              // ignore: unnecessary_brace_in_string_interps
-              'fuel: ${fuelType}, isi: ${_isi}, bui: ${_bui}, fmc: ${_fmc}, sfc: ${_sfc}, pc: ${_pc}, pdf: ${_pdf}, cc: ${_cc}, cbh: ${_cbh}')
+          Text('Rate of spread: ${ros} (m/min)'),
+          Text('Head fire intensity: ${hfi} (kW/m)'),
+          // Text(
+          //     // ignore: unnecessary_brace_in_string_interps
+          //     'fuel: ${fuelType}, isi: ${_isi}, bui: ${_bui}, fmc: ${_fmc}, sfc: ${_sfc}, pc: ${_pc}, pdf: ${_pdf}, cc: ${_cc}, cbh: ${_cbh}, cfl: ${_cfl}'),
 
           // TextFormField(
           //   // The validator receives the text that the user has entered.
