@@ -2,8 +2,8 @@
 
 import 'dart:math';
 
-import 'package:flutter_application_1/cffdrs/BEcalc.dart';
-import 'package:flutter_application_1/cffdrs/CFBcalc.dart';
+import 'BEcalc.dart';
+import 'CFBcalc.dart';
 
 double C6calc(
     String FUELTYPE, double ISI, double BUI, double FMC, double SFC, double CBH,

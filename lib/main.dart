@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_application_1/cffdrs/FMCcalc.dart';
-import 'package:flutter_application_1/cffdrs/ROScalc.dart';
-import 'package:flutter_application_1/cffdrs/FIcalc.dart';
-import 'package:flutter_application_1/cffdrs/Slopecalc.dart';
-import 'package:flutter_application_1/cffdrs/TFCcalc.dart';
-import 'package:flutter_application_1/cffdrs/CFBcalc.dart';
-import 'package:flutter_application_1/cffdrs/SFCcalc.dart';
-import 'package:flutter_application_1/cffdrs/ISIcalc.dart';
+import 'cffdrs/FMCcalc.dart';
+import 'cffdrs/ROScalc.dart';
+import 'cffdrs/FIcalc.dart';
+import 'cffdrs/Slopecalc.dart';
+import 'cffdrs/TFCcalc.dart';
+import 'cffdrs/CFBcalc.dart';
+import 'cffdrs/SFCcalc.dart';
+import 'cffdrs/ISIcalc.dart';
 
 void main() => runApp(const MyApp());
 
@@ -69,6 +69,9 @@ class MyCustomFormState extends State<MyCustomForm> {
   double _longitude = 0;
   double _elevation = 0;
   double _ws = 0;
+  double _waz = 0;
+  double _gs = 0;
+  double _saz = 0;
 
   bool _expanded = false;
 
@@ -213,6 +216,25 @@ class MyCustomFormState extends State<MyCustomForm> {
     });
   }
 
+  void _onGSChanged(double gs) {
+    setState(() {
+      _gs = gs;
+    });
+  }
+
+  void _onSAZChanged(double saz) {
+    setState(() {
+      _saz = saz;
+    });
+  }
+
+  void _onWAZChanged(double waz) {
+    print('_onWAZChanged ${waz}');
+    setState(() {
+      _waz = waz;
+    });
+  }
+
   void _onWSChanged(double ws) {
     setState(() {
       _ws = ws;
@@ -290,6 +312,9 @@ class MyCustomFormState extends State<MyCustomForm> {
   final _latitudeController = TextEditingController();
   final _longitudeController = TextEditingController();
   final _elevationController = TextEditingController();
+  final _wazController = TextEditingController();
+  final _gsController = TextEditingController();
+  final _sazController = TextEditingController();
 
   // double ros = _calculateRateOfSpread()
 
@@ -306,6 +331,9 @@ class MyCustomFormState extends State<MyCustomForm> {
     _latitudeController.text = _latitude.toString();
     _longitudeController.text = _longitude.toString();
     _elevationController.text = _elevation.toString();
+    _wazController.text = _waz.toString();
+    _gsController.text = _gs.toString();
+    _sazController.text = _saz.toString();
     super.initState();
   }
 
@@ -321,6 +349,9 @@ class MyCustomFormState extends State<MyCustomForm> {
     cbhController.dispose();
     _cflController.dispose();
     _ffmcController.dispose();
+    _wazController.dispose();
+    _gsController.dispose();
+    _sazController.dispose();
     super.dispose();
   }
 
@@ -334,10 +365,6 @@ class MyCustomFormState extends State<MyCustomForm> {
     double? sfc;
     double? fmc;
     try {
-      // TODO: you were here!
-      // double WAZ = 0.0; // TODO: Wind Azimuth
-      // double GS = 0.0; //
-      // Slopecalc(fuelType, _ffmc, _bui, _ws, WAZ, GS, SAZ, FMC, SFC, PC, PDF, CC, CBH, ISI)
       print('ffmc: $_ffmc');
       print('day of year: ${getDayOfYear()}');
       fmc = FMCcalc(_latitude, _longitude < 0 ? -_longitude : _longitude,
@@ -347,6 +374,14 @@ class MyCustomFormState extends State<MyCustomForm> {
       print('sfc: ${sfc}');
       isi = ISIcalc(_ffmc, _ws);
       print('isi: ${isi}');
+      // TODO: you were here!
+      // Calculate the WSV (net effective wind speed)
+      // TODO: look at: R/FBPcalc.r - there's all manner of adjustments you
+      // have to make to WAZ, SAZ etc.
+      double wsv = Slopecalc(fuelType, _ffmc, _bui, _ws, _waz, _gs, _saz, fmc,
+          sfc, _pc, _pdf, _cc, _cbh, isi,
+          output: "WSV");
+      print('wsv: ${wsv}');
       ros = ROScalc(fuelType, isi, _bui, fmc, sfc, _pc, _pdf, _cc, _cbh);
       print('ros: $ros');
       cfb = CFBcalc(fuelType, fmc, sfc, ros, _cbh ?? 0);
@@ -502,6 +537,46 @@ class MyCustomFormState extends State<MyCustomForm> {
                 }
               },
             )),
+            // Wind Azimuth
+            Expanded(
+                child: TextField(
+              controller: _wazController,
+              decoration: const InputDecoration(labelText: "Wind Azimuth"),
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                if (double.tryParse(value) != null) {
+                  _onWAZChanged(double.parse(value));
+                }
+              },
+            )),
+            // Ground Slope
+            Expanded(
+                child: TextField(
+              controller: _gsController,
+              decoration: const InputDecoration(labelText: "Ground Slope (%)"),
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                if (double.tryParse(value) != null) {
+                  _onGSChanged(double.parse(value));
+                }
+              },
+            )),
+          ]),
+          Row(children: [
+            // SAZ field
+            Expanded(
+                child: TextField(
+              controller: _sazController,
+              decoration: const InputDecoration(labelText: "Slope Azimuth"),
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                if (double.tryParse(value) != null) {
+                  _onSAZChanged(double.parse(value));
+                }
+              },
+            )),
+          ]),
+          Row(children: [
             // BUI field
             Expanded(
                 child: TextField(
@@ -514,8 +589,6 @@ class MyCustomFormState extends State<MyCustomForm> {
                 }
               },
             )),
-          ]),
-          Row(children: [
             // CC Field
             Expanded(
                 child: TextField(

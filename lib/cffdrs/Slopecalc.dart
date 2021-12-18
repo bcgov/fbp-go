@@ -1,8 +1,8 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:math';
-import 'package:flutter_application_1/cffdrs/ISIcalc.dart';
-import 'package:flutter_application_1/cffdrs/ROScalc.dart';
+import 'ISIcalc.dart';
+import 'ROScalc.dart';
 
 double Slopecalc(
     String fuelType,
@@ -14,10 +14,10 @@ double Slopecalc(
     double SAZ,
     double FMC,
     double SFC,
-    double PC,
-    double PDF,
+    double? PC,
+    double? PDF,
     double CC,
-    double CBH,
+    double? CBH,
     double ISI,
     {String output = "RAZ"}) {
   /*
@@ -212,6 +212,9 @@ double Slopecalc(
       ISF_D1 < -log(0.01) / (-b[d1Index]);
     }
     // #Eq. 42a (Wotton 2009) - Calculate weighted average for the M1/M2 types
+    if (PC == null) {
+      throw Exception("PC is null");
+    }
     ISF = PC / 100 * ISF_C2 + (1 - PC / 100) * ISF_D1;
   }
   // #Set % Dead Balsam Fir to 100%
@@ -253,6 +256,9 @@ double Slopecalc(
       ISF_D1 = log(0.01) / (-b[d1Index]);
     }
     // #Eq. 42b (Wotton 2009) - Calculate weighted average for the M3 type
+    if (PDF == null) {
+      throw Exception("PDF is null");
+    }
     ISF = PDF / 100 * ISF_M3 + (1 - PDF / 100) * ISF_D1;
   }
   // #Surface spread rate with 0 wind on level ground, using M4
@@ -290,6 +296,9 @@ double Slopecalc(
       ISF_D1 = log(0.01) / (-b[d1Index]);
     }
     // #Eq. 42c (Wotton 2009) - Calculate weighted average for the M4 type
+    if (PDF == null) {
+      throw Exception("PDF is null");
+    }
     ISF = PDF / 100 * ISF_M4 + (1 - PDF / 100.0) * ISF_D1;
   }
 
