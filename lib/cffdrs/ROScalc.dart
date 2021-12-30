@@ -3,7 +3,7 @@
 import 'dart:math';
 
 import 'C6calc.dart';
-import 'BEcalc.dart';
+import 'be_calc.dart';
 
 double ROScalc(String fuelType, double ISI, double BUI, double FMC, double SFC,
     double? PC, double? PDF, double CC, double? CBH) {

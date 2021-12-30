@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+// import 'package:flutter/scheduler.dart';
+import 'package:geolocator/geolocator.dart';
 import 'cffdrs/FMCcalc.dart';
 import 'cffdrs/ROScalc.dart';
 import 'cffdrs/FIcalc.dart';
@@ -15,6 +16,29 @@ int getDayOfYear() {
   final now = DateTime.now();
   final diff = now.difference(DateTime(now.year, 1, 1, 0, 0));
   return diff.inDays;
+}
+
+String azimuthToCompassPoint(double azimuth) {
+  final values = [
+    'N',
+    'NNE',
+    'NE',
+    'ENE',
+    'E',
+    'ESE',
+    'SE',
+    'SSE',
+    'S',
+    'SSW',
+    'SW',
+    'WSW',
+    'W',
+    'WNW',
+    'NW',
+    'NNW',
+    'N'
+  ];
+  return values[(azimuth / 22.5).floor()];
 }
 
 class MyApp extends StatelessWidget {
@@ -312,9 +336,6 @@ class MyCustomFormState extends State<MyCustomForm> {
   final _latitudeController = TextEditingController();
   final _longitudeController = TextEditingController();
   final _elevationController = TextEditingController();
-  final _wazController = TextEditingController();
-  final _gsController = TextEditingController();
-  final _sazController = TextEditingController();
 
   // double ros = _calculateRateOfSpread()
 
@@ -331,10 +352,26 @@ class MyCustomFormState extends State<MyCustomForm> {
     _latitudeController.text = _latitude.toString();
     _longitudeController.text = _longitude.toString();
     _elevationController.text = _elevation.toString();
-    _wazController.text = _waz.toString();
-    _gsController.text = _gs.toString();
-    _sazController.text = _saz.toString();
     super.initState();
+    _getPosition().then((position) {
+      setState(() {
+        print('setState ${position.latitude} ${position.longitude}');
+        _latitude = position.latitude;
+        _longitude = position.longitude;
+        _elevation = position.altitude;
+        _latitudeController.text = _latitude.toStringAsFixed(3);
+        _longitudeController.text = _longitude.toStringAsFixed(3);
+        _elevationController.text = _elevation.toStringAsFixed(3);
+      });
+    });
+  }
+
+  _getPosition() async {
+    print('calling _getPosition');
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    print('got position ${position}');
+    return position;
   }
 
   @override
@@ -349,9 +386,6 @@ class MyCustomFormState extends State<MyCustomForm> {
     cbhController.dispose();
     _cflController.dispose();
     _ffmcController.dispose();
-    _wazController.dispose();
-    _gsController.dispose();
-    _sazController.dispose();
     super.dispose();
   }
 
@@ -372,24 +406,32 @@ class MyCustomFormState extends State<MyCustomForm> {
       print('fmc: $fmc');
       sfc = SFCcalc(fuelType, _ffmc, _bui, _pc, _cc);
       print('sfc: ${sfc}');
-      isi = ISIcalc(_ffmc, _ws);
-      print('isi: ${isi}');
-      // TODO: you were here!
-      // Calculate the WSV (net effective wind speed)
-      // TODO: look at: R/FBPcalc.r - there's all manner of adjustments you
-      // have to make to WAZ, SAZ etc.
-      double wsv = Slopecalc(fuelType, _ffmc, _bui, _ws, _waz, _gs, _saz, fmc,
-          sfc, _pc, _pdf, _cc, _cbh, isi,
-          output: "WSV");
-      print('wsv: ${wsv}');
+      isi = 0;
+      if (_gs > 0 && _ffmc > 0) {
+        // Calculate the net effective windspeed (WSV)
+        double wsv = Slopecalc(fuelType, _ffmc, _bui, _ws, _waz, _gs, _saz, fmc,
+            sfc, _pc, _pdf, _cc, _cbh, isi,
+            output: "WSV");
+        print('wsv: ${wsv}');
+        // Calculate the net effective wind direction (RAZ)
+        double raz = Slopecalc(fuelType, _ffmc, _bui, _ws, _waz, _gs, _saz, fmc,
+            sfc, _pc, _pdf, _cc, _cbh, isi,
+            output: "RAZ");
+        print('raz: ${raz} (net effective wind direction)');
+        isi = ISIcalc(_ffmc, wsv, fbpMod: true);
+        print('isi: ${isi}');
+      } else {
+        isi = ISIcalc(_ffmc, _ws);
+        print('isi: ${isi}');
+      }
       ros = ROScalc(fuelType, isi, _bui, fmc, sfc, _pc, _pdf, _cc, _cbh);
       print('ros: $ros');
       cfb = CFBcalc(fuelType, fmc, sfc, ros, _cbh ?? 0);
-      print('cfb: {$cfb}');
+      print('cfb: $cfb');
       fc = TFCcalc(fuelType, _cfl, cfb, sfc, _pc, _pdf);
-      print('fc: {$fc}');
+      print('fc: $fc');
       hfi = FIcalc(fc, ros);
-      print('hfi: {$hfi}');
+      print('hfi: $hfi');
     } catch (e) {
       print('error $e');
     }
@@ -428,7 +470,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                 headerBuilder: (context, isExpanded) {
                   return const ListTile(
                     title: Text(
-                      'Detail',
+                      'Custom',
                       style: TextStyle(color: Colors.black),
                     ),
                   );
@@ -537,42 +579,53 @@ class MyCustomFormState extends State<MyCustomForm> {
                 }
               },
             )),
-            // Wind Azimuth
+          ]),
+          // Wind Azimuth
+          Row(children: [
             Expanded(
-                child: TextField(
-              controller: _wazController,
-              decoration: const InputDecoration(labelText: "Wind Azimuth"),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                if (double.tryParse(value) != null) {
-                  _onWAZChanged(double.parse(value));
-                }
-              },
-            )),
-            // Ground Slope
+                child: Text(
+                    'Wind Azimith: ${azimuthToCompassPoint(_waz)} ${_waz.toString()}\u00B0')),
             Expanded(
-                child: TextField(
-              controller: _gsController,
-              decoration: const InputDecoration(labelText: "Ground Slope (%)"),
-              keyboardType: TextInputType.number,
+                child: Slider(
+              value: _waz,
+              min: 0,
+              max: 360,
+              divisions: 16,
+              label: '${azimuthToCompassPoint(_waz)} ${_waz}\u00B0',
               onChanged: (value) {
-                if (double.tryParse(value) != null) {
-                  _onGSChanged(double.parse(value));
-                }
+                _onWAZChanged(value);
               },
             )),
           ]),
+          // Ground Slope
           Row(children: [
-            // SAZ field
+            Expanded(child: Text('Ground Slope: ${_gs.floor()}%')),
             Expanded(
-                child: TextField(
-              controller: _sazController,
-              decoration: const InputDecoration(labelText: "Slope Azimuth"),
-              keyboardType: TextInputType.number,
+                child: Slider(
+              value: _gs,
+              min: 0,
+              max: 90,
+              divisions: 90,
+              label: '${_gs.floor()}%',
               onChanged: (value) {
-                if (double.tryParse(value) != null) {
-                  _onSAZChanged(double.parse(value));
-                }
+                _onGSChanged(value);
+              },
+            )),
+          ]),
+          // Slope Azimith
+          Row(children: [
+            Expanded(
+                child: Text(
+                    'Slope Azimith: ${azimuthToCompassPoint(_saz)} ${_saz.toString()}\u00B0')),
+            Expanded(
+                child: Slider(
+              value: _saz,
+              min: 0,
+              max: 360,
+              divisions: 16,
+              label: '${azimuthToCompassPoint(_saz)} ${_saz.toString()}\u00B0',
+              onChanged: (value) {
+                _onSAZChanged(value);
               },
             )),
           ]),

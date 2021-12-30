@@ -2,7 +2,7 @@
 
 import 'dart:math';
 
-import 'BEcalc.dart';
+import 'be_calc.dart';
 import 'CFBcalc.dart';
 
 double C6calc(
