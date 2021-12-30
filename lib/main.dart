@@ -398,6 +398,20 @@ class MyCustomFormState extends State<MyCustomForm> {
 
   // double ros = _calculateRateOfSpread()
 
+  void _updatePosition() {
+    _getPosition().then((position) {
+      setState(() {
+        print('setState ${position.latitude} ${position.longitude}');
+        _latitude = position.latitude;
+        _longitude = position.longitude;
+        _elevation = position.altitude;
+        _latitudeController.text = _latitude.toStringAsFixed(3);
+        _longitudeController.text = _longitude.toStringAsFixed(3);
+        _elevationController.text = _elevation.toStringAsFixed(3);
+      });
+    });
+  }
+
   @override
   void initState() {
     _onPresetChanged(_presets[0]);
@@ -410,17 +424,7 @@ class MyCustomFormState extends State<MyCustomForm> {
     _longitudeController.text = _longitude.toString();
     _elevationController.text = _elevation.toString();
     super.initState();
-    _getPosition().then((position) {
-      setState(() {
-        print('setState ${position.latitude} ${position.longitude}');
-        _latitude = position.latitude;
-        _longitude = position.longitude;
-        _elevation = position.altitude;
-        _latitudeController.text = _latitude.toStringAsFixed(3);
-        _longitudeController.text = _longitude.toStringAsFixed(3);
-        _elevationController.text = _elevation.toStringAsFixed(3);
-      });
-    });
+    _updatePosition();
   }
 
   _getPosition() async {
@@ -669,6 +673,12 @@ class MyCustomFormState extends State<MyCustomForm> {
                 }
               },
             )),
+            Expanded(
+                child: IconButton(
+                    icon: const Icon(Icons.my_location),
+                    onPressed: () {
+                      _updatePosition();
+                    }))
           ]),
           // Wind Speed
           Row(children: [
