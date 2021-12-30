@@ -1,14 +1,17 @@
+import 'package:fire_behaviour_app/fire.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/scheduler.dart';
 import 'package:geolocator/geolocator.dart';
-import 'cffdrs/FMCcalc.dart';
-import 'cffdrs/ROScalc.dart';
-import 'cffdrs/FIcalc.dart';
-import 'cffdrs/Slopecalc.dart';
-import 'cffdrs/TFCcalc.dart';
-import 'cffdrs/CFBcalc.dart';
-import 'cffdrs/SFCcalc.dart';
-import 'cffdrs/ISIcalc.dart';
+import 'cffdrs/b_ros_calc.dart';
+import 'cffdrs/fmc_calc.dart';
+import 'cffdrs/lb_calc.dart';
+import 'cffdrs/ros_calc.dart';
+import 'cffdrs/fi_calc.dart';
+import 'cffdrs/slope_calc.dart';
+import 'cffdrs/tfc_calc.dart';
+import 'cffdrs/cfb_calc.dart';
+import 'cffdrs/sfc_calc.dart';
+import 'cffdrs/isi_calc.dart';
 
 void main() => runApp(const MyApp());
 
@@ -158,6 +161,7 @@ class MyCustomFormState extends State<MyCustomForm> {
   double _waz = 0;
   double _gs = 0;
   double _saz = 0;
+  double _t = 60;
 
   bool _expanded = false;
 
@@ -387,6 +391,12 @@ class MyCustomFormState extends State<MyCustomForm> {
     });
   }
 
+  void _onTChanged(double t) {
+    setState(() {
+      _t = t;
+    });
+  }
+
   final ccController = TextEditingController();
   final pcController = TextEditingController();
   final pdfController = TextEditingController();
@@ -460,6 +470,10 @@ class MyCustomFormState extends State<MyCustomForm> {
     double? fc;
     double? sfc;
     double? fmc;
+    double? wsv;
+    double? lb_ratio;
+    double? bros;
+    double? fireSize;
     String fireDescription = '';
     int? intensityClass;
     try {
@@ -473,8 +487,8 @@ class MyCustomFormState extends State<MyCustomForm> {
       isi = 0;
       if (_gs > 0 && _ffmc > 0) {
         // Calculate the net effective windspeed (WSV)
-        double wsv = Slopecalc(fuelType, _ffmc, _bui, _ws, _waz, _gs, _saz, fmc,
-            sfc, _pc, _pdf, _cc, _cbh, isi,
+        wsv = Slopecalc(fuelType, _ffmc, _bui, _ws, _waz, _gs, _saz, fmc, sfc,
+            _pc, _pdf, _cc, _cbh, isi,
             output: "WSV");
         print('wsv: ${wsv}');
         // Calculate the net effective wind direction (RAZ)
@@ -498,8 +512,15 @@ class MyCustomFormState extends State<MyCustomForm> {
       print('hfi: $hfi');
       intensityClass = getHeadFireIntensityClass(hfi);
       print('intensityClass: $intensityClass');
-
       fireDescription = getFireType(fuelType, cfb);
+      print('fire description: $fireDescription');
+      lb_ratio = LBcalc(fuelType, wsv ?? _ws);
+      print('lb_ratio: $lb_ratio');
+      bros = BROScalc(
+          fuelType, _ffmc, _bui, wsv ?? _ws, fmc, sfc, _pc, _pdf, _cc, _cbh);
+      print('bros: $bros');
+      fireSize = getFireSize(fuelType, ros, bros, _t, cfb, lb_ratio);
+      print('fireSize: $fireSize');
     } catch (e) {
       print('error $e');
     }
@@ -787,6 +808,21 @@ class MyCustomFormState extends State<MyCustomForm> {
               },
             )),
           ]),
+          // Ellapsed time
+          Row(children: [
+            Expanded(child: Text('Time ellapsed: ${_t.toInt()} minutes')),
+            Expanded(
+                child: Slider(
+              value: _t,
+              min: 0,
+              max: 120,
+              divisions: 12,
+              label: '${_t.toInt()} minutes',
+              onChanged: (value) {
+                _onTChanged(value);
+              },
+            )),
+          ]),
           Row(children: [
             const Expanded(child: Text('Initial Spread Index')),
             Expanded(
@@ -832,6 +868,22 @@ class MyCustomFormState extends State<MyCustomForm> {
           Row(children: [
             const Expanded(child: Text('Type of fire')),
             Expanded(child: Text(fireDescription))
+          ]),
+          Row(children: [
+            Expanded(child: Text('${_t.toStringAsFixed(0)} minute fire size')),
+            Expanded(child: Text('${fireSize?.toStringAsFixed(0)} (ha)'))
+          ]),
+          Row(children: [
+            const Expanded(child: Text('Back rate of spread')),
+            Expanded(child: Text('${bros?.toStringAsFixed(0)} (m/min)'))
+          ]),
+          Row(children: [
+            const Expanded(child: Text('Length to breadth ratio')),
+            Expanded(child: Text('${lb_ratio?.toStringAsFixed(2)}'))
+          ]),
+          Row(children: [
+            const Expanded(child: Text('Net effective wind speed')),
+            Expanded(child: Text('${wsv?.toStringAsFixed(0)} (km/h)'))
           ]),
           // Text('Initial Spread Index: ${isi?.toStringAsFixed(0)}'),
           // Text('Foliar Moisture Content: ${fmc?.toStringAsFixed(0)}'),
