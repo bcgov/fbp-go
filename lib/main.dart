@@ -18,6 +18,68 @@ int getDayOfYear() {
   return diff.inDays;
 }
 
+int getHeadFireIntensityClass(double headFireIntensity) {
+  if (headFireIntensity < 10) {
+    return 1;
+  } else if (headFireIntensity < 500) {
+    return 2;
+  } else if (headFireIntensity < 2000) {
+    return 3;
+  } else if (headFireIntensity < 4000) {
+    return 4;
+  } else if (headFireIntensity < 10000) {
+    return 5;
+  }
+  return 6;
+}
+
+Color getIntensityClassColor(int? intensityClass) {
+  switch (intensityClass) {
+    case 1:
+      return Colors.blueGrey.shade700;
+    case 2:
+      return Colors.blueGrey.shade500;
+    case 3:
+      return Colors.blueGrey.shade200;
+    case 4:
+      return Colors.red.shade200;
+    case 5:
+      return Colors.red;
+    case 6:
+      return Colors.red.shade700;
+    default:
+      throw Exception('Invalid intensity class');
+  }
+}
+
+String getFireType(String fuelType, double crownFractionBurned) {
+  /*
+    Returns Fire Type (as FireTypeEnum) based on percentage Crown Fraction Burned (CFB).
+    These definitions come from the Red Book (p.69).
+    Abbreviations for fire types have been taken from the red book (p.9).
+
+    CROWN FRACTION BURNED           TYPE OF FIRE                ABBREV.
+    < 10%                           Surface fire                SUR
+    10-89%                          Intermittent crown fire     IC
+    > 90%                           Continuous crown fire       CC
+    */
+  if (["D1", "O1A", "O1B", "S1", "S2", "S3"].contains(fuelType)) {
+    // From red book "crown fires are not expected in deciduous fuel types but high intensity surface fires
+    // can occur.
+    return "Surface fire";
+  }
+  // crown fraction burnt is a floating point number from 0 to 1 inclusive.
+  else if (crownFractionBurned < 0.1) {
+    return "Surface fire";
+  } else if (crownFractionBurned < 0.9) {
+    return "Intermittent crown fire";
+  } else if (crownFractionBurned >= 0.9) {
+    return "Continuous crown fire";
+  }
+  throw Exception(
+      "Cannot calculate fire type. Invalid Crown Fraction Burned percentage received.");
+}
+
 String azimuthToCompassPoint(double azimuth) {
   final values = [
     'N',
@@ -82,17 +144,17 @@ class MyCustomFormState extends State<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
   String? _fuelType;
   FuelTypeStruct? _preset;
-  double _bui = 0;
-  double _ffmc = 0;
+  double _bui = 50;
+  double _ffmc = 77;
   double? _pc = 0;
   double? _pdf = 0;
-  double _cc = 0;
+  double _cc = 50;
   double? _cbh = 0;
   double _cfl = 0;
-  double _latitude = 0;
-  double _longitude = 0;
-  double _elevation = 0;
-  double _ws = 0;
+  double _latitude = 37;
+  double _longitude = -122;
+  double _elevation = 5;
+  double _ws = 5;
   double _waz = 0;
   double _gs = 0;
   double _saz = 0;
@@ -100,45 +162,6 @@ class MyCustomFormState extends State<MyCustomForm> {
   bool _expanded = false;
 
   final _presetState = GlobalKey<FormFieldState>();
-
-  FuelTypeStruct? get preset {
-    return _preset;
-  }
-
-  set preset(FuelTypeStruct? value) {
-    _preset = value;
-  }
-
-  final _fuelTypeState = GlobalKey<FormFieldState>();
-
-  String get fuelType {
-    return _fuelType ?? '';
-  }
-
-  set fuelType(String fuelType) {
-    _fuelType = fuelType;
-  }
-
-  final List<String> _fuelTypes = [
-    'C1',
-    'C2',
-    'C3',
-    'C4',
-    'C5',
-    'C6',
-    'C7',
-    'D1',
-    'D2',
-    'M1',
-    'M2',
-    'M3',
-    'M4',
-    'S1',
-    'S2',
-    'S3',
-    'O1A',
-    'O1B'
-  ];
 
   final List<FuelTypeStruct> _presets = [
     FuelTypeStruct('C1', 'C-1 spruce-lichen woodland',
@@ -194,6 +217,45 @@ class MyCustomFormState extends State<MyCustomForm> {
     FuelTypeStruct('S2', 'S-2 white spruce/balsam slash', cfl: 1.0),
     FuelTypeStruct('S3', 'S-3 coastal cedar/hemlock/Douglas-fir slash',
         cfl: 1.0),
+  ];
+
+  FuelTypeStruct? get preset {
+    return _preset;
+  }
+
+  set preset(FuelTypeStruct? value) {
+    _preset = value;
+  }
+
+  final _fuelTypeState = GlobalKey<FormFieldState>();
+
+  String get fuelType {
+    return _fuelType ?? '';
+  }
+
+  set fuelType(String fuelType) {
+    _fuelType = fuelType;
+  }
+
+  final List<String> _fuelTypes = [
+    'C1',
+    'C2',
+    'C3',
+    'C4',
+    'C5',
+    'C6',
+    'C7',
+    'D1',
+    'D2',
+    'M1',
+    'M2',
+    'M3',
+    'M4',
+    'S1',
+    'S2',
+    'S3',
+    'O1A',
+    'O1B'
   ];
 
   void setPreset(FuelTypeStruct preset) {
@@ -325,9 +387,6 @@ class MyCustomFormState extends State<MyCustomForm> {
     });
   }
 
-  final _wsController = TextEditingController();
-  final buiController = TextEditingController();
-  final _ffmcController = TextEditingController();
   final ccController = TextEditingController();
   final pcController = TextEditingController();
   final pdfController = TextEditingController();
@@ -341,14 +400,12 @@ class MyCustomFormState extends State<MyCustomForm> {
 
   @override
   void initState() {
-    _wsController.text = _ws.toString();
-    buiController.text = _bui.toString();
+    _onPresetChanged(_presets[0]);
     ccController.text = _cc.toString();
     pcController.text = _pc.toString();
     pdfController.text = _pdf.toString();
     cbhController.text = _cbh.toString();
     _cflController.text = _cfl.toString();
-    _ffmcController.text = _ffmc.toString();
     _latitudeController.text = _latitude.toString();
     _longitudeController.text = _longitude.toString();
     _elevationController.text = _elevation.toString();
@@ -378,14 +435,11 @@ class MyCustomFormState extends State<MyCustomForm> {
   void dispose() {
     // Clean up the controller when the widget is removed from the
     // widget tree.
-    _wsController.dispose();
-    buiController.dispose();
     ccController.dispose();
     pcController.dispose();
     pdfController.dispose();
     cbhController.dispose();
     _cflController.dispose();
-    _ffmcController.dispose();
     super.dispose();
   }
 
@@ -398,6 +452,8 @@ class MyCustomFormState extends State<MyCustomForm> {
     double? fc;
     double? sfc;
     double? fmc;
+    String fireDescription = '';
+    int? intensityClass;
     try {
       print('ffmc: $_ffmc');
       print('day of year: ${getDayOfYear()}');
@@ -432,6 +488,10 @@ class MyCustomFormState extends State<MyCustomForm> {
       print('fc: $fc');
       hfi = FIcalc(fc, ros);
       print('hfi: $hfi');
+      intensityClass = getHeadFireIntensityClass(hfi);
+      print('intensityClass: $intensityClass');
+
+      fireDescription = getFireType(fuelType, cfb);
     } catch (e) {
       print('error $e');
     }
@@ -446,6 +506,7 @@ class MyCustomFormState extends State<MyCustomForm> {
               Expanded(
                   child: DropdownButtonFormField(
                       isExpanded: true,
+                      value: _presets[0],
                       key: _presetState,
                       decoration: const InputDecoration(labelText: "Pre-sets"),
                       items: _presets.map((FuelTypeStruct value) {
@@ -566,17 +627,57 @@ class MyCustomFormState extends State<MyCustomForm> {
               setState(() {});
             },
           )),
+          // lat, long, elevation
           Row(children: [
-            // Wind Speed
+            // latitude Field
             Expanded(
                 child: TextField(
-              controller: _wsController,
-              decoration: const InputDecoration(labelText: "Wind Speed (km/h)"),
+              controller: _latitudeController,
+              decoration: const InputDecoration(labelText: "Latitude"),
               keyboardType: TextInputType.number,
               onChanged: (value) {
                 if (double.tryParse(value) != null) {
-                  _onWSChanged(double.parse(value));
+                  _onLatitudeChanged(double.parse(value));
                 }
+              },
+            )),
+            // longitude Field
+            Expanded(
+                child: TextField(
+              controller: _longitudeController,
+              decoration: const InputDecoration(labelText: "Longitude"),
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                if (double.tryParse(value) != null) {
+                  _onLongitudeChanged(double.parse(value));
+                }
+              },
+            )),
+            // elevation Field
+            Expanded(
+                child: TextField(
+              controller: _elevationController,
+              decoration: const InputDecoration(labelText: "Elevation"),
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                if (double.tryParse(value) != null) {
+                  _onElevationChanged(double.parse(value));
+                }
+              },
+            )),
+          ]),
+          // Wind Speed
+          Row(children: [
+            Expanded(child: Text('Wind Speed (km/h) ${_ws.toInt()}')),
+            Expanded(
+                child: Slider(
+              value: _ws,
+              min: 0,
+              max: 100,
+              divisions: 100,
+              label: '${_ws.toInt()} km/h',
+              onChanged: (value) {
+                _onWSChanged(value);
               },
             )),
           ]),
@@ -630,93 +731,113 @@ class MyCustomFormState extends State<MyCustomForm> {
             )),
           ]),
           Row(children: [
-            // BUI field
+            Expanded(child: Text('Buildup Index: ${_bui.toInt()}')),
             Expanded(
-                child: TextField(
-              controller: buiController,
-              decoration: const InputDecoration(labelText: "Buildup Index"),
-              keyboardType: TextInputType.number,
+                child: Slider(
+              value: _bui,
+              min: 0,
+              max: 200,
+              divisions: 200,
+              label: '${_bui.toInt()}',
               onChanged: (value) {
-                if (double.tryParse(value) != null) {
-                  _onBUIChanged(double.parse(value));
-                }
+                _onBUIChanged(value);
               },
             )),
-            // CC Field
-            Expanded(
-                child: TextField(
-              controller: ccController,
-              decoration: const InputDecoration(labelText: "Curing"),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                if (double.tryParse(value) != null) {
-                  _onCCChanged(double.parse(value));
-                }
-              },
-            )),
-            // FFMC Field
-            Expanded(
-                child: TextField(
-              controller: _ffmcController,
-              decoration:
-                  const InputDecoration(labelText: "Fine Fuel Moisture Code"),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                if (double.tryParse(value) != null) {
-                  _onFFMCChanged(double.parse(value));
-                }
-              },
-            ))
           ]),
-          // lat, long, elevation
           Row(children: [
-            // latitude Field
+            Expanded(child: Text('Curing: ${_cc.toInt()}%')),
             Expanded(
-                child: TextField(
-              controller: _latitudeController,
-              decoration: const InputDecoration(labelText: "Latitude"),
-              keyboardType: TextInputType.number,
+                child: Slider(
+              value: _cc,
+              min: 0,
+              max: 100,
+              divisions: 100,
+              label: '${_cc.toInt()}%',
               onChanged: (value) {
-                if (double.tryParse(value) != null) {
-                  _onLatitudeChanged(double.parse(value));
-                }
-              },
-            )),
-            // longitude Field
-            Expanded(
-                child: TextField(
-              controller: _longitudeController,
-              decoration: const InputDecoration(labelText: "Longitude"),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                if (double.tryParse(value) != null) {
-                  _onLongitudeChanged(double.parse(value));
-                }
-              },
-            )),
-            // elevation Field
-            Expanded(
-                child: TextField(
-              controller: _elevationController,
-              decoration: const InputDecoration(labelText: "Elevation"),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                if (double.tryParse(value) != null) {
-                  _onElevationChanged(double.parse(value));
-                }
+                _onCCChanged(value);
               },
             )),
           ]),
-          Text('Initial Spread Index: ${isi}'),
-          Text('Foliar Moisture Content: ${fmc}'),
-          Text('Surface Fuel Consumption (kg/m^2): ${sfc}'),
-          Text('Crown fraction burned: ${cfb}'),
-          Text('Fuel Consumption (kg/m^2): ${fc}'),
-          Text('Rate of spread: ${ros} (m/min)'),
-          Text('Head fire intensity: ${hfi} (kW/m)'),
+          // FFMC
+          Row(children: [
+            Expanded(child: Text('Fine Fuel Moisture Code: ${_ffmc.toInt()}')),
+            Expanded(
+                child: Slider(
+              value: _ffmc,
+              min: 0,
+              max: 100,
+              divisions: 100,
+              label: '${_ffmc.toInt()}',
+              onChanged: (value) {
+                _onFFMCChanged(value);
+              },
+            )),
+          ]),
+          Row(children: [
+            const Expanded(child: Text('Initial Spread Index')),
+            Expanded(
+              child: Text('${isi?.toStringAsFixed(0)}'),
+            )
+          ]),
+          Row(children: [
+            const Expanded(child: Text('Foliar Moisture Content')),
+            Expanded(child: Text('${fmc?.toStringAsFixed(0)}'))
+          ]),
+          Row(children: [
+            const Expanded(child: Text('Surface Fuel Consumption')),
+            Expanded(child: Text('${sfc?.toStringAsFixed(0)} (kg/m^2)'))
+          ]),
+          Row(children: [
+            const Expanded(child: Text('Crown fraction burned')),
+            Expanded(
+                child: Text(
+                    '${(cfb == null ? 0.0 : cfb * 100).toStringAsFixed(0)} %'))
+          ]),
+          Row(children: [
+            const Expanded(child: Text('Fuel Consumption')),
+            Expanded(child: Text('${fc?.toStringAsFixed(0)} (kg/m^2)'))
+          ]),
+          Container(
+              color: getIntensityClassColor(intensityClass),
+              child: Row(children: [
+                const Expanded(child: Text('Rate of spread')),
+                Expanded(child: Text('${ros?.toStringAsFixed(0)} (m/min)')),
+              ])),
+          Container(
+              color: getIntensityClassColor(intensityClass),
+              child: Row(children: [
+                const Expanded(child: Text('Head fire intensity')),
+                Expanded(child: Text('${hfi?.toStringAsFixed(0)} (kW/m)')),
+              ])),
+          Container(
+              color: getIntensityClassColor(intensityClass),
+              child: Row(children: [
+                const Expanded(child: Text('Intensity class')),
+                Expanded(child: Text('$intensityClass')),
+              ])),
+          Row(children: [
+            const Expanded(child: Text('Type of fire')),
+            Expanded(child: Text(fireDescription))
+          ]),
+          // Text('Initial Spread Index: ${isi?.toStringAsFixed(0)}'),
+          // Text('Foliar Moisture Content: ${fmc?.toStringAsFixed(0)}'),
+          // Text('Surface Fuel Consumption (kg/m^2): ${sfc?.toStringAsFixed(0)}'),
+          // Text(
+          //     'Crown fraction burned: ${(cfb == null ? 0.0 : cfb * 100).toStringAsFixed(0)} %'),
+          // Text('Fuel Consumption (kg/m^2): ${fc?.toStringAsFixed(0)}'),
+          // Text('Rate of spread: ${ros?.toStringAsFixed(0)} (m/min)'),
+          // Text(
+          //   'Head fire intensity: ${hfi?.toStringAsFixed(0)} (kW/m)',
+          //   style: TextStyle(
+          //       backgroundColor: getIntensityClassColor(intensityClass!)),
+          // ),
+          // Text('Intensity class: $intensityClass',
+          //     style: TextStyle(
+          //         backgroundColor: getIntensityClassColor(intensityClass))),
+          // Text('Type of fire: $fireDescription')
           // Text(
           //     // ignore: unnecessary_brace_in_string_interps
-          //     'fuel: ${fuelType}, isi: ${_isi}, bui: ${_bui}, fmc: ${_fmc}, sfc: ${_sfc}, pc: ${_pc}, pdf: ${_pdf}, cc: ${_cc}, cbh: ${_cbh}, cfl: ${_cfl}'),
+          //     'fuel: ${fuelType}, bui: ${_bui}, fmc: ${_fmc}, sfc: ${_sfc}, pc: ${_pc}, pdf: ${_pdf}, cc: ${_cc}, cbh: ${_cbh}, cfl: ${_cfl}'),
         ],
       ),
     );
