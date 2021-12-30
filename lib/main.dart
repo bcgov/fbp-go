@@ -425,10 +425,14 @@ class MyCustomFormState extends State<MyCustomForm> {
 
   _getPosition() async {
     print('calling _getPosition');
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    print('got position ${position}');
-    return position;
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      print('got position ${position}');
+      return position;
+    } catch (e) {
+      print('error getting position ${e}');
+    }
   }
 
   @override

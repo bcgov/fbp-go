@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
-project(flutter_application_1 LANGUAGES CXX)
+project(fire_behaviour_app LANGUAGES CXX)
 
-set(BINARY_NAME "flutter_application_1")
+set(BINARY_NAME "fire_behaviour_app")
 
 cmake_policy(SET CMP0063 NEW)
 
