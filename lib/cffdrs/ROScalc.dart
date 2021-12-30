@@ -2,8 +2,8 @@
 
 import 'dart:math';
 
-import 'package:flutter_application_1/cffdrs/C6calc.dart';
-import 'package:flutter_application_1/cffdrs/BEcalc.dart';
+import 'C6calc.dart';
+import 'BEcalc.dart';
 
 double ROScalc(String fuelType, double ISI, double BUI, double FMC, double SFC,
     double? PC, double? PDF, double CC, double? CBH) {
