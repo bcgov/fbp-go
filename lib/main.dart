@@ -527,7 +527,8 @@ class MyCustomFormState extends State<MyCustomForm> {
     // Build a Form widget using the _formKey created above.
     return Form(
       key: _formKey,
-      child: Column(
+      child: SingleChildScrollView(
+          child: Column(
         children: <Widget>[
           // Presets
           Row(
@@ -553,8 +554,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                       }))
             ],
           ),
-          Container(
-              child: ExpansionPanelList(
+          ExpansionPanelList(
             children: [
               ExpansionPanel(
                 headerBuilder: (context, isExpanded) {
@@ -646,6 +646,22 @@ class MyCustomFormState extends State<MyCustomForm> {
                       },
                     ))
                   ]),
+                  // Ellapsed time
+                  Row(children: [
+                    Expanded(
+                        child: Text('Time ellapsed: ${_t.toInt()} minutes')),
+                    Expanded(
+                        child: Slider(
+                      value: _t,
+                      min: 0,
+                      max: 120,
+                      divisions: 12,
+                      label: '${_t.toInt()} minutes',
+                      onChanged: (value) {
+                        _onTChanged(value);
+                      },
+                    )),
+                  ]),
                 ]),
                 isExpanded: _expanded,
                 canTapOnHeader: true,
@@ -655,7 +671,7 @@ class MyCustomFormState extends State<MyCustomForm> {
               _expanded = !_expanded;
               setState(() {});
             },
-          )),
+          ),
           // lat, long, elevation
           Row(children: [
             // latitude Field
@@ -808,21 +824,6 @@ class MyCustomFormState extends State<MyCustomForm> {
               },
             )),
           ]),
-          // Ellapsed time
-          Row(children: [
-            Expanded(child: Text('Time ellapsed: ${_t.toInt()} minutes')),
-            Expanded(
-                child: Slider(
-              value: _t,
-              min: 0,
-              max: 120,
-              divisions: 12,
-              label: '${_t.toInt()} minutes',
-              onChanged: (value) {
-                _onTChanged(value);
-              },
-            )),
-          ]),
           Row(children: [
             const Expanded(child: Text('Initial Spread Index')),
             Expanded(
@@ -905,7 +906,7 @@ class MyCustomFormState extends State<MyCustomForm> {
           //     // ignore: unnecessary_brace_in_string_interps
           //     'fuel: ${fuelType}, bui: ${_bui}, fmc: ${_fmc}, sfc: ${_sfc}, pc: ${_pc}, pdf: ${_pdf}, cc: ${_cc}, cbh: ${_cbh}, cfl: ${_cfl}'),
         ],
-      ),
+      )),
     );
   }
 }
