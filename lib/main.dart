@@ -111,17 +111,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(title: 'Fire Behaviour Tool', home: HomePage());
+    return const MaterialApp(
+        title: 'Fire Behaviour Prediction', home: HomePage());
   }
 }
 
 // Define a custom Form widget.
-class MyCustomForm extends StatefulWidget {
-  const MyCustomForm({Key? key}) : super(key: key);
+class FireBehaviourPredictionForm extends StatefulWidget {
+  const FireBehaviourPredictionForm({Key? key}) : super(key: key);
 
   @override
-  MyCustomFormState createState() {
-    return MyCustomFormState();
+  FireBehaviourPredictionFormState createState() {
+    return FireBehaviourPredictionFormState();
   }
 }
 
@@ -138,7 +139,8 @@ class FuelTypeStruct {
 
 // Define a corresponding State class.
 // This class holds data related to the form.
-class MyCustomFormState extends State<MyCustomForm> {
+class FireBehaviourPredictionFormState
+    extends State<FireBehaviourPredictionForm> {
   // Create a global key that uniquely identifies the Form widget
   // and allows validation of the form.
   //
@@ -917,14 +919,10 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Fire Behaviour Tool'),
+          title: const Text('Fire Behaviour Prediction'),
         ),
         body: const Center(
-          child: MyCustomForm(),
-        )
-        // body: ListView(
-        //   children: [...demos.map((d) => DemoTile(demo: d))],
-        // ),
-        );
+          child: FireBehaviourPredictionForm(),
+        ));
   }
 }
