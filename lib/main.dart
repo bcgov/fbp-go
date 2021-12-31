@@ -3,15 +3,11 @@ import 'package:flutter/material.dart';
 // import 'package:flutter/scheduler.dart';
 import 'package:geolocator/geolocator.dart';
 import 'cffdrs/b_ros_calc.dart';
-import 'cffdrs/fmc_calc.dart';
+import 'cffdrs/fbp_calc.dart';
 import 'cffdrs/lb_calc.dart';
-import 'cffdrs/ros_calc.dart';
 import 'cffdrs/fi_calc.dart';
-import 'cffdrs/slope_calc.dart';
 import 'cffdrs/tfc_calc.dart';
 import 'cffdrs/cfb_calc.dart';
-import 'cffdrs/sfc_calc.dart';
-import 'cffdrs/isi_calc.dart';
 
 void main() => runApp(const MyApp());
 
@@ -19,21 +15,6 @@ int getDayOfYear() {
   final now = DateTime.now();
   final diff = now.difference(DateTime(now.year, 1, 1, 0, 0));
   return diff.inDays;
-}
-
-int getHeadFireIntensityClass(double headFireIntensity) {
-  if (headFireIntensity < 10) {
-    return 1;
-  } else if (headFireIntensity < 500) {
-    return 2;
-  } else if (headFireIntensity < 2000) {
-    return 3;
-  } else if (headFireIntensity < 4000) {
-    return 4;
-  } else if (headFireIntensity < 10000) {
-    return 5;
-  }
-  return 6;
 }
 
 Color getIntensityClassColor(int? intensityClass) {
@@ -53,57 +34,6 @@ Color getIntensityClassColor(int? intensityClass) {
     default:
       throw Exception('Invalid intensity class');
   }
-}
-
-String getFireType(String fuelType, double crownFractionBurned) {
-  /*
-    Returns Fire Type (as FireTypeEnum) based on percentage Crown Fraction Burned (CFB).
-    These definitions come from the Red Book (p.69).
-    Abbreviations for fire types have been taken from the red book (p.9).
-
-    CROWN FRACTION BURNED           TYPE OF FIRE                ABBREV.
-    < 10%                           Surface fire                SUR
-    10-89%                          Intermittent crown fire     IC
-    > 90%                           Continuous crown fire       CC
-    */
-  if (["D1", "O1A", "O1B", "S1", "S2", "S3"].contains(fuelType)) {
-    // From red book "crown fires are not expected in deciduous fuel types but high intensity surface fires
-    // can occur.
-    return "Surface fire";
-  }
-  // crown fraction burnt is a floating point number from 0 to 1 inclusive.
-  else if (crownFractionBurned < 0.1) {
-    return "Surface fire";
-  } else if (crownFractionBurned < 0.9) {
-    return "Intermittent crown fire";
-  } else if (crownFractionBurned >= 0.9) {
-    return "Continuous crown fire";
-  }
-  throw Exception(
-      "Cannot calculate fire type. Invalid Crown Fraction Burned percentage received.");
-}
-
-String azimuthToCompassPoint(double azimuth) {
-  final values = [
-    'N',
-    'NNE',
-    'NE',
-    'ENE',
-    'E',
-    'ESE',
-    'SE',
-    'SSE',
-    'S',
-    'SSW',
-    'SW',
-    'WSW',
-    'W',
-    'WNW',
-    'NW',
-    'NNW',
-    'N'
-  ];
-  return values[(azimuth / 22.5).floor()];
 }
 
 class MyApp extends StatelessWidget {
@@ -162,8 +92,9 @@ class FireBehaviourPredictionFormState
   double _ws = 5;
   double _waz = 0;
   double _gs = 0;
-  double _saz = 0;
+  double _aspect = 0;
   double _t = 60;
+  double _gfl = 0.35;
 
   bool _expanded = false;
 
@@ -224,6 +155,10 @@ class FireBehaviourPredictionFormState
     FuelTypeStruct('S3', 'S-3 coastal cedar/hemlock/Douglas-fir slash',
         cfl: 1.0),
   ];
+
+  FuelTypeStruct _getDefaultPreset() {
+    return _presets[1];
+  }
 
   FuelTypeStruct? get preset {
     return _preset;
@@ -314,9 +249,9 @@ class FireBehaviourPredictionFormState
     });
   }
 
-  void _onSAZChanged(double saz) {
+  void _onAspectChanged(double aspect) {
     setState(() {
-      _saz = saz;
+      _aspect = aspect;
     });
   }
 
@@ -375,6 +310,12 @@ class FireBehaviourPredictionFormState
     });
   }
 
+  void _onGFLChanged(double gfl) {
+    setState(() {
+      _gfl = gfl;
+    });
+  }
+
   void _onLongitudeChanged(double longitude) {
     setState(() {
       _longitude = longitude;
@@ -407,6 +348,7 @@ class FireBehaviourPredictionFormState
   final _latitudeController = TextEditingController();
   final _longitudeController = TextEditingController();
   final _elevationController = TextEditingController();
+  final _gflController = TextEditingController();
 
   // double ros = _calculateRateOfSpread()
 
@@ -417,24 +359,27 @@ class FireBehaviourPredictionFormState
         _latitude = position.latitude;
         _longitude = position.longitude;
         _elevation = position.altitude;
-        _latitudeController.text = _latitude.toStringAsFixed(3);
-        _longitudeController.text = _longitude.toStringAsFixed(3);
-        _elevationController.text = _elevation.toStringAsFixed(3);
+        _updateCoordainteControllers();
       });
     });
   }
 
+  void _updateCoordainteControllers() {
+    _latitudeController.text = _latitude.toStringAsFixed(2);
+    _longitudeController.text = _longitude.toStringAsFixed(2);
+    _elevationController.text = _elevation.toStringAsFixed(0);
+  }
+
   @override
   void initState() {
-    _onPresetChanged(_presets[0]);
+    _onPresetChanged(_getDefaultPreset());
     ccController.text = _cc.toString();
     pcController.text = _pc.toString();
     pdfController.text = _pdf.toString();
     cbhController.text = _cbh.toString();
     _cflController.text = _cfl.toString();
-    _latitudeController.text = _latitude.toString();
-    _longitudeController.text = _longitude.toString();
-    _elevationController.text = _elevation.toString();
+    _gflController.text = _gfl.toString();
+    _updateCoordainteControllers();
     super.initState();
     _updatePosition();
   }
@@ -460,68 +405,69 @@ class FireBehaviourPredictionFormState
     pdfController.dispose();
     cbhController.dispose();
     _cflController.dispose();
+    _gflController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    double? isi;
-    double? ros;
-    double? hfi;
-    double? cfb;
-    double? fc;
-    double? sfc;
-    double? fmc;
-    double? wsv;
-    double? lb_ratio;
-    double? bros;
     double? fireSize;
-    String fireDescription = '';
     int? intensityClass;
+    FireBehaviourPredictionPrimary? prediction;
     try {
-      print('ffmc: $_ffmc');
-      print('day of year: ${getDayOfYear()}');
-      fmc = FMCcalc(_latitude, _longitude < 0 ? -_longitude : _longitude,
-          _elevation, getDayOfYear(), 0);
-      print('fmc: $fmc');
-      sfc = SFCcalc(fuelType, _ffmc, _bui, _pc, _cc);
-      print('sfc: ${sfc}');
-      isi = 0;
-      if (_gs > 0 && _ffmc > 0) {
-        // Calculate the net effective windspeed (WSV)
-        wsv = Slopecalc(fuelType, _ffmc, _bui, _ws, _waz, _gs, _saz, fmc, sfc,
-            _pc, _pdf, _cc, _cbh, isi,
-            output: "WSV");
-        print('wsv: ${wsv}');
-        // Calculate the net effective wind direction (RAZ)
-        double raz = Slopecalc(fuelType, _ffmc, _bui, _ws, _waz, _gs, _saz, fmc,
-            sfc, _pc, _pdf, _cc, _cbh, isi,
-            output: "RAZ");
-        print('raz: ${raz} (net effective wind direction)');
-        isi = ISIcalc(_ffmc, wsv, fbpMod: true);
-        print('isi: ${isi}');
-      } else {
-        isi = ISIcalc(_ffmc, _ws);
-        print('isi: ${isi}');
+      final dayOfYear = getDayOfYear();
+      final input = FireBehaviourPredictionInput(
+          FUELTYPE: fuelType,
+          LAT: _latitude,
+          LONG: _longitude,
+          ELV: _elevation,
+          DJ: dayOfYear,
+          D0: null,
+          FMC: null,
+          FFMC: _ffmc,
+          BUI: _bui,
+          WS: _ws,
+          WD: _waz,
+          GS: _gs,
+          PC: _pc,
+          PDF: _pdf,
+          GFL: _gfl,
+          CC: _cc,
+          ACCEL: false,
+          ASPECT: _aspect,
+          BUIEFF: true,
+          CBH: _cbh,
+          CFL: _cfl,
+          MINUTES: _t);
+      prediction = FBPcalc(input, output: "ALL");
+      // Wind direction correction:
+      prediction.RAZ -= 180;
+      prediction.RAZ =
+          prediction.RAZ < 0 ? prediction.RAZ + 360 : prediction.RAZ;
+      // print('ffmc: $_ffmc');
+      // print('day of year: $dayOfYear');
+      print('prediction.SFC: ${prediction.SFC}');
+      print('prediction.FMC: ${prediction.FMC}');
+      print('prediction.WSV: ${prediction.WSV}');
+      print('prediction.RAZ: ${prediction.RAZ}');
+      print('prediction.ISI: ${prediction.ISI}');
+      print('prediction.ROS: ${prediction.ROS}');
+      print('prediction.CFB: ${prediction.CFB}');
+      print('prediction.TFC: ${prediction.TFC}');
+      print('prediction.HFI: ${prediction.HFI}');
+      print('prediction.FD: ${prediction.FD}');
+      print('prediction.FD: ${prediction.CFC}');
+      intensityClass = getHeadFireIntensityClass(prediction.HFI);
+      if (prediction.secondary != null) {
+        fireSize = getFireSize(
+            fuelType,
+            prediction.ROS,
+            prediction.secondary!.BROS,
+            _t,
+            prediction.CFB,
+            prediction.secondary!.LB);
       }
-      ros = ROScalc(fuelType, isi, _bui, fmc, sfc, _pc, _pdf, _cc, _cbh);
-      print('ros: $ros');
-      cfb = CFBcalc(fuelType, fmc, sfc, ros, _cbh ?? 0);
-      print('cfb: $cfb');
-      fc = TFCcalc(fuelType, _cfl, cfb, sfc, _pc, _pdf);
-      print('fc: $fc');
-      hfi = FIcalc(fc, ros);
-      print('hfi: $hfi');
-      intensityClass = getHeadFireIntensityClass(hfi);
-      print('intensityClass: $intensityClass');
-      fireDescription = getFireType(fuelType, cfb);
-      print('fire description: $fireDescription');
-      lb_ratio = LBcalc(fuelType, wsv ?? _ws);
-      print('lb_ratio: $lb_ratio');
-      bros = BROScalc(
-          fuelType, _ffmc, _bui, wsv ?? _ws, fmc, sfc, _pc, _pdf, _cc, _cbh);
-      print('bros: $bros');
-      fireSize = getFireSize(fuelType, ros, bros, _t, cfb, lb_ratio);
+
       print('fireSize: $fireSize');
     } catch (e) {
       print('error $e');
@@ -538,7 +484,7 @@ class FireBehaviourPredictionFormState
               Expanded(
                   child: DropdownButtonFormField(
                       isExpanded: true,
-                      value: _presets[0],
+                      value: _getDefaultPreset(),
                       key: _presetState,
                       decoration: const InputDecoration(labelText: "Pre-sets"),
                       items: _presets.map((FuelTypeStruct value) {
@@ -601,6 +547,19 @@ class FireBehaviourPredictionFormState
                       onChanged: (value) {
                         if (double.tryParse(value) != null) {
                           _onCFLChanged(double.parse(value));
+                        }
+                      },
+                    )),
+                    // GFL field
+                    Expanded(
+                        child: TextField(
+                      controller: _gflController,
+                      decoration: const InputDecoration(
+                          labelText: "Grass Fuel Load (kg/m^2)"),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        if (double.tryParse(value) != null) {
+                          _onGFLChanged(double.parse(value));
                         }
                       },
                     )),
@@ -738,14 +697,14 @@ class FireBehaviourPredictionFormState
           Row(children: [
             Expanded(
                 child: Text(
-                    'Wind Azimith: ${azimuthToCompassPoint(_waz)} ${_waz.toString()}\u00B0')),
+                    'Wind Direction: ${degreesToCompassPoint(_waz)} ${_waz.toString()}\u00B0')),
             Expanded(
                 child: Slider(
               value: _waz,
               min: 0,
               max: 360,
               divisions: 16,
-              label: '${azimuthToCompassPoint(_waz)} ${_waz}\u00B0',
+              label: '${degreesToCompassPoint(_waz)} ${_waz}\u00B0',
               onChanged: (value) {
                 _onWAZChanged(value);
               },
@@ -766,20 +725,21 @@ class FireBehaviourPredictionFormState
               },
             )),
           ]),
-          // Slope Azimith
+          // Aspect
           Row(children: [
             Expanded(
                 child: Text(
-                    'Slope Azimith: ${azimuthToCompassPoint(_saz)} ${_saz.toString()}\u00B0')),
+                    'Aspect: ${degreesToCompassPoint(_aspect)} ${_aspect.toString()}\u00B0')),
             Expanded(
                 child: Slider(
-              value: _saz,
+              value: _aspect,
               min: 0,
               max: 360,
               divisions: 16,
-              label: '${azimuthToCompassPoint(_saz)} ${_saz.toString()}\u00B0',
+              label:
+                  '${degreesToCompassPoint(_aspect)} ${_aspect.toString()}\u00B0',
               onChanged: (value) {
-                _onSAZChanged(value);
+                _onAspectChanged(value);
               },
             )),
           ]),
@@ -829,38 +789,44 @@ class FireBehaviourPredictionFormState
           Row(children: [
             const Expanded(child: Text('Initial Spread Index')),
             Expanded(
-              child: Text('${isi?.toStringAsFixed(0)}'),
+              child: Text('${prediction?.ISI.toStringAsFixed(0)}'),
             )
           ]),
           Row(children: [
             const Expanded(child: Text('Foliar Moisture Content')),
-            Expanded(child: Text('${fmc?.toStringAsFixed(0)}'))
+            Expanded(child: Text('${prediction?.FMC.toStringAsFixed(0)}'))
           ]),
           Row(children: [
             const Expanded(child: Text('Surface Fuel Consumption')),
-            Expanded(child: Text('${sfc?.toStringAsFixed(0)} (kg/m^2)'))
+            Expanded(
+                child: Text('${prediction?.SFC.toStringAsFixed(0)} (kg/m^2)'))
           ]),
           Row(children: [
             const Expanded(child: Text('Crown fraction burned')),
             Expanded(
                 child: Text(
-                    '${(cfb == null ? 0.0 : cfb * 100).toStringAsFixed(0)} %'))
+                    '${(prediction == null ? ' ' : (prediction.CFB * 100).toStringAsFixed(0))} %'))
           ]),
           Row(children: [
             const Expanded(child: Text('Fuel Consumption')),
-            Expanded(child: Text('${fc?.toStringAsFixed(0)} (kg/m^2)'))
+            Expanded(
+                child: Text('${prediction?.TFC.toStringAsFixed(2)} (kg/m^2)'))
           ]),
           Container(
               color: getIntensityClassColor(intensityClass),
               child: Row(children: [
                 const Expanded(child: Text('Rate of spread')),
-                Expanded(child: Text('${ros?.toStringAsFixed(0)} (m/min)')),
+                Expanded(
+                    child:
+                        Text('${prediction?.ROS.toStringAsFixed(0)} (m/min)')),
               ])),
           Container(
               color: getIntensityClassColor(intensityClass),
               child: Row(children: [
                 const Expanded(child: Text('Head fire intensity')),
-                Expanded(child: Text('${hfi?.toStringAsFixed(0)} (kW/m)')),
+                Expanded(
+                    child:
+                        Text('${prediction?.HFI.toStringAsFixed(0)} (kW/m)')),
               ])),
           Container(
               color: getIntensityClassColor(intensityClass),
@@ -870,7 +836,15 @@ class FireBehaviourPredictionFormState
               ])),
           Row(children: [
             const Expanded(child: Text('Type of fire')),
-            Expanded(child: Text(fireDescription))
+            Expanded(
+                child: Text(prediction == null
+                    ? ''
+                    : getFireDescription(prediction.FD)))
+          ]),
+          Row(children: [
+            const Expanded(child: Text('Crown Fuel Consumption')),
+            Expanded(
+                child: Text('${prediction?.CFC.toStringAsFixed(0)} (kg/m^2)'))
           ]),
           Row(children: [
             Expanded(child: Text('${_t.toStringAsFixed(0)} minute fire size')),
@@ -878,16 +852,26 @@ class FireBehaviourPredictionFormState
           ]),
           Row(children: [
             const Expanded(child: Text('Back rate of spread')),
-            Expanded(child: Text('${bros?.toStringAsFixed(0)} (m/min)'))
+            Expanded(
+                child: Text(
+                    '${prediction?.secondary?.BROS.toStringAsFixed(0)} (m/min)'))
           ]),
           Row(children: [
             const Expanded(child: Text('Length to breadth ratio')),
-            Expanded(child: Text('${lb_ratio?.toStringAsFixed(2)}'))
+            Expanded(
+                child: Text('${prediction?.secondary?.LB.toStringAsFixed(2)}'))
           ]),
           Row(children: [
             const Expanded(child: Text('Net effective wind speed')),
-            Expanded(child: Text('${wsv?.toStringAsFixed(0)} (km/h)'))
+            Expanded(
+                child: Text('${prediction?.WSV.toStringAsFixed(0)} (km/h)'))
           ]),
+          Row(children: [
+            const Expanded(child: Text('Net effective wind direction')),
+            Expanded(
+                child: Text(
+                    '${prediction != null ? degreesToCompassPoint(prediction.RAZ) : ''} ${prediction?.RAZ.toStringAsFixed(1)}(\u00B0)'))
+          ])
           // Text('Initial Spread Index: ${isi?.toStringAsFixed(0)}'),
           // Text('Foliar Moisture Content: ${fmc?.toStringAsFixed(0)}'),
           // Text('Surface Fuel Consumption (kg/m^2): ${sfc?.toStringAsFixed(0)}'),
