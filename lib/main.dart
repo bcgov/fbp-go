@@ -56,6 +56,13 @@ class FireBehaviourPredictionForm extends StatefulWidget {
   }
 }
 
+String getSecondaryText(FireBehaviourPredictionPrimary? prediction) {
+  if (prediction != null && prediction.secondary != null) {
+    return '${prediction.secondary.toString()}';
+  }
+  return '';
+}
+
 class FuelTypeStruct {
   final String code;
   final String description;
@@ -95,6 +102,7 @@ class FireBehaviourPredictionFormState
   double _aspect = 0;
   double _t = 60;
   double _gfl = 0.35;
+  double _theta = 0;
 
   bool _expanded = false;
 
@@ -340,6 +348,12 @@ class FireBehaviourPredictionFormState
     });
   }
 
+  void _onThetaChanged(double theta) {
+    setState(() {
+      _theta = theta;
+    });
+  }
+
   final ccController = TextEditingController();
   final pcController = TextEditingController();
   final pdfController = TextEditingController();
@@ -433,6 +447,7 @@ class FireBehaviourPredictionFormState
           PDF: _pdf,
           GFL: _gfl,
           CC: _cc,
+          THETA: _theta,
           ACCEL: false,
           ASPECT: _aspect,
           BUIEFF: true,
@@ -508,7 +523,7 @@ class FireBehaviourPredictionFormState
                 headerBuilder: (context, isExpanded) {
                   return const ListTile(
                     title: Text(
-                      'Custom',
+                      'Advanced',
                       style: TextStyle(color: Colors.black),
                     ),
                   );
@@ -620,6 +635,23 @@ class FireBehaviourPredictionFormState
                       label: '${_t.toInt()} minutes',
                       onChanged: (value) {
                         _onTChanged(value);
+                      },
+                    )),
+                  ]),
+                  // Theta
+                  Row(children: [
+                    Expanded(
+                        child: Text(
+                            'Theta: ${degreesToCompassPoint(_theta)} ${_theta.toString()}\u00B0')),
+                    Expanded(
+                        child: Slider(
+                      value: _theta,
+                      min: 0,
+                      max: 360,
+                      divisions: 16,
+                      label: '${degreesToCompassPoint(_theta)} ${_theta}\u00B0',
+                      onChanged: (value) {
+                        _onThetaChanged(value);
                       },
                     )),
                   ]),
@@ -871,7 +903,11 @@ class FireBehaviourPredictionFormState
             Expanded(
                 child: Text(
                     '${prediction != null ? degreesToCompassPoint(prediction.RAZ) : ''} ${prediction?.RAZ.toStringAsFixed(1)}(\u00B0)'))
+          ]),
+          Row(children: [
+            Expanded(child: Text(getSecondaryText(prediction))),
           ])
+          // prediction != null && prediction.secondary != null ? Text('Secondary outputs:') : Text(''))
           // Text('Initial Spread Index: ${isi?.toStringAsFixed(0)}'),
           // Text('Foliar Moisture Content: ${fmc?.toStringAsFixed(0)}'),
           // Text('Surface Fuel Consumption (kg/m^2): ${sfc?.toStringAsFixed(0)}'),

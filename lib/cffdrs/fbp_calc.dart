@@ -140,6 +140,42 @@ class FireBehaviourPredictionSecondary {
     required this.DB,
     required this.DF,
   });
+
+  @override
+  String toString() {
+    return """Secondary Outputs:
+Spread Factor: ${this.SF.toStringAsFixed(2)},
+Critical Surface Interval: ${this.CSI.toStringAsFixed(2)},
+Surface Fire Rate of Spread: ${this.RSO.toStringAsFixed(2)},
+Buildup Effect: ${this.BE.toStringAsFixed(2)},
+Length to Breadth Ratio: ${this.LB.toStringAsFixed(2)},
+Length to Breadth Ratio Time: ${this.LBt.toStringAsFixed(2)},
+Back Fire Rate of Spread: ${this.BROS.toStringAsFixed(2)},
+Flank Fire Rate of Spread: ${this.FROS.toStringAsFixed(2)},
+Eccentricity: ${this.E.toStringAsFixed(2)},
+Rate of Spread Towards Angle Theta: ${this.TROS.toStringAsFixed(2)},
+Rate of Spread At Time T: ${this.ROSt.toStringAsFixed(2)},
+Rate of Spread At Time T For Back Fire: ${this.BROSt.toStringAsFixed(2)},
+Rate of Spread At Time T For Flank Fire: ${this.FROSt.toStringAsFixed(2)},
+Rate of Spread Towards Angle Theta At Time T: ${this.TROSt.toStringAsFixed(2)},
+Crown Fraction Burned For Flank: ${this.FCFB.toStringAsFixed(2)},
+Crown Fraction Burned For Back: ${this.BCFB.toStringAsFixed(2)},
+Crown Fraction Burned At Angle Theta: ${this.TCFB.toStringAsFixed(2)},
+Total Fuel Consumption For Flank: ${this.FTFC.toStringAsFixed(2)},
+Total Fuel Consumption For Back: ${this.BTFC.toStringAsFixed(2)},
+Total Fuel Consumption At Angle Theta: ${this.TTFC.toStringAsFixed(2)},
+Fire Intensity At Flank: ${this.FFI.toStringAsFixed(2)},
+Fire Intensity At Back: ${this.BFI.toStringAsFixed(2)},
+Fire Intensity At Angle Theta: ${this.TFI.toStringAsFixed(2)},
+Rate of Spread At Time T For Head Fire: ${this.HROSt.toStringAsFixed(2)},
+Elapsed Time To Crown Fire Initiation For Head: ${this.TI.toStringAsFixed(2)},
+Elapsed Time To Crown Fire Initiation For Flank: ${this.FTI.toStringAsFixed(2)},
+Elapsed Time To Crown Fire Initiation For Back: ${this.BTI.toStringAsFixed(2)},
+Elapsed Time To Crown Fire Initiation For Theta: ${this.TTI.toStringAsFixed(2)},
+Fire Spread Distance Head: ${this.DH.toStringAsFixed(2)},
+Fire Spread Distance Back: ${this.DB.toStringAsFixed(2)},
+Fire Spread Distance Flank: ${this.DF.toStringAsFixed(2)}""";
+  }
 }
 
 class FireBehaviourPredictionPrimary {
