@@ -1,9 +1,12 @@
+import 'package:fire_behaviour_app/coordinate_picker.dart';
 import 'package:fire_behaviour_app/fire.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/scheduler.dart';
 import 'package:geolocator/geolocator.dart';
 import 'cffdrs/fbp_calc.dart';
 import 'fbp_results.dart';
+import 'fire_widgets.dart';
+import 'basic_fbp.dart';
 
 void main() => runApp(const MyApp());
 
@@ -42,13 +45,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class BasicFireBehaviourPredictionForm extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return BasicFireBehaviourPredictionFormState();
-  }
-}
-
 // Define a custom Form widget.
 class AdvancedFireBehaviourPredictionForm extends StatefulWidget {
   const AdvancedFireBehaviourPredictionForm({Key? key}) : super(key: key);
@@ -66,120 +62,6 @@ String getSecondaryText(FireBehaviourPredictionPrimary? prediction) {
   return '';
 }
 
-class FuelTypeStruct {
-  final FuelType code;
-  final String description;
-  final double cfl;
-  final double? pc;
-  final double? pdf;
-  final double? cbh;
-  FuelTypeStruct(this.code, this.description,
-      {required this.cfl, this.pc, this.pdf, this.cbh});
-}
-
-class BasicFireBehaviourPredictionFormState
-    extends State<BasicFireBehaviourPredictionForm> {
-  @override
-  Widget build(BuildContext context) {
-    throw UnimplementedError();
-  }
-}
-
-enum FuelType {
-  // ignore: constant_identifier_names
-  C1,
-  // ignore: constant_identifier_names
-  C2,
-  // ignore: constant_identifier_names
-  C3,
-  // ignore: constant_identifier_names
-  C4,
-  // ignore: constant_identifier_names
-  C5,
-  // ignore: constant_identifier_names
-  C6,
-  // ignore: constant_identifier_names
-  C7,
-  // ignore: constant_identifier_names
-  D1,
-  // ignore: constant_identifier_names
-  D2,
-  // ignore: constant_identifier_names
-  M1,
-  // ignore: constant_identifier_names
-  M2,
-  // ignore: constant_identifier_names
-  M3,
-  // ignore: constant_identifier_names
-  M4,
-  // ignore: constant_identifier_names
-  O1A,
-  // ignore: constant_identifier_names
-  O1B,
-  // ignore: constant_identifier_names
-  S1,
-  // ignore: constant_identifier_names
-  S2,
-  // ignore: constant_identifier_names
-  S3
-}
-
-List<FuelTypeStruct> getFuelTypePresets() {
-  return [
-    FuelTypeStruct(FuelType.C1, 'C-1 spruce-lichen woodland',
-        cfl: 0.75, pc: 100, cbh: 2),
-    FuelTypeStruct(FuelType.C2, 'C-2 boreal spruce', cfl: 0.8, pc: 100, cbh: 3),
-    FuelTypeStruct(FuelType.C3, 'C-3 mature jack or lodgepole pine',
-        cfl: 1.15, pc: 100, cbh: 3),
-    FuelTypeStruct(FuelType.C4, 'C-4 immature jack or lodgepole pine',
-        cfl: 1.2, pc: 100, cbh: 4),
-    FuelTypeStruct(FuelType.C5, 'C-5 red and white pine',
-        cfl: 1.2, pc: 100, cbh: 18),
-    FuelTypeStruct(FuelType.C6, 'C-6 conifer plantation, 7-m CBH',
-        cfl: 1.8, pc: 100, cbh: 7),
-    FuelTypeStruct(FuelType.C6, 'C-6 conifer plantation, 2-m CBH',
-        cfl: 1.8, pc: 100, cbh: 7),
-    FuelTypeStruct(FuelType.C7, 'C-7 ponderosa pine/Douglas-far',
-        cfl: 0.5, pc: 100, cbh: 10),
-    FuelTypeStruct(FuelType.D1, 'D-1 leafless aspen', cfl: 1.0),
-    FuelTypeStruct(FuelType.D2, 'D-2 green aspen', cfl: 1.0),
-    FuelTypeStruct(FuelType.M1, 'M-1 boreal mixedwood-leafless, 75% conifer',
-        cfl: 0.8, pc: 75, cbh: 6),
-    FuelTypeStruct(FuelType.M1, 'M-1 boreal mixedwood-leafless, 50% conifer',
-        cfl: 0.8, pc: 50, cbh: 6),
-    FuelTypeStruct(FuelType.M1, 'M-1 boreal mixedwood-leafless, 25% conifer',
-        cfl: 0.8, pc: 25, cbh: 6),
-    FuelTypeStruct(FuelType.M2, 'M-2 boreal mixedwood-green, 75% conifer',
-        cfl: 0.8, pc: 75, cbh: 6),
-    FuelTypeStruct(FuelType.M2, 'M-2 boreal mixedwood-green, 50% conifer',
-        cfl: 0.8, pc: 50, cbh: 6),
-    FuelTypeStruct(FuelType.M2, 'M-2 boreal mixedwood-green, 25% conifer',
-        cfl: 0.8, pc: 25, cbh: 6),
-    FuelTypeStruct(
-        FuelType.M3, 'M-3 dead balsam mixedwood-leafless, 30% dead fir',
-        cfl: 0.8, pdf: 30, cbh: 6),
-    FuelTypeStruct(
-        FuelType.M3, 'M-3 dead balsam mixedwood-leafless, 60% dead fir',
-        cfl: 0.8, pdf: 60, cbh: 6),
-    FuelTypeStruct(
-        FuelType.M3, 'M-3 dead balsam mixedwood-leafless, 100% dead fir',
-        cfl: 0.8, pdf: 100, cbh: 6),
-    FuelTypeStruct(FuelType.M4, 'M-4 dead balsam mixedwood-green, 30% dead fir',
-        cfl: 0.8, pdf: 30, cbh: 6),
-    FuelTypeStruct(FuelType.M4, 'M-4 dead balsam mixedwood-green, 60% dead fir',
-        cfl: 0.8, pdf: 60, cbh: 6),
-    FuelTypeStruct(
-        FuelType.M4, 'M-4 dead balsam mixedwood-green, 100% dead fir',
-        cfl: 0.8, pdf: 100, cbh: 6),
-    FuelTypeStruct(FuelType.O1A, 'O-1a matted grass', cfl: 1.0),
-    FuelTypeStruct(FuelType.O1B, 'O-1b standing grass', cfl: 1.0),
-    FuelTypeStruct(FuelType.S1, 'S-1 jack or lodgepole pine slash', cfl: 1.0),
-    FuelTypeStruct(FuelType.S2, 'S-2 white spruce/balsam slash', cfl: 1.0),
-    FuelTypeStruct(FuelType.S3, 'S-3 coastal cedar/hemlock/Douglas-fir slash',
-        cfl: 1.0),
-  ];
-}
-
 // Define a corresponding State class.
 // This class holds data related to the form.
 class AdvancedFireBehaviourPredictionFormState
@@ -191,7 +73,6 @@ class AdvancedFireBehaviourPredictionFormState
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
   FuelType _fuelType = FuelType.C2;
-  FuelTypeStruct? _preset;
   double _bui = 50;
   double _ffmc = 77;
   double? _pc = 0;
@@ -212,17 +93,9 @@ class AdvancedFireBehaviourPredictionFormState
 
   bool _expanded = false;
 
-  final _presetState = GlobalKey<FormFieldState>();
-
-  final List<FuelTypeStruct> _presets = getFuelTypePresets();
-
-  FuelTypeStruct _getDefaultPreset() {
-    return _presets[1];
-  }
-
   final _fuelTypeState = GlobalKey<FormFieldState>();
 
-  void setPreset(FuelTypeStruct preset) {
+  void setPreset(FuelTypePreset preset) {
     setState(() {
       _fuelType = preset.code;
       _fuelTypeState.currentState?.didChange(_fuelType);
@@ -245,16 +118,13 @@ class AdvancedFireBehaviourPredictionFormState
     });
   }
 
-  void _onPresetChanged(FuelTypeStruct? preset) {
-    print('_onPresetChanged ${preset}');
+  void _onPresetChanged(FuelTypePreset? preset) {
     if (preset != null) {
-      _preset = preset;
       setPreset(preset);
     }
   }
 
   void _onFuelTypeChanged(FuelType fuelType) {
-    print('onFuelTypeChanged ${fuelType}');
     setState(() {
       _fuelType = fuelType;
     });
@@ -382,27 +252,19 @@ class AdvancedFireBehaviourPredictionFormState
         _latitude = position.latitude;
         _longitude = position.longitude;
         _elevation = position.altitude;
-        _updateCoordainteControllers();
       });
     });
   }
 
-  void _updateCoordainteControllers() {
-    _latitudeController.text = _latitude.toStringAsFixed(2);
-    _longitudeController.text = _longitude.toStringAsFixed(2);
-    _elevationController.text = _elevation.toStringAsFixed(0);
-  }
-
   @override
   void initState() {
-    _onPresetChanged(_getDefaultPreset());
+    // _onPresetChanged(_getDefaultPreset());
     ccController.text = _cc.toString();
     pcController.text = _pc.toString();
     pdfController.text = _pdf.toString();
     cbhController.text = _cbh.toString();
     _cflController.text = _cfl.toString();
     _gflController.text = _gfl.toString();
-    _updateCoordainteControllers();
     super.initState();
     _updatePosition();
   }
@@ -503,30 +365,13 @@ class AdvancedFireBehaviourPredictionFormState
         child: Column(
           children: <Widget>[
             // Presets
-            Row(
-              children: [
-                Expanded(
-                    child: DropdownButtonFormField(
-                        isExpanded: true,
-                        value: _getDefaultPreset(),
-                        key: _presetState,
-                        decoration:
-                            const InputDecoration(labelText: "Pre-sets"),
-                        items: _presets.map((FuelTypeStruct value) {
-                          return DropdownMenuItem<FuelTypeStruct>(
-                              value: value, child: Text(value.description));
-                          // Row(
-                          //   children: [
-                          //     // const Icon(Icons.park_outlined),
-                          //     Text(value.description),
-                          //   ],
-                          // ));
-                        }).toList(),
-                        onChanged: (FuelTypeStruct? value) {
-                          _onPresetChanged(value);
-                        }))
-              ],
-            ),
+            Row(children: [
+              Expanded(child: FuelTypePresetDropdown(
+                onChanged: (FuelTypePreset? value) {
+                  _onPresetChanged(value);
+                },
+              ))
+            ]),
             ExpansionPanelList(
               children: [
                 ExpansionPanel(
@@ -677,50 +522,11 @@ class AdvancedFireBehaviourPredictionFormState
               },
             ),
             // lat, long, elevation
-            Row(children: [
-              // latitude Field
-              Expanded(
-                  child: TextField(
-                controller: _latitudeController,
-                decoration: const InputDecoration(labelText: "Latitude"),
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  if (double.tryParse(value) != null) {
-                    _onLatitudeChanged(double.parse(value));
-                  }
-                },
-              )),
-              // longitude Field
-              Expanded(
-                  child: TextField(
-                controller: _longitudeController,
-                decoration: const InputDecoration(labelText: "Longitude"),
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  if (double.tryParse(value) != null) {
-                    _onLongitudeChanged(double.parse(value));
-                  }
-                },
-              )),
-              // elevation Field
-              Expanded(
-                  child: TextField(
-                controller: _elevationController,
-                decoration: const InputDecoration(labelText: "Elevation"),
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  if (double.tryParse(value) != null) {
-                    _onElevationChanged(double.parse(value));
-                  }
-                },
-              )),
-              Expanded(
-                  child: IconButton(
-                      icon: const Icon(Icons.my_location),
-                      onPressed: () {
-                        _updatePosition();
-                      }))
-            ]),
+            CoordinatePicker(onChanged: (coordinate) {
+              _onLatitudeChanged(coordinate.latitude);
+              _onLongitudeChanged(coordinate.longitude);
+              _onElevationChanged(coordinate.elevation);
+            }),
             // Wind Speed
             Row(children: [
               Expanded(child: Text('Wind Speed (km/h) ${_ws.toInt()}')),
@@ -878,7 +684,11 @@ class HomePageState extends State<HomePage> {
       case (Section.about):
         return const Text('About');
       case (Section.basic):
-        return const Text('Basic');
+        return Center(
+            child: SingleChildScrollView(
+                child: Column(
+          children: const [BasicFireBehaviourPredictionForm()],
+        )));
       case (Section.advanced):
         return Center(
             child: SingleChildScrollView(

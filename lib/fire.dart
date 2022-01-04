@@ -3,6 +3,112 @@ import 'dart:math';
 import 'cffdrs/dist_calc.dart';
 import 'cffdrs/lb_t_calc.dart';
 
+enum FuelType {
+  // ignore: constant_identifier_names
+  C1,
+  // ignore: constant_identifier_names
+  C2,
+  // ignore: constant_identifier_names
+  C3,
+  // ignore: constant_identifier_names
+  C4,
+  // ignore: constant_identifier_names
+  C5,
+  // ignore: constant_identifier_names
+  C6,
+  // ignore: constant_identifier_names
+  C7,
+  // ignore: constant_identifier_names
+  D1,
+  // ignore: constant_identifier_names
+  D2,
+  // ignore: constant_identifier_names
+  M1,
+  // ignore: constant_identifier_names
+  M2,
+  // ignore: constant_identifier_names
+  M3,
+  // ignore: constant_identifier_names
+  M4,
+  // ignore: constant_identifier_names
+  O1A,
+  // ignore: constant_identifier_names
+  O1B,
+  // ignore: constant_identifier_names
+  S1,
+  // ignore: constant_identifier_names
+  S2,
+  // ignore: constant_identifier_names
+  S3
+}
+
+class FuelTypePreset {
+  final FuelType code;
+  final String description;
+  final double cfl;
+  final double? pc;
+  final double? pdf;
+  final double? cbh;
+  FuelTypePreset(this.code, this.description,
+      {required this.cfl, this.pc, this.pdf, this.cbh});
+}
+
+List<FuelTypePreset> getFuelTypePresets() {
+  return [
+    FuelTypePreset(FuelType.C1, 'C-1 spruce-lichen woodland',
+        cfl: 0.75, pc: 100, cbh: 2),
+    FuelTypePreset(FuelType.C2, 'C-2 boreal spruce', cfl: 0.8, pc: 100, cbh: 3),
+    FuelTypePreset(FuelType.C3, 'C-3 mature jack or lodgepole pine',
+        cfl: 1.15, pc: 100, cbh: 3),
+    FuelTypePreset(FuelType.C4, 'C-4 immature jack or lodgepole pine',
+        cfl: 1.2, pc: 100, cbh: 4),
+    FuelTypePreset(FuelType.C5, 'C-5 red and white pine',
+        cfl: 1.2, pc: 100, cbh: 18),
+    FuelTypePreset(FuelType.C6, 'C-6 conifer plantation, 7-m CBH',
+        cfl: 1.8, pc: 100, cbh: 7),
+    FuelTypePreset(FuelType.C6, 'C-6 conifer plantation, 2-m CBH',
+        cfl: 1.8, pc: 100, cbh: 7),
+    FuelTypePreset(FuelType.C7, 'C-7 ponderosa pine/Douglas-far',
+        cfl: 0.5, pc: 100, cbh: 10),
+    FuelTypePreset(FuelType.D1, 'D-1 leafless aspen', cfl: 1.0),
+    FuelTypePreset(FuelType.D2, 'D-2 green aspen', cfl: 1.0),
+    FuelTypePreset(FuelType.M1, 'M-1 boreal mixedwood-leafless, 75% conifer',
+        cfl: 0.8, pc: 75, cbh: 6),
+    FuelTypePreset(FuelType.M1, 'M-1 boreal mixedwood-leafless, 50% conifer',
+        cfl: 0.8, pc: 50, cbh: 6),
+    FuelTypePreset(FuelType.M1, 'M-1 boreal mixedwood-leafless, 25% conifer',
+        cfl: 0.8, pc: 25, cbh: 6),
+    FuelTypePreset(FuelType.M2, 'M-2 boreal mixedwood-green, 75% conifer',
+        cfl: 0.8, pc: 75, cbh: 6),
+    FuelTypePreset(FuelType.M2, 'M-2 boreal mixedwood-green, 50% conifer',
+        cfl: 0.8, pc: 50, cbh: 6),
+    FuelTypePreset(FuelType.M2, 'M-2 boreal mixedwood-green, 25% conifer',
+        cfl: 0.8, pc: 25, cbh: 6),
+    FuelTypePreset(
+        FuelType.M3, 'M-3 dead balsam mixedwood-leafless, 30% dead fir',
+        cfl: 0.8, pdf: 30, cbh: 6),
+    FuelTypePreset(
+        FuelType.M3, 'M-3 dead balsam mixedwood-leafless, 60% dead fir',
+        cfl: 0.8, pdf: 60, cbh: 6),
+    FuelTypePreset(
+        FuelType.M3, 'M-3 dead balsam mixedwood-leafless, 100% dead fir',
+        cfl: 0.8, pdf: 100, cbh: 6),
+    FuelTypePreset(FuelType.M4, 'M-4 dead balsam mixedwood-green, 30% dead fir',
+        cfl: 0.8, pdf: 30, cbh: 6),
+    FuelTypePreset(FuelType.M4, 'M-4 dead balsam mixedwood-green, 60% dead fir',
+        cfl: 0.8, pdf: 60, cbh: 6),
+    FuelTypePreset(
+        FuelType.M4, 'M-4 dead balsam mixedwood-green, 100% dead fir',
+        cfl: 0.8, pdf: 100, cbh: 6),
+    FuelTypePreset(FuelType.O1A, 'O-1a matted grass', cfl: 1.0),
+    FuelTypePreset(FuelType.O1B, 'O-1b standing grass', cfl: 1.0),
+    FuelTypePreset(FuelType.S1, 'S-1 jack or lodgepole pine slash', cfl: 1.0),
+    FuelTypePreset(FuelType.S2, 'S-2 white spruce/balsam slash', cfl: 1.0),
+    FuelTypePreset(FuelType.S3, 'S-3 coastal cedar/hemlock/Douglas-fir slash',
+        cfl: 1.0),
+  ];
+}
+
 double getFireSize(String fuelType, double ros, double bros,
     double ellapsedMinutes, double cfb, double lbRatio) {
   /*
