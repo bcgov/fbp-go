@@ -42,13 +42,20 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class BasicFireBehaviourPredictionForm extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return BasicFireBehaviourPredictionFormState();
+  }
+}
+
 // Define a custom Form widget.
-class FireBehaviourPredictionForm extends StatefulWidget {
-  const FireBehaviourPredictionForm({Key? key}) : super(key: key);
+class AdvancedFireBehaviourPredictionForm extends StatefulWidget {
+  const AdvancedFireBehaviourPredictionForm({Key? key}) : super(key: key);
 
   @override
-  FireBehaviourPredictionFormState createState() {
-    return FireBehaviourPredictionFormState();
+  AdvancedFireBehaviourPredictionFormState createState() {
+    return AdvancedFireBehaviourPredictionFormState();
   }
 }
 
@@ -60,7 +67,7 @@ String getSecondaryText(FireBehaviourPredictionPrimary? prediction) {
 }
 
 class FuelTypeStruct {
-  final String code;
+  final FuelType code;
   final String description;
   final double cfl;
   final double? pc;
@@ -70,17 +77,120 @@ class FuelTypeStruct {
       {required this.cfl, this.pc, this.pdf, this.cbh});
 }
 
+class BasicFireBehaviourPredictionFormState
+    extends State<BasicFireBehaviourPredictionForm> {
+  @override
+  Widget build(BuildContext context) {
+    throw UnimplementedError();
+  }
+}
+
+enum FuelType {
+  // ignore: constant_identifier_names
+  C1,
+  // ignore: constant_identifier_names
+  C2,
+  // ignore: constant_identifier_names
+  C3,
+  // ignore: constant_identifier_names
+  C4,
+  // ignore: constant_identifier_names
+  C5,
+  // ignore: constant_identifier_names
+  C6,
+  // ignore: constant_identifier_names
+  C7,
+  // ignore: constant_identifier_names
+  D1,
+  // ignore: constant_identifier_names
+  D2,
+  // ignore: constant_identifier_names
+  M1,
+  // ignore: constant_identifier_names
+  M2,
+  // ignore: constant_identifier_names
+  M3,
+  // ignore: constant_identifier_names
+  M4,
+  // ignore: constant_identifier_names
+  O1A,
+  // ignore: constant_identifier_names
+  O1B,
+  // ignore: constant_identifier_names
+  S1,
+  // ignore: constant_identifier_names
+  S2,
+  // ignore: constant_identifier_names
+  S3
+}
+
+List<FuelTypeStruct> getFuelTypePresets() {
+  return [
+    FuelTypeStruct(FuelType.C1, 'C-1 spruce-lichen woodland',
+        cfl: 0.75, pc: 100, cbh: 2),
+    FuelTypeStruct(FuelType.C2, 'C-2 boreal spruce', cfl: 0.8, pc: 100, cbh: 3),
+    FuelTypeStruct(FuelType.C3, 'C-3 mature jack or lodgepole pine',
+        cfl: 1.15, pc: 100, cbh: 3),
+    FuelTypeStruct(FuelType.C4, 'C-4 immature jack or lodgepole pine',
+        cfl: 1.2, pc: 100, cbh: 4),
+    FuelTypeStruct(FuelType.C5, 'C-5 red and white pine',
+        cfl: 1.2, pc: 100, cbh: 18),
+    FuelTypeStruct(FuelType.C6, 'C-6 conifer plantation, 7-m CBH',
+        cfl: 1.8, pc: 100, cbh: 7),
+    FuelTypeStruct(FuelType.C6, 'C-6 conifer plantation, 2-m CBH',
+        cfl: 1.8, pc: 100, cbh: 7),
+    FuelTypeStruct(FuelType.C7, 'C-7 ponderosa pine/Douglas-far',
+        cfl: 0.5, pc: 100, cbh: 10),
+    FuelTypeStruct(FuelType.D1, 'D-1 leafless aspen', cfl: 1.0),
+    FuelTypeStruct(FuelType.D2, 'D-2 green aspen', cfl: 1.0),
+    FuelTypeStruct(FuelType.M1, 'M-1 boreal mixedwood-leafless, 75% conifer',
+        cfl: 0.8, pc: 75, cbh: 6),
+    FuelTypeStruct(FuelType.M1, 'M-1 boreal mixedwood-leafless, 50% conifer',
+        cfl: 0.8, pc: 50, cbh: 6),
+    FuelTypeStruct(FuelType.M1, 'M-1 boreal mixedwood-leafless, 25% conifer',
+        cfl: 0.8, pc: 25, cbh: 6),
+    FuelTypeStruct(FuelType.M2, 'M-2 boreal mixedwood-green, 75% conifer',
+        cfl: 0.8, pc: 75, cbh: 6),
+    FuelTypeStruct(FuelType.M2, 'M-2 boreal mixedwood-green, 50% conifer',
+        cfl: 0.8, pc: 50, cbh: 6),
+    FuelTypeStruct(FuelType.M2, 'M-2 boreal mixedwood-green, 25% conifer',
+        cfl: 0.8, pc: 25, cbh: 6),
+    FuelTypeStruct(
+        FuelType.M3, 'M-3 dead balsam mixedwood-leafless, 30% dead fir',
+        cfl: 0.8, pdf: 30, cbh: 6),
+    FuelTypeStruct(
+        FuelType.M3, 'M-3 dead balsam mixedwood-leafless, 60% dead fir',
+        cfl: 0.8, pdf: 60, cbh: 6),
+    FuelTypeStruct(
+        FuelType.M3, 'M-3 dead balsam mixedwood-leafless, 100% dead fir',
+        cfl: 0.8, pdf: 100, cbh: 6),
+    FuelTypeStruct(FuelType.M4, 'M-4 dead balsam mixedwood-green, 30% dead fir',
+        cfl: 0.8, pdf: 30, cbh: 6),
+    FuelTypeStruct(FuelType.M4, 'M-4 dead balsam mixedwood-green, 60% dead fir',
+        cfl: 0.8, pdf: 60, cbh: 6),
+    FuelTypeStruct(
+        FuelType.M4, 'M-4 dead balsam mixedwood-green, 100% dead fir',
+        cfl: 0.8, pdf: 100, cbh: 6),
+    FuelTypeStruct(FuelType.O1A, 'O-1a matted grass', cfl: 1.0),
+    FuelTypeStruct(FuelType.O1B, 'O-1b standing grass', cfl: 1.0),
+    FuelTypeStruct(FuelType.S1, 'S-1 jack or lodgepole pine slash', cfl: 1.0),
+    FuelTypeStruct(FuelType.S2, 'S-2 white spruce/balsam slash', cfl: 1.0),
+    FuelTypeStruct(FuelType.S3, 'S-3 coastal cedar/hemlock/Douglas-fir slash',
+        cfl: 1.0),
+  ];
+}
+
 // Define a corresponding State class.
 // This class holds data related to the form.
-class FireBehaviourPredictionFormState
-    extends State<FireBehaviourPredictionForm> {
+class AdvancedFireBehaviourPredictionFormState
+    extends State<AdvancedFireBehaviourPredictionForm> {
   // Create a global key that uniquely identifies the Form widget
   // and allows validation of the form.
   //
   // Note: This is a `GlobalKey<FormState>`,
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
-  String? _fuelType;
+  FuelType _fuelType = FuelType.C2;
   FuelTypeStruct? _preset;
   double _bui = 50;
   double _ffmc = 77;
@@ -104,104 +214,13 @@ class FireBehaviourPredictionFormState
 
   final _presetState = GlobalKey<FormFieldState>();
 
-  final List<FuelTypeStruct> _presets = [
-    FuelTypeStruct('C1', 'C-1 spruce-lichen woodland',
-        cfl: 0.75, pc: 100, cbh: 2),
-    FuelTypeStruct('C2', 'C-2 boreal spruce', cfl: 0.8, pc: 100, cbh: 3),
-    FuelTypeStruct('C3', 'C-3 mature jack or lodgepole pine',
-        cfl: 1.15, pc: 100, cbh: 3),
-    FuelTypeStruct('C4', 'C-4 immature jack or lodgepole pine',
-        cfl: 1.2, pc: 100, cbh: 4),
-    FuelTypeStruct('C5', 'C-5 red and white pine', cfl: 1.2, pc: 100, cbh: 18),
-    FuelTypeStruct('C6', 'C-6 conifer plantation, 7-m CBH',
-        cfl: 1.8, pc: 100, cbh: 7),
-    FuelTypeStruct('C6', 'C-6 conifer plantation, 2-m CBH',
-        cfl: 1.8, pc: 100, cbh: 7),
-    FuelTypeStruct('C7', 'C-7 ponderosa pine/Douglas-far',
-        cfl: 0.5, pc: 100, cbh: 10),
-    FuelTypeStruct('D1', 'D-1 leafless aspen', cfl: 1.0),
-    FuelTypeStruct('D2', 'D-2 green aspen', cfl: 1.0),
-    FuelTypeStruct(
-        'M1', 'M-1 boreal mixedwood-leafless, 75% conifer / 25 % deciduous',
-        cfl: 0.8, pc: 75, cbh: 6),
-    FuelTypeStruct(
-        'M1', 'M-1 boreal mixedwood-leafless, 50% conifer / 50 % deciduous',
-        cfl: 0.8, pc: 50, cbh: 6),
-    FuelTypeStruct(
-        'M1', 'M-1 boreal mixedwood-leafless, 25% conifer / 75 % deciduous',
-        cfl: 0.8, pc: 25, cbh: 6),
-    FuelTypeStruct(
-        'M2', 'M-2 boreal mixedwood-green, 75% conifer / 25 % deciduous',
-        cfl: 0.8, pc: 75, cbh: 6),
-    FuelTypeStruct(
-        'M2', 'M-2 boreal mixedwood-green, 50% conifer / 50 % deciduous',
-        cfl: 0.8, pc: 50, cbh: 6),
-    FuelTypeStruct(
-        'M2', 'M-2 boreal mixedwood-green, 25% conifer / 75 % deciduous',
-        cfl: 0.8, pc: 25, cbh: 6),
-    FuelTypeStruct('M3', 'M-3 dead balsam fir mixedwood-leafless, 30% dead fir',
-        cfl: 0.8, pdf: 30, cbh: 6),
-    FuelTypeStruct('M3', 'M-3 dead balsam fir mixedwood-leafless, 60% dead fir',
-        cfl: 0.8, pdf: 60, cbh: 6),
-    FuelTypeStruct(
-        'M3', 'M-3 dead balsam fir mixedwood-leafless, 100% dead fir',
-        cfl: 0.8, pdf: 100, cbh: 6),
-    FuelTypeStruct('M4', 'M-4 dead balsam fir mixedwood-green, 30% dead fir',
-        cfl: 0.8, pdf: 30, cbh: 6),
-    FuelTypeStruct('M4', 'M-4 dead balsam fir mixedwood-green, 60% dead fir',
-        cfl: 0.8, pdf: 60, cbh: 6),
-    FuelTypeStruct('M4', 'M-4 dead balsam fir mixedwood-green, 100% dead fir',
-        cfl: 0.8, pdf: 100, cbh: 6),
-    FuelTypeStruct('O1A', 'O-1a matted grass', cfl: 1.0),
-    FuelTypeStruct('O1B', 'O-1b standing grass', cfl: 1.0),
-    FuelTypeStruct('S1', 'S-1 jack or lodgepole pine slash', cfl: 1.0),
-    FuelTypeStruct('S2', 'S-2 white spruce/balsam slash', cfl: 1.0),
-    FuelTypeStruct('S3', 'S-3 coastal cedar/hemlock/Douglas-fir slash',
-        cfl: 1.0),
-  ];
+  final List<FuelTypeStruct> _presets = getFuelTypePresets();
 
   FuelTypeStruct _getDefaultPreset() {
     return _presets[1];
   }
 
-  FuelTypeStruct? get preset {
-    return _preset;
-  }
-
-  set preset(FuelTypeStruct? value) {
-    _preset = value;
-  }
-
   final _fuelTypeState = GlobalKey<FormFieldState>();
-
-  String get fuelType {
-    return _fuelType ?? '';
-  }
-
-  set fuelType(String fuelType) {
-    _fuelType = fuelType;
-  }
-
-  final List<String> _fuelTypes = [
-    'C1',
-    'C2',
-    'C3',
-    'C4',
-    'C5',
-    'C6',
-    'C7',
-    'D1',
-    'D2',
-    'M1',
-    'M2',
-    'M3',
-    'M4',
-    'S1',
-    'S2',
-    'S3',
-    'O1A',
-    'O1B'
-  ];
 
   void setPreset(FuelTypeStruct preset) {
     setState(() {
@@ -234,16 +253,10 @@ class FireBehaviourPredictionFormState
     }
   }
 
-  void _onFuelTypeChanged(String? fuelType) {
+  void _onFuelTypeChanged(FuelType fuelType) {
     print('onFuelTypeChanged ${fuelType}');
     setState(() {
-      if (fuelType != null) {
-        _fuelType = fuelType;
-      }
-      // TODO: figure out how to blank out the preset without it bubbling back
-      // to the fuel type.
-      // _preset = null;
-      // _presetState.currentState?.didChange(_preset);
+      _fuelType = fuelType;
     });
   }
 
@@ -427,7 +440,7 @@ class FireBehaviourPredictionFormState
     try {
       final dayOfYear = getDayOfYear();
       final input = FireBehaviourPredictionInput(
-          FUELTYPE: fuelType,
+          FUELTYPE: _fuelType.name,
           LAT: _latitude,
           LONG: _longitude,
           ELV: _elevation,
@@ -471,7 +484,7 @@ class FireBehaviourPredictionFormState
       intensityClass = getHeadFireIntensityClass(prediction.HFI);
       if (prediction.secondary != null) {
         fireSize = getFireSize(
-            fuelType,
+            _fuelType.name,
             prediction.ROS,
             prediction.secondary!.BROS,
             _t,
@@ -533,18 +546,18 @@ class FireBehaviourPredictionFormState
                                 key: _fuelTypeState,
                                 decoration: const InputDecoration(
                                     labelText: "Fuel Type"),
-                                items: _fuelTypes.map((String value) {
+                                items: FuelType.values.map((FuelType value) {
                                   return DropdownMenuItem(
                                       value: value,
                                       child: Row(
                                         children: [
                                           // const Icon(Icons.park_outlined),
-                                          Text(value)
+                                          Text(value.name)
                                         ],
                                       ));
                                 }).toList(),
-                                onChanged: (String? value) {
-                                  _onFuelTypeChanged(value);
+                                onChanged: (FuelType? value) {
+                                  _onFuelTypeChanged(value!);
                                 }))
                       ],
                     ),
@@ -870,7 +883,7 @@ class HomePageState extends State<HomePage> {
         return Center(
             child: SingleChildScrollView(
                 child: Column(
-          children: const [FireBehaviourPredictionForm()],
+          children: const [AdvancedFireBehaviourPredictionForm()],
         )));
     }
   }
@@ -880,21 +893,7 @@ class HomePageState extends State<HomePage> {
     final ButtonStyle style =
         TextButton.styleFrom(primary: Theme.of(context).colorScheme.onPrimary);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Fire Behaviour Prediction'),
-        actions: [
-          PopupMenuButton<String>(
-              onSelected: (value) {},
-              itemBuilder: (BuildContext context) {
-                return {'Advanced', 'Basic', 'About'}.map((String choice) {
-                  return PopupMenuItem<String>(
-                    value: choice,
-                    child: Text(choice),
-                  );
-                }).toList();
-              }),
-        ],
-      ),
+      appBar: AppBar(title: const Text('Fire Behaviour Prediction')),
       body: _getSelectedSection(_selectedSection),
       drawer: Drawer(
           child: ListView(
