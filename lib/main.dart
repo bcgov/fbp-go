@@ -817,8 +817,6 @@ class FireBehaviourPredictionFormState
                 },
               )),
             ]),
-
-            // prediction != null && prediction.secondary != null ? Text('Secondary outputs:') : Text(''))
             // Text('Initial Spread Index: ${isi?.toStringAsFixed(0)}'),
             // Text('Foliar Moisture Content: ${fmc?.toStringAsFixed(0)}'),
             // Text('Surface Fuel Consumption (kg/m^2): ${sfc?.toStringAsFixed(0)}'),
@@ -848,20 +846,88 @@ class FireBehaviourPredictionFormState
   }
 }
 
-class HomePage extends StatelessWidget {
+enum Section { basic, advanced, about }
+
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return HomePageState();
+  }
+}
+
+class HomePageState extends State<HomePage> {
+  Section _selectedSection = Section.basic;
+
+  _getSelectedSection(Section _section) {
+    switch (_section) {
+      case (Section.about):
+        return const Text('About');
+      case (Section.basic):
+        return const Text('Basic');
+      case (Section.advanced):
+        return Center(
+            child: SingleChildScrollView(
+                child: Column(
+          children: const [FireBehaviourPredictionForm()],
+        )));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final ButtonStyle style =
+        TextButton.styleFrom(primary: Theme.of(context).colorScheme.onPrimary);
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Fire Behaviour Prediction'),
-        ),
-        body: Center(
-          // child: SingleChildScrollView(child: FireBehaviourPredictionForm()),
-          child: SingleChildScrollView(
-              child: Column(
-            children: const [FireBehaviourPredictionForm()],
-          )),
-        ));
+      appBar: AppBar(
+        title: const Text('Fire Behaviour Prediction'),
+        actions: [
+          PopupMenuButton<String>(
+              onSelected: (value) {},
+              itemBuilder: (BuildContext context) {
+                return {'Advanced', 'Basic', 'About'}.map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              }),
+        ],
+      ),
+      body: _getSelectedSection(_selectedSection),
+      drawer: Drawer(
+          child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          const DrawerHeader(
+            child: Text('Fire Behaviour Prediction'),
+            decoration: BoxDecoration(color: Colors.blue),
+          ),
+          ListTile(
+              title: const Text('Basic'),
+              onTap: () {
+                _changeSection(Section.basic);
+              }),
+          ListTile(
+              title: const Text('Advanced'),
+              onTap: () {
+                _changeSection(Section.advanced);
+              }),
+          ListTile(
+              title: const Text('About'),
+              onTap: () {
+                _changeSection(Section.about);
+              })
+        ],
+      )),
+    );
+  }
+
+  void _changeSection(Section section) {
+    setState(() {
+      _selectedSection = section;
+    });
+    Navigator.pop(context);
   }
 }
