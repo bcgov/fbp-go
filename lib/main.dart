@@ -2,12 +2,8 @@ import 'package:fire_behaviour_app/fire.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/scheduler.dart';
 import 'package:geolocator/geolocator.dart';
-import 'cffdrs/b_ros_calc.dart';
 import 'cffdrs/fbp_calc.dart';
-import 'cffdrs/lb_calc.dart';
-import 'cffdrs/fi_calc.dart';
-import 'cffdrs/tfc_calc.dart';
-import 'cffdrs/cfb_calc.dart';
+import 'fbp_results.dart';
 
 void main() => runApp(const MyApp());
 
@@ -58,7 +54,7 @@ class FireBehaviourPredictionForm extends StatefulWidget {
 
 String getSecondaryText(FireBehaviourPredictionPrimary? prediction) {
   if (prediction != null && prediction.secondary != null) {
-    return '${prediction.secondary.toString()}';
+    return prediction.secondary.toString();
   }
   return '';
 }
@@ -488,448 +484,367 @@ class FireBehaviourPredictionFormState
       print('error $e');
     }
     // Build a Form widget using the _formKey created above.
-    return Form(
-      key: _formKey,
-      child: SingleChildScrollView(
-          child: Column(
-        children: <Widget>[
-          // Presets
-          Row(
-            children: [
-              Expanded(
-                  child: DropdownButtonFormField(
-                      isExpanded: true,
-                      value: _getDefaultPreset(),
-                      key: _presetState,
-                      decoration: const InputDecoration(labelText: "Pre-sets"),
-                      items: _presets.map((FuelTypeStruct value) {
-                        return DropdownMenuItem<FuelTypeStruct>(
-                            value: value, child: Text(value.description));
-                        // Row(
-                        //   children: [
-                        //     // const Icon(Icons.park_outlined),
-                        //     Text(value.description),
-                        //   ],
-                        // ));
-                      }).toList(),
-                      onChanged: (FuelTypeStruct? value) {
-                        _onPresetChanged(value);
-                      }))
-            ],
-          ),
-          ExpansionPanelList(
-            children: [
-              ExpansionPanel(
-                headerBuilder: (context, isExpanded) {
-                  return const ListTile(
-                    title: Text(
-                      'Advanced',
-                      style: TextStyle(color: Colors.black),
+    return Column(children: [
+      Form(
+        key: _formKey,
+        child: Column(
+          children: <Widget>[
+            // Presets
+            Row(
+              children: [
+                Expanded(
+                    child: DropdownButtonFormField(
+                        isExpanded: true,
+                        value: _getDefaultPreset(),
+                        key: _presetState,
+                        decoration:
+                            const InputDecoration(labelText: "Pre-sets"),
+                        items: _presets.map((FuelTypeStruct value) {
+                          return DropdownMenuItem<FuelTypeStruct>(
+                              value: value, child: Text(value.description));
+                          // Row(
+                          //   children: [
+                          //     // const Icon(Icons.park_outlined),
+                          //     Text(value.description),
+                          //   ],
+                          // ));
+                        }).toList(),
+                        onChanged: (FuelTypeStruct? value) {
+                          _onPresetChanged(value);
+                        }))
+              ],
+            ),
+            ExpansionPanelList(
+              children: [
+                ExpansionPanel(
+                  headerBuilder: (context, isExpanded) {
+                    return const ListTile(
+                      title: Text(
+                        'Advanced',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    );
+                  },
+                  body: Column(children: <Widget>[
+                    Row(
+                      children: [
+                        Expanded(
+                            child: DropdownButtonFormField(
+                                key: _fuelTypeState,
+                                decoration: const InputDecoration(
+                                    labelText: "Fuel Type"),
+                                items: _fuelTypes.map((String value) {
+                                  return DropdownMenuItem(
+                                      value: value,
+                                      child: Row(
+                                        children: [
+                                          // const Icon(Icons.park_outlined),
+                                          Text(value)
+                                        ],
+                                      ));
+                                }).toList(),
+                                onChanged: (String? value) {
+                                  _onFuelTypeChanged(value);
+                                }))
+                      ],
                     ),
-                  );
-                },
-                body: Column(children: <Widget>[
-                  Row(
-                    children: [
+                    Row(children: [
+                      // CFL field
                       Expanded(
-                          child: DropdownButtonFormField(
-                              key: _fuelTypeState,
-                              decoration:
-                                  const InputDecoration(labelText: "Fuel Type"),
-                              items: _fuelTypes.map((String value) {
-                                return DropdownMenuItem(
-                                    value: value,
-                                    child: Row(
-                                      children: [
-                                        // const Icon(Icons.park_outlined),
-                                        Text(value)
-                                      ],
-                                    ));
-                              }).toList(),
-                              onChanged: (String? value) {
-                                _onFuelTypeChanged(value);
-                              }))
-                    ],
-                  ),
-                  Row(children: [
-                    // CFL field
-                    Expanded(
-                        child: TextField(
-                      controller: _cflController,
-                      decoration: const InputDecoration(
-                          labelText: "Crown Fuel Load (kg/m^2)"),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        if (double.tryParse(value) != null) {
-                          _onCFLChanged(double.parse(value));
-                        }
-                      },
-                    )),
-                    // GFL field
-                    Expanded(
-                        child: TextField(
-                      controller: _gflController,
-                      decoration: const InputDecoration(
-                          labelText: "Grass Fuel Load (kg/m^2)"),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        if (double.tryParse(value) != null) {
-                          _onGFLChanged(double.parse(value));
-                        }
-                      },
-                    )),
+                          child: TextField(
+                        controller: _cflController,
+                        decoration: const InputDecoration(
+                            labelText: "Crown Fuel Load (kg/m^2)"),
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          if (double.tryParse(value) != null) {
+                            _onCFLChanged(double.parse(value));
+                          }
+                        },
+                      )),
+                      // GFL field
+                      Expanded(
+                          child: TextField(
+                        controller: _gflController,
+                        decoration: const InputDecoration(
+                            labelText: "Grass Fuel Load (kg/m^2)"),
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          if (double.tryParse(value) != null) {
+                            _onGFLChanged(double.parse(value));
+                          }
+                        },
+                      )),
+                    ]),
+                    // PDF field
+                    Row(children: [
+                      Expanded(
+                          child: TextField(
+                        controller: pdfController,
+                        decoration: const InputDecoration(
+                            labelText: "Percent Dead Balsam Fir"),
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          if (double.tryParse(value) != null) {
+                            _onPDFChanged(double.parse(value));
+                          }
+                        },
+                      )),
+                      // CBH field
+                      Expanded(
+                          child: TextField(
+                        controller: cbhController,
+                        decoration: const InputDecoration(
+                            labelText: "Crown to base height (m)"),
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          if (double.tryParse(value) != null) {
+                            _onCBHChanged(double.parse(value));
+                          }
+                        },
+                      ))
+                    ]),
+                    Row(children: [
+                      // PC field
+                      Expanded(
+                          child: TextField(
+                        controller: pcController,
+                        decoration:
+                            const InputDecoration(labelText: "Percent Conifer"),
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          if (double.tryParse(value) != null) {
+                            _onPCChanged(double.parse(value));
+                          }
+                        },
+                      ))
+                    ]),
+                    // Ellapsed time
+                    Row(children: [
+                      Expanded(
+                          child: Text('Time ellapsed: ${_t.toInt()} minutes')),
+                      Expanded(
+                          child: Slider(
+                        value: _t,
+                        min: 0,
+                        max: 120,
+                        divisions: 12,
+                        label: '${_t.toInt()} minutes',
+                        onChanged: (value) {
+                          _onTChanged(value);
+                        },
+                      )),
+                    ]),
+                    // Theta
+                    Row(children: [
+                      Expanded(
+                          child: Text(
+                              'Theta: ${degreesToCompassPoint(_theta)} ${_theta.toString()}\u00B0')),
+                      Expanded(
+                          child: Slider(
+                        value: _theta,
+                        min: 0,
+                        max: 360,
+                        divisions: 16,
+                        label:
+                            '${degreesToCompassPoint(_theta)} ${_theta}\u00B0',
+                        onChanged: (value) {
+                          _onThetaChanged(value);
+                        },
+                      )),
+                    ]),
                   ]),
-                  // PDF field
-                  Row(children: [
-                    Expanded(
-                        child: TextField(
-                      controller: pdfController,
-                      decoration: const InputDecoration(
-                          labelText: "Percent Dead Balsam Fir"),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        if (double.tryParse(value) != null) {
-                          _onPDFChanged(double.parse(value));
-                        }
-                      },
-                    )),
-                    // CBH field
-                    Expanded(
-                        child: TextField(
-                      controller: cbhController,
-                      decoration: const InputDecoration(
-                          labelText: "Crown to base height (m)"),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        if (double.tryParse(value) != null) {
-                          _onCBHChanged(double.parse(value));
-                        }
-                      },
-                    ))
-                  ]),
-                  Row(children: [
-                    // PC field
-                    Expanded(
-                        child: TextField(
-                      controller: pcController,
-                      decoration:
-                          const InputDecoration(labelText: "Percent Conifer"),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        if (double.tryParse(value) != null) {
-                          _onPCChanged(double.parse(value));
-                        }
-                      },
-                    ))
-                  ]),
-                  // Ellapsed time
-                  Row(children: [
-                    Expanded(
-                        child: Text('Time ellapsed: ${_t.toInt()} minutes')),
-                    Expanded(
-                        child: Slider(
-                      value: _t,
-                      min: 0,
-                      max: 120,
-                      divisions: 12,
-                      label: '${_t.toInt()} minutes',
-                      onChanged: (value) {
-                        _onTChanged(value);
-                      },
-                    )),
-                  ]),
-                  // Theta
-                  Row(children: [
-                    Expanded(
-                        child: Text(
-                            'Theta: ${degreesToCompassPoint(_theta)} ${_theta.toString()}\u00B0')),
-                    Expanded(
-                        child: Slider(
-                      value: _theta,
-                      min: 0,
-                      max: 360,
-                      divisions: 16,
-                      label: '${degreesToCompassPoint(_theta)} ${_theta}\u00B0',
-                      onChanged: (value) {
-                        _onThetaChanged(value);
-                      },
-                    )),
-                  ]),
-                ]),
-                isExpanded: _expanded,
-                canTapOnHeader: true,
-              ),
-            ],
-            expansionCallback: (panelIndex, isExpanded) {
-              _expanded = !_expanded;
-              setState(() {});
-            },
-          ),
-          // lat, long, elevation
-          Row(children: [
-            // latitude Field
-            Expanded(
-                child: TextField(
-              controller: _latitudeController,
-              decoration: const InputDecoration(labelText: "Latitude"),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                if (double.tryParse(value) != null) {
-                  _onLatitudeChanged(double.parse(value));
-                }
+                  isExpanded: _expanded,
+                  canTapOnHeader: true,
+                ),
+              ],
+              expansionCallback: (panelIndex, isExpanded) {
+                _expanded = !_expanded;
+                setState(() {});
               },
-            )),
-            // longitude Field
-            Expanded(
-                child: TextField(
-              controller: _longitudeController,
-              decoration: const InputDecoration(labelText: "Longitude"),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                if (double.tryParse(value) != null) {
-                  _onLongitudeChanged(double.parse(value));
-                }
-              },
-            )),
-            // elevation Field
-            Expanded(
-                child: TextField(
-              controller: _elevationController,
-              decoration: const InputDecoration(labelText: "Elevation"),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                if (double.tryParse(value) != null) {
-                  _onElevationChanged(double.parse(value));
-                }
-              },
-            )),
-            Expanded(
-                child: IconButton(
-                    icon: const Icon(Icons.my_location),
-                    onPressed: () {
-                      _updatePosition();
-                    }))
-          ]),
-          // Wind Speed
-          Row(children: [
-            Expanded(child: Text('Wind Speed (km/h) ${_ws.toInt()}')),
-            Expanded(
-                child: Slider(
-              value: _ws,
-              min: 0,
-              max: 100,
-              divisions: 100,
-              label: '${_ws.toInt()} km/h',
-              onChanged: (value) {
-                _onWSChanged(value);
-              },
-            )),
-          ]),
-          // Wind Azimuth
-          Row(children: [
-            Expanded(
-                child: Text(
-                    'Wind Direction: ${degreesToCompassPoint(_waz)} ${_waz.toString()}\u00B0')),
-            Expanded(
-                child: Slider(
-              value: _waz,
-              min: 0,
-              max: 360,
-              divisions: 16,
-              label: '${degreesToCompassPoint(_waz)} ${_waz}\u00B0',
-              onChanged: (value) {
-                _onWAZChanged(value);
-              },
-            )),
-          ]),
-          // Ground Slope
-          Row(children: [
-            Expanded(child: Text('Ground Slope: ${_gs.floor()}%')),
-            Expanded(
-                child: Slider(
-              value: _gs,
-              min: 0,
-              max: 90,
-              divisions: 90,
-              label: '${_gs.floor()}%',
-              onChanged: (value) {
-                _onGSChanged(value);
-              },
-            )),
-          ]),
-          // Aspect
-          Row(children: [
-            Expanded(
-                child: Text(
-                    'Aspect: ${degreesToCompassPoint(_aspect)} ${_aspect.toString()}\u00B0')),
-            Expanded(
-                child: Slider(
-              value: _aspect,
-              min: 0,
-              max: 360,
-              divisions: 16,
-              label:
-                  '${degreesToCompassPoint(_aspect)} ${_aspect.toString()}\u00B0',
-              onChanged: (value) {
-                _onAspectChanged(value);
-              },
-            )),
-          ]),
-          Row(children: [
-            Expanded(child: Text('Buildup Index: ${_bui.toInt()}')),
-            Expanded(
-                child: Slider(
-              value: _bui,
-              min: 0,
-              max: 200,
-              divisions: 200,
-              label: '${_bui.toInt()}',
-              onChanged: (value) {
-                _onBUIChanged(value);
-              },
-            )),
-          ]),
-          Row(children: [
-            Expanded(child: Text('Curing: ${_cc.toInt()}%')),
-            Expanded(
-                child: Slider(
-              value: _cc,
-              min: 0,
-              max: 100,
-              divisions: 100,
-              label: '${_cc.toInt()}%',
-              onChanged: (value) {
-                _onCCChanged(value);
-              },
-            )),
-          ]),
-          // FFMC
-          Row(children: [
-            Expanded(child: Text('Fine Fuel Moisture Code: ${_ffmc.toInt()}')),
-            Expanded(
-                child: Slider(
-              value: _ffmc,
-              min: 0,
-              max: 100,
-              divisions: 100,
-              label: '${_ffmc.toInt()}',
-              onChanged: (value) {
-                _onFFMCChanged(value);
-              },
-            )),
-          ]),
-          Row(children: [
-            const Expanded(child: Text('Initial Spread Index')),
-            Expanded(
-              child: Text('${prediction?.ISI.toStringAsFixed(0)}'),
-            )
-          ]),
-          Row(children: [
-            const Expanded(child: Text('Foliar Moisture Content')),
-            Expanded(child: Text('${prediction?.FMC.toStringAsFixed(0)}'))
-          ]),
-          Row(children: [
-            const Expanded(child: Text('Surface Fuel Consumption')),
-            Expanded(
-                child: Text('${prediction?.SFC.toStringAsFixed(0)} (kg/m^2)'))
-          ]),
-          Row(children: [
-            const Expanded(child: Text('Crown fraction burned')),
-            Expanded(
-                child: Text(
-                    '${(prediction == null ? ' ' : (prediction.CFB * 100).toStringAsFixed(0))} %'))
-          ]),
-          Row(children: [
-            const Expanded(child: Text('Fuel Consumption')),
-            Expanded(
-                child: Text('${prediction?.TFC.toStringAsFixed(2)} (kg/m^2)'))
-          ]),
-          Container(
-              color: getIntensityClassColor(intensityClass),
-              child: Row(children: [
-                const Expanded(child: Text('Rate of spread')),
-                Expanded(
-                    child:
-                        Text('${prediction?.ROS.toStringAsFixed(0)} (m/min)')),
-              ])),
-          Container(
-              color: getIntensityClassColor(intensityClass),
-              child: Row(children: [
-                const Expanded(child: Text('Head fire intensity')),
-                Expanded(
-                    child:
-                        Text('${prediction?.HFI.toStringAsFixed(0)} (kW/m)')),
-              ])),
-          Container(
-              color: getIntensityClassColor(intensityClass),
-              child: Row(children: [
-                const Expanded(child: Text('Intensity class')),
-                Expanded(child: Text('$intensityClass')),
-              ])),
-          Row(children: [
-            const Expanded(child: Text('Type of fire')),
-            Expanded(
-                child: Text(prediction == null
-                    ? ''
-                    : getFireDescription(prediction.FD)))
-          ]),
-          Row(children: [
-            const Expanded(child: Text('Crown Fuel Consumption')),
-            Expanded(
-                child: Text('${prediction?.CFC.toStringAsFixed(0)} (kg/m^2)'))
-          ]),
-          Row(children: [
-            Expanded(child: Text('${_t.toStringAsFixed(0)} minute fire size')),
-            Expanded(child: Text('${fireSize?.toStringAsFixed(0)} (ha)'))
-          ]),
-          Row(children: [
-            const Expanded(child: Text('Back rate of spread')),
-            Expanded(
-                child: Text(
-                    '${prediction?.secondary?.BROS.toStringAsFixed(0)} (m/min)'))
-          ]),
-          Row(children: [
-            const Expanded(child: Text('Length to breadth ratio')),
-            Expanded(
-                child: Text('${prediction?.secondary?.LB.toStringAsFixed(2)}'))
-          ]),
-          Row(children: [
-            const Expanded(child: Text('Net effective wind speed')),
-            Expanded(
-                child: Text('${prediction?.WSV.toStringAsFixed(0)} (km/h)'))
-          ]),
-          Row(children: [
-            const Expanded(child: Text('Net effective wind direction')),
-            Expanded(
-                child: Text(
-                    '${prediction != null ? degreesToCompassPoint(prediction.RAZ) : ''} ${prediction?.RAZ.toStringAsFixed(1)}(\u00B0)'))
-          ]),
-          Row(children: [
-            Expanded(child: Text(getSecondaryText(prediction))),
-          ])
-          // prediction != null && prediction.secondary != null ? Text('Secondary outputs:') : Text(''))
-          // Text('Initial Spread Index: ${isi?.toStringAsFixed(0)}'),
-          // Text('Foliar Moisture Content: ${fmc?.toStringAsFixed(0)}'),
-          // Text('Surface Fuel Consumption (kg/m^2): ${sfc?.toStringAsFixed(0)}'),
-          // Text(
-          //     'Crown fraction burned: ${(cfb == null ? 0.0 : cfb * 100).toStringAsFixed(0)} %'),
-          // Text('Fuel Consumption (kg/m^2): ${fc?.toStringAsFixed(0)}'),
-          // Text('Rate of spread: ${ros?.toStringAsFixed(0)} (m/min)'),
-          // Text(
-          //   'Head fire intensity: ${hfi?.toStringAsFixed(0)} (kW/m)',
-          //   style: TextStyle(
-          //       backgroundColor: getIntensityClassColor(intensityClass!)),
-          // ),
-          // Text('Intensity class: $intensityClass',
-          //     style: TextStyle(
-          //         backgroundColor: getIntensityClassColor(intensityClass))),
-          // Text('Type of fire: $fireDescription')
-          // Text(
-          //     // ignore: unnecessary_brace_in_string_interps
-          //     'fuel: ${fuelType}, bui: ${_bui}, fmc: ${_fmc}, sfc: ${_sfc}, pc: ${_pc}, pdf: ${_pdf}, cc: ${_cc}, cbh: ${_cbh}, cfl: ${_cfl}'),
-        ],
-      )),
-    );
+            ),
+            // lat, long, elevation
+            Row(children: [
+              // latitude Field
+              Expanded(
+                  child: TextField(
+                controller: _latitudeController,
+                decoration: const InputDecoration(labelText: "Latitude"),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  if (double.tryParse(value) != null) {
+                    _onLatitudeChanged(double.parse(value));
+                  }
+                },
+              )),
+              // longitude Field
+              Expanded(
+                  child: TextField(
+                controller: _longitudeController,
+                decoration: const InputDecoration(labelText: "Longitude"),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  if (double.tryParse(value) != null) {
+                    _onLongitudeChanged(double.parse(value));
+                  }
+                },
+              )),
+              // elevation Field
+              Expanded(
+                  child: TextField(
+                controller: _elevationController,
+                decoration: const InputDecoration(labelText: "Elevation"),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  if (double.tryParse(value) != null) {
+                    _onElevationChanged(double.parse(value));
+                  }
+                },
+              )),
+              Expanded(
+                  child: IconButton(
+                      icon: const Icon(Icons.my_location),
+                      onPressed: () {
+                        _updatePosition();
+                      }))
+            ]),
+            // Wind Speed
+            Row(children: [
+              Expanded(child: Text('Wind Speed (km/h) ${_ws.toInt()}')),
+              Expanded(
+                  child: Slider(
+                value: _ws,
+                min: 0,
+                max: 100,
+                divisions: 100,
+                label: '${_ws.toInt()} km/h',
+                onChanged: (value) {
+                  _onWSChanged(value);
+                },
+              )),
+            ]),
+            // Wind Azimuth
+            Row(children: [
+              Expanded(
+                  child: Text(
+                      'Wind Direction: ${degreesToCompassPoint(_waz)} ${_waz.toString()}\u00B0')),
+              Expanded(
+                  child: Slider(
+                value: _waz,
+                min: 0,
+                max: 360,
+                divisions: 16,
+                label: '${degreesToCompassPoint(_waz)} ${_waz}\u00B0',
+                onChanged: (value) {
+                  _onWAZChanged(value);
+                },
+              )),
+            ]),
+            // Ground Slope
+            Row(children: [
+              Expanded(child: Text('Ground Slope: ${_gs.floor()}%')),
+              Expanded(
+                  child: Slider(
+                value: _gs,
+                min: 0,
+                max: 90,
+                divisions: 90,
+                label: '${_gs.floor()}%',
+                onChanged: (value) {
+                  _onGSChanged(value);
+                },
+              )),
+            ]),
+            // Aspect
+            Row(children: [
+              Expanded(
+                  child: Text(
+                      'Aspect: ${degreesToCompassPoint(_aspect)} ${_aspect.toString()}\u00B0')),
+              Expanded(
+                  child: Slider(
+                value: _aspect,
+                min: 0,
+                max: 360,
+                divisions: 16,
+                label:
+                    '${degreesToCompassPoint(_aspect)} ${_aspect.toString()}\u00B0',
+                onChanged: (value) {
+                  _onAspectChanged(value);
+                },
+              )),
+            ]),
+            Row(children: [
+              Expanded(child: Text('Buildup Index: ${_bui.toInt()}')),
+              Expanded(
+                  child: Slider(
+                value: _bui,
+                min: 0,
+                max: 200,
+                divisions: 200,
+                label: '${_bui.toInt()}',
+                onChanged: (value) {
+                  _onBUIChanged(value);
+                },
+              )),
+            ]),
+            Row(children: [
+              Expanded(child: Text('Curing: ${_cc.toInt()}%')),
+              Expanded(
+                  child: Slider(
+                value: _cc,
+                min: 0,
+                max: 100,
+                divisions: 100,
+                label: '${_cc.toInt()}%',
+                onChanged: (value) {
+                  _onCCChanged(value);
+                },
+              )),
+            ]),
+            // FFMC
+            Row(children: [
+              Expanded(
+                  child: Text('Fine Fuel Moisture Code: ${_ffmc.toInt()}')),
+              Expanded(
+                  child: Slider(
+                value: _ffmc,
+                min: 0,
+                max: 100,
+                divisions: 100,
+                label: '${_ffmc.toInt()}',
+                onChanged: (value) {
+                  _onFFMCChanged(value);
+                },
+              )),
+            ]),
+
+            // prediction != null && prediction.secondary != null ? Text('Secondary outputs:') : Text(''))
+            // Text('Initial Spread Index: ${isi?.toStringAsFixed(0)}'),
+            // Text('Foliar Moisture Content: ${fmc?.toStringAsFixed(0)}'),
+            // Text('Surface Fuel Consumption (kg/m^2): ${sfc?.toStringAsFixed(0)}'),
+            // Text(
+            //     'Crown fraction burned: ${(cfb == null ? 0.0 : cfb * 100).toStringAsFixed(0)} %'),
+            // Text('Fuel Consumption (kg/m^2): ${fc?.toStringAsFixed(0)}'),
+            // Text('Rate of spread: ${ros?.toStringAsFixed(0)} (m/min)'),
+            // Text(
+            //   'Head fire intensity: ${hfi?.toStringAsFixed(0)} (kW/m)',
+            //   style: TextStyle(
+            //       backgroundColor: getIntensityClassColor(intensityClass!)),
+            // ),
+            // Text('Intensity class: $intensityClass',
+            //     style: TextStyle(
+            //         backgroundColor: getIntensityClassColor(intensityClass))),
+            // Text('Type of fire: $fireDescription')
+            // Text(
+            //     // ignore: unnecessary_brace_in_string_interps
+            //     'fuel: ${fuelType}, bui: ${_bui}, fmc: ${_fmc}, sfc: ${_sfc}, pc: ${_pc}, pdf: ${_pdf}, cc: ${_cc}, cbh: ${_cbh}, cfl: ${_cfl}'),
+          ],
+        ),
+      ),
+      prediction != null
+          ? Results(prediction: prediction, minutes: _t, fireSize: fireSize)
+          : Container(),
+    ]);
   }
 }
 
@@ -941,8 +856,12 @@ class HomePage extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Fire Behaviour Prediction'),
         ),
-        body: const Center(
-          child: FireBehaviourPredictionForm(),
+        body: Center(
+          // child: SingleChildScrollView(child: FireBehaviourPredictionForm()),
+          child: SingleChildScrollView(
+              child: Column(
+            children: const [FireBehaviourPredictionForm()],
+          )),
         ));
   }
 }

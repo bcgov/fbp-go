@@ -18,6 +18,22 @@ import 'c6_calc.dart';
 import 'ros_calc.dart';
 import 'tfc_calc.dart';
 
+class ValueDescriptionPair {
+  final dynamic value;
+  final String description;
+
+  ValueDescriptionPair(this.value, this.description);
+
+  String valueToString() {
+    if (value is double) {
+      return value.toStringAsFixed(2);
+    } else if (value is String) {
+      return value.toString();
+    }
+    throw Exception('Unsupported value type for $description');
+  }
+}
+
 class FireBehaviourPredictionInput {
   String FUELTYPE; // The Fire Behaviour Prediction FuelType
   double LAT; // Latitude
@@ -107,74 +123,103 @@ class FireBehaviourPredictionSecondary {
   double DH; // Fire spread distance head
   double DB; // Fire spread distance back
   double DF; // Fire spread distance flank
-  FireBehaviourPredictionSecondary({
-    required this.SF,
-    required this.CSI,
-    required this.RSO,
-    required this.BE,
-    required this.LB,
-    required this.LBt,
-    required this.BROS,
-    required this.FROS,
-    required this.E,
-    required this.TROS,
-    required this.ROSt,
-    required this.BROSt,
-    required this.FROSt,
-    required this.TROSt,
-    required this.FCFB,
-    required this.BCFB,
-    required this.TCFB,
-    required this.FTFC,
-    required this.BTFC,
-    required this.TTFC,
-    required this.FFI,
-    required this.BFI,
-    required this.TFI,
-    required this.HROSt,
-    required this.TI,
-    required this.FTI,
-    required this.BTI,
-    required this.TTI,
-    required this.DH,
-    required this.DB,
-    required this.DF,
-  });
+  Map<String, ValueDescriptionPair> lookup;
+
+  FireBehaviourPredictionSecondary(
+      {required this.SF,
+      required this.CSI,
+      required this.RSO,
+      required this.BE,
+      required this.LB,
+      required this.LBt,
+      required this.BROS,
+      required this.FROS,
+      required this.E,
+      required this.TROS,
+      required this.ROSt,
+      required this.BROSt,
+      required this.FROSt,
+      required this.TROSt,
+      required this.FCFB,
+      required this.BCFB,
+      required this.TCFB,
+      required this.FTFC,
+      required this.BTFC,
+      required this.TTFC,
+      required this.FFI,
+      required this.BFI,
+      required this.TFI,
+      required this.HROSt,
+      required this.TI,
+      required this.FTI,
+      required this.BTI,
+      required this.TTI,
+      required this.DH,
+      required this.DB,
+      required this.DF,
+      this.lookup = const <String, ValueDescriptionPair>{}}) {
+    // We don't have reflection in dart (at least, not without serious
+    // consequence, so we have to painfully construct this lookup - which is
+    // fine, because we need the descriptions in somewhere anyway.
+    lookup = <String, ValueDescriptionPair>{
+      'SF': ValueDescriptionPair(SF, 'Spread Factor'),
+      'CSI': ValueDescriptionPair(CSI, 'Critical Surface Interval'),
+      'RSO': ValueDescriptionPair(RSO, 'Surface Fire Rate of Spread'),
+      'BE': ValueDescriptionPair(BE, 'Buildup Effect'),
+      'LB': ValueDescriptionPair(LB, 'Length to Breadth Ratio'),
+      'LBt': ValueDescriptionPair(LBt, 'Length to Breadth Ratio Time'),
+      'BROS': ValueDescriptionPair(BROS, 'Back Fire Rate of Spread'),
+      'FROS': ValueDescriptionPair(FROS, 'Flank Fire Rate of Spread'),
+      'E': ValueDescriptionPair(E, 'Eccentricity'),
+      'TROS': ValueDescriptionPair(TROS, 'Rate of Spread Towards Angle Theta'),
+      'ROSt': ValueDescriptionPair(ROSt, 'Rate of Spread At Time T'),
+      'BROSt': ValueDescriptionPair(BROSt, 'Rate of Spread At Time T For Back'),
+      'FROSt':
+          ValueDescriptionPair(FROSt, 'Rate of Spread At Time T For Flank'),
+      'TROSt': ValueDescriptionPair(
+          TROSt, 'Rate of Spread Towards Angle Theta At Time T'),
+      'FCFB': ValueDescriptionPair(FCFB, 'Crown Fraction Burned For Flank'),
+      'BCFB': ValueDescriptionPair(BCFB, 'Crown Fraction Burned For Back'),
+      'TCFB':
+          ValueDescriptionPair(TCFB, 'Crown Fraction Burned At Angle Theta'),
+      'FTFC':
+          ValueDescriptionPair(FTFC, 'Total Fuel Consumption For The Flank'),
+      'BTFC': ValueDescriptionPair(BTFC, 'Total Fuel Consumption For The Back'),
+      'TTFC':
+          ValueDescriptionPair(TTFC, 'Total Fuel Consumption At Angle Theta'),
+      'FFI': ValueDescriptionPair(FFI, 'Fire Intensity At The Flank'),
+      'BFI': ValueDescriptionPair(BFI, 'Fire Intensity At The Back'),
+      'TFI': ValueDescriptionPair(TFI, 'Fire Intensity At Angle Theta'),
+      'HROSt': ValueDescriptionPair(HROSt, 'Rate of Spread At Time T For Head'),
+      'TI': ValueDescriptionPair(
+          TI, 'Elapsed Time to Crown Fire Initiation for Head'),
+      'FTI': ValueDescriptionPair(
+          FTI, 'Elapsed Time to Crown Fire Initiation for Flank'),
+      'BTI': ValueDescriptionPair(
+          BTI, 'Elapsed Time to Crown Fire Initiation for Back'),
+      'TTI': ValueDescriptionPair(
+          TTI, 'Elapsed Time to Crown Fire Initiation for theta'),
+      'DH': ValueDescriptionPair(DH, 'Fire Spread Distance Head'),
+      'DB': ValueDescriptionPair(DB, 'Fire Spread Distance Back'),
+      'DF': ValueDescriptionPair(DF, 'Fire Spread Distance Flank'),
+    };
+  }
+
+  ValueDescriptionPair getProp(String key) {
+    var result = lookup[key];
+    if (result == null) {
+      throw ArgumentError('Unknown key: $key');
+    }
+    return result;
+  }
 
   @override
   String toString() {
-    return """Secondary Outputs:
-Spread Factor: ${this.SF.toStringAsFixed(2)},
-Critical Surface Interval: ${this.CSI.toStringAsFixed(2)},
-Surface Fire Rate of Spread: ${this.RSO.toStringAsFixed(2)},
-Buildup Effect: ${this.BE.toStringAsFixed(2)},
-Length to Breadth Ratio: ${this.LB.toStringAsFixed(2)},
-Length to Breadth Ratio Time: ${this.LBt.toStringAsFixed(2)},
-Back Fire Rate of Spread: ${this.BROS.toStringAsFixed(2)},
-Flank Fire Rate of Spread: ${this.FROS.toStringAsFixed(2)},
-Eccentricity: ${this.E.toStringAsFixed(2)},
-Rate of Spread Towards Angle Theta: ${this.TROS.toStringAsFixed(2)},
-Rate of Spread At Time T: ${this.ROSt.toStringAsFixed(2)},
-Rate of Spread At Time T For Back Fire: ${this.BROSt.toStringAsFixed(2)},
-Rate of Spread At Time T For Flank Fire: ${this.FROSt.toStringAsFixed(2)},
-Rate of Spread Towards Angle Theta At Time T: ${this.TROSt.toStringAsFixed(2)},
-Crown Fraction Burned For Flank: ${this.FCFB.toStringAsFixed(2)},
-Crown Fraction Burned For Back: ${this.BCFB.toStringAsFixed(2)},
-Crown Fraction Burned At Angle Theta: ${this.TCFB.toStringAsFixed(2)},
-Total Fuel Consumption For Flank: ${this.FTFC.toStringAsFixed(2)},
-Total Fuel Consumption For Back: ${this.BTFC.toStringAsFixed(2)},
-Total Fuel Consumption At Angle Theta: ${this.TTFC.toStringAsFixed(2)},
-Fire Intensity At Flank: ${this.FFI.toStringAsFixed(2)},
-Fire Intensity At Back: ${this.BFI.toStringAsFixed(2)},
-Fire Intensity At Angle Theta: ${this.TFI.toStringAsFixed(2)},
-Rate of Spread At Time T For Head Fire: ${this.HROSt.toStringAsFixed(2)},
-Elapsed Time To Crown Fire Initiation For Head: ${this.TI.toStringAsFixed(2)},
-Elapsed Time To Crown Fire Initiation For Flank: ${this.FTI.toStringAsFixed(2)},
-Elapsed Time To Crown Fire Initiation For Back: ${this.BTI.toStringAsFixed(2)},
-Elapsed Time To Crown Fire Initiation For Theta: ${this.TTI.toStringAsFixed(2)},
-Fire Spread Distance Head: ${this.DH.toStringAsFixed(2)},
-Fire Spread Distance Back: ${this.DB.toStringAsFixed(2)},
-Fire Spread Distance Flank: ${this.DF.toStringAsFixed(2)}""";
+    String result = 'Secondary Outputs:\n';
+    lookup.forEach((String key, ValueDescriptionPair pair) {
+      result += '${pair.description}: ${pair.valueToString()}\n';
+    });
+    return result;
   }
 }
 
