@@ -23,9 +23,13 @@ class BasicFireBehaviourPredictionFormState
             },
           ))
         ]),
-        CoordinatePicker(onChanged: (Coordinate coordinate) {
-          print(coordinate.toString());
-        })
+        Row(
+          children: [
+            Expanded(child: BasicInput(onChanged: (dynamic thing) {
+              print('basic input changed to $thing');
+            }))
+          ],
+        )
       ],
     );
   }
