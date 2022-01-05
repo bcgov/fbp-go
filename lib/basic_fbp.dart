@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'fire_widgets.dart';
-import 'coordinate_picker.dart';
 import 'fire.dart';
 
 class BasicFireBehaviourPredictionFormState
