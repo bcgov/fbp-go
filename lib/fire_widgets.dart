@@ -3,6 +3,25 @@ import 'package:flutter/material.dart';
 
 import 'coordinate_picker.dart';
 
+Color getIntensityClassColor(int intensityClass) {
+  switch (intensityClass) {
+    case 1:
+      return Colors.blueGrey.shade700;
+    case 2:
+      return Colors.blueGrey.shade500;
+    case 3:
+      return Colors.blueGrey.shade200;
+    case 4:
+      return Colors.red.shade200;
+    case 5:
+      return Colors.red;
+    case 6:
+      return Colors.red.shade700;
+    default:
+      throw Exception('Invalid intensity class');
+  }
+}
+
 class FuelTypePresetDropdown extends StatelessWidget {
   final _presets = getFuelTypePresets();
   final ValueChanged<FuelTypePreset?>? onChanged;

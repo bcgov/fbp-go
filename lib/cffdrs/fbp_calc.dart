@@ -51,7 +51,7 @@ class FireBehaviourPredictionInput {
   double? SH; // ?? used in CBH calculation.
   double? PC; // Percent Conifer (%) (optional, not all FuelTypes have this)
   double? PDF; // Percent Dead Balsam Fir (%)
-  double GFL; // Grass Fuel Load (kg/m^2)
+  double? GFL; // Grass Fuel Load (kg/m^2)
   double? CC; // Degree of Curing (just "C" in FCFDG 1992)
   double? THETA; // Calculate the rate of spread towards angle theta
   bool ACCEL; // Use acceleration.
@@ -79,7 +79,7 @@ class FireBehaviourPredictionInput {
       this.SH,
       this.PC,
       this.PDF,
-      required this.GFL,
+      this.GFL,
       this.CC,
       this.THETA,
       required this.ACCEL,
@@ -290,7 +290,7 @@ FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,
   double SH = input.SH ?? 0.0;
   double? PC = input.PC;
   double? PDF = input.PDF;
-  double GFL = input.GFL;
+  double? GFL = input.GFL;
   double? CC = input.CC;
   double THETA = input.THETA ?? 0.0;
   bool ACCEL = input.ACCEL;
@@ -362,7 +362,7 @@ FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,
   if (CC != null && (CC < 0 || CC > 100)) {
     throw Exception("CC is out of range, must be between 0 and 100");
   }
-  if (GFL < 0 || GFL > 100) {
+  if (GFL != null && (GFL < 0 || GFL > 100)) {
     throw Exception("GFL is out of range, must be between 0 and 100");
   }
   if (LAT < -90 || LAT > 90) {

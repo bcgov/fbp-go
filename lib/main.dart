@@ -11,12 +11,6 @@ import 'basic_fbp.dart';
 
 void main() => runApp(const MyApp());
 
-int getDayOfYear() {
-  final now = DateTime.now();
-  final diff = now.difference(DateTime(now.year, 1, 1, 0, 0));
-  return diff.inDays;
-}
-
 Color getIntensityClassColor(int? intensityClass) {
   switch (intensityClass) {
     case 1:

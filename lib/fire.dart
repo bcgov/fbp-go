@@ -49,15 +49,21 @@ class FuelTypePreset {
   final double? pc;
   final double? pdf;
   final double? cbh;
+  final double? gfl;
   FuelTypePreset(this.code, this.description,
-      {required this.cfl, this.pc, this.pdf, this.cbh});
+      {required this.cfl, this.pc, this.pdf, this.cbh, this.gfl});
+}
+
+FuelTypePreset getC2BorealSpruce() {
+  return FuelTypePreset(FuelType.C2, 'C-2 boreal spruce',
+      cfl: 0.8, pc: 100, cbh: 3);
 }
 
 List<FuelTypePreset> getFuelTypePresets() {
   return [
     FuelTypePreset(FuelType.C1, 'C-1 spruce-lichen woodland',
         cfl: 0.75, pc: 100, cbh: 2),
-    FuelTypePreset(FuelType.C2, 'C-2 boreal spruce', cfl: 0.8, pc: 100, cbh: 3),
+    getC2BorealSpruce(),
     FuelTypePreset(FuelType.C3, 'C-3 mature jack or lodgepole pine',
         cfl: 1.15, pc: 100, cbh: 3),
     FuelTypePreset(FuelType.C4, 'C-4 immature jack or lodgepole pine',
@@ -100,8 +106,8 @@ List<FuelTypePreset> getFuelTypePresets() {
     FuelTypePreset(
         FuelType.M4, 'M-4 dead balsam mixedwood-green, 100% dead fir',
         cfl: 0.8, pdf: 100, cbh: 6),
-    FuelTypePreset(FuelType.O1A, 'O-1a matted grass', cfl: 1.0),
-    FuelTypePreset(FuelType.O1B, 'O-1b standing grass', cfl: 1.0),
+    FuelTypePreset(FuelType.O1A, 'O-1a matted grass', cfl: 1.0, gfl: 0.35),
+    FuelTypePreset(FuelType.O1B, 'O-1b standing grass', cfl: 1.0, gfl: 0.35),
     FuelTypePreset(FuelType.S1, 'S-1 jack or lodgepole pine slash', cfl: 1.0),
     FuelTypePreset(FuelType.S2, 'S-2 white spruce/balsam slash', cfl: 1.0),
     FuelTypePreset(FuelType.S3, 'S-3 coastal cedar/hemlock/Douglas-fir slash',
@@ -225,4 +231,10 @@ String degreesToCompassPoint(double azimuth) {
     'N'
   ];
   return values[(azimuth / 22.5).floor()];
+}
+
+int getDayOfYear() {
+  final now = DateTime.now();
+  final diff = now.difference(DateTime(now.year, 1, 1, 0, 0));
+  return diff.inDays;
 }

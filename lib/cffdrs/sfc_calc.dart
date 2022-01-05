@@ -3,7 +3,7 @@
 import 'dart:math';
 
 double SFCcalc(
-    String FUELTYPE, double FFMC, double BUI, double? PC, double GFL) {
+    String FUELTYPE, double FFMC, double BUI, double? PC, double? GFL) {
   /**
   #############################################################################
   # Description:
@@ -70,6 +70,9 @@ double SFCcalc(
   }
   // #Eq. 18 (FCFDG 1992) - Grass Fuel Types
   else if (["O1A", "O1B"].contains(FUELTYPE)) {
+    if (GFL == null) {
+      throw Exception("GFL is null");
+    }
     SFC = GFL;
   }
   // #Eq. 19, 20, 25 (FCFDG 1992) - S1 Fuel Type
