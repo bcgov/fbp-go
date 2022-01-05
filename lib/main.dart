@@ -1,4 +1,5 @@
-import 'package:fire_behaviour_app/coordinate_picker.dart';
+import 'dart:developer';
+
 import 'package:fire_behaviour_app/fire.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/scheduler.dart';
@@ -73,20 +74,11 @@ class AdvancedFireBehaviourPredictionFormState
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
   FuelType _fuelType = FuelType.C2;
-  double _bui = 50;
-  double _ffmc = 77;
+  BasicInput _basicInput = BasicInput();
   double? _pc = 0;
   double? _pdf = 0;
-  double _cc = 50;
   double? _cbh = 0;
   double _cfl = 0;
-  double _latitude = 37;
-  double _longitude = -122;
-  double _elevation = 5;
-  double _ws = 5;
-  double _waz = 0;
-  double _gs = 0;
-  double _aspect = 0;
   double _t = 60;
   double _gfl = 0.35;
   double _theta = 0;
@@ -124,46 +116,15 @@ class AdvancedFireBehaviourPredictionFormState
     }
   }
 
+  void _onBasicInputChanged(BasicInput basicInput) {
+    setState(() {
+      _basicInput = basicInput;
+    });
+  }
+
   void _onFuelTypeChanged(FuelType fuelType) {
     setState(() {
       _fuelType = fuelType;
-    });
-  }
-
-  void _onGSChanged(double gs) {
-    setState(() {
-      _gs = gs;
-    });
-  }
-
-  void _onAspectChanged(double aspect) {
-    setState(() {
-      _aspect = aspect;
-    });
-  }
-
-  void _onWAZChanged(double waz) {
-    print('_onWAZChanged ${waz}');
-    setState(() {
-      _waz = waz;
-    });
-  }
-
-  void _onWSChanged(double ws) {
-    setState(() {
-      _ws = ws;
-    });
-  }
-
-  void _onBUIChanged(double bui) {
-    setState(() {
-      _bui = bui;
-    });
-  }
-
-  void _onFFMCChanged(double ffmc) {
-    setState(() {
-      _ffmc = ffmc;
     });
   }
 
@@ -176,12 +137,6 @@ class AdvancedFireBehaviourPredictionFormState
   void _onPDFChanged(double pdf) {
     setState(() {
       _pdf = pdf;
-    });
-  }
-
-  void _onCCChanged(double cc) {
-    setState(() {
-      _cc = cc;
     });
   }
 
@@ -203,24 +158,6 @@ class AdvancedFireBehaviourPredictionFormState
     });
   }
 
-  void _onLongitudeChanged(double longitude) {
-    setState(() {
-      _longitude = longitude;
-    });
-  }
-
-  void _onLatitudeChanged(double latitude) {
-    setState(() {
-      _latitude = latitude;
-    });
-  }
-
-  void _onElevationChanged(double elevation) {
-    setState(() {
-      _elevation = elevation;
-    });
-  }
-
   void _onTChanged(double t) {
     setState(() {
       _t = t;
@@ -238,47 +175,19 @@ class AdvancedFireBehaviourPredictionFormState
   final pdfController = TextEditingController();
   final cbhController = TextEditingController();
   final _cflController = TextEditingController();
-  final _latitudeController = TextEditingController();
-  final _longitudeController = TextEditingController();
-  final _elevationController = TextEditingController();
   final _gflController = TextEditingController();
 
   // double ros = _calculateRateOfSpread()
 
-  void _updatePosition() {
-    _getPosition().then((position) {
-      setState(() {
-        print('setState ${position.latitude} ${position.longitude}');
-        _latitude = position.latitude;
-        _longitude = position.longitude;
-        _elevation = position.altitude;
-      });
-    });
-  }
-
   @override
   void initState() {
     // _onPresetChanged(_getDefaultPreset());
-    ccController.text = _cc.toString();
     pcController.text = _pc.toString();
     pdfController.text = _pdf.toString();
     cbhController.text = _cbh.toString();
     _cflController.text = _cfl.toString();
     _gflController.text = _gfl.toString();
     super.initState();
-    _updatePosition();
-  }
-
-  _getPosition() async {
-    print('calling _getPosition');
-    try {
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-      print('got position ${position}');
-      return position;
-    } catch (e) {
-      print('error getting position ${e}');
-    }
   }
 
   @override
@@ -297,30 +206,29 @@ class AdvancedFireBehaviourPredictionFormState
   @override
   Widget build(BuildContext context) {
     double? fireSize;
-    int? intensityClass;
     FireBehaviourPredictionPrimary? prediction;
     try {
       final dayOfYear = getDayOfYear();
       final input = FireBehaviourPredictionInput(
           FUELTYPE: _fuelType.name,
-          LAT: _latitude,
-          LONG: _longitude,
-          ELV: _elevation,
+          LAT: _basicInput.coordinate.latitude,
+          LONG: _basicInput.coordinate.longitude,
+          ELV: _basicInput.coordinate.altitude,
           DJ: dayOfYear,
           D0: null,
           FMC: null,
-          FFMC: _ffmc,
-          BUI: _bui,
-          WS: _ws,
-          WD: _waz,
-          GS: _gs,
+          FFMC: _basicInput.ffmc,
+          BUI: _basicInput.bui,
+          WS: _basicInput.ws,
+          WD: _basicInput.waz,
+          GS: _basicInput.gs,
           PC: _pc,
           PDF: _pdf,
           GFL: _gfl,
-          CC: _cc,
+          CC: _basicInput.cc,
           THETA: _theta,
           ACCEL: false,
-          ASPECT: _aspect,
+          ASPECT: _basicInput.aspect,
           BUIEFF: true,
           CBH: _cbh,
           CFL: _cfl,
@@ -332,18 +240,17 @@ class AdvancedFireBehaviourPredictionFormState
           prediction.RAZ < 0 ? prediction.RAZ + 360 : prediction.RAZ;
       // print('ffmc: $_ffmc');
       // print('day of year: $dayOfYear');
-      print('prediction.SFC: ${prediction.SFC}');
-      print('prediction.FMC: ${prediction.FMC}');
-      print('prediction.WSV: ${prediction.WSV}');
-      print('prediction.RAZ: ${prediction.RAZ}');
-      print('prediction.ISI: ${prediction.ISI}');
-      print('prediction.ROS: ${prediction.ROS}');
-      print('prediction.CFB: ${prediction.CFB}');
-      print('prediction.TFC: ${prediction.TFC}');
-      print('prediction.HFI: ${prediction.HFI}');
-      print('prediction.FD: ${prediction.FD}');
-      print('prediction.FD: ${prediction.CFC}');
-      intensityClass = getHeadFireIntensityClass(prediction.HFI);
+      log('prediction.SFC: ${prediction.SFC}');
+      log('prediction.FMC: ${prediction.FMC}');
+      log('prediction.WSV: ${prediction.WSV}');
+      log('prediction.RAZ: ${prediction.RAZ}');
+      log('prediction.ISI: ${prediction.ISI}');
+      log('prediction.ROS: ${prediction.ROS}');
+      log('prediction.CFB: ${prediction.CFB}');
+      log('prediction.TFC: ${prediction.TFC}');
+      log('prediction.HFI: ${prediction.HFI}');
+      log('prediction.FD: ${prediction.FD}');
+      log('prediction.FD: ${prediction.CFC}');
       if (prediction.secondary != null) {
         fireSize = getFireSize(
             _fuelType.name,
@@ -354,9 +261,9 @@ class AdvancedFireBehaviourPredictionFormState
             prediction.secondary!.LB);
       }
 
-      print('fireSize: $fireSize');
+      log('fireSize: $fireSize');
     } catch (e) {
-      print('error $e');
+      log('error $e');
     }
     // Build a Form widget using the _formKey created above.
     return Column(children: [
@@ -504,8 +411,7 @@ class AdvancedFireBehaviourPredictionFormState
                         min: 0,
                         max: 360,
                         divisions: 16,
-                        label:
-                            '${degreesToCompassPoint(_theta)} ${_theta}\u00B0',
+                        label: '${degreesToCompassPoint(_theta)} $_theta\u00B0',
                         onChanged: (value) {
                           _onThetaChanged(value);
                         },
@@ -521,121 +427,17 @@ class AdvancedFireBehaviourPredictionFormState
                 setState(() {});
               },
             ),
-            // lat, long, elevation
-            CoordinatePicker(onChanged: (coordinate) {
-              _onLatitudeChanged(coordinate.latitude);
-              _onLongitudeChanged(coordinate.longitude);
-              _onElevationChanged(coordinate.elevation);
-            }),
-            // Wind Speed
-            Row(children: [
-              Expanded(child: Text('Wind Speed (km/h) ${_ws.toInt()}')),
-              Expanded(
-                  child: Slider(
-                value: _ws,
-                min: 0,
-                max: 100,
-                divisions: 100,
-                label: '${_ws.toInt()} km/h',
-                onChanged: (value) {
-                  _onWSChanged(value);
-                },
-              )),
-            ]),
-            // Wind Azimuth
-            Row(children: [
-              Expanded(
-                  child: Text(
-                      'Wind Direction: ${degreesToCompassPoint(_waz)} ${_waz.toString()}\u00B0')),
-              Expanded(
-                  child: Slider(
-                value: _waz,
-                min: 0,
-                max: 360,
-                divisions: 16,
-                label: '${degreesToCompassPoint(_waz)} ${_waz}\u00B0',
-                onChanged: (value) {
-                  _onWAZChanged(value);
-                },
-              )),
-            ]),
-            // Ground Slope
-            Row(children: [
-              Expanded(child: Text('Ground Slope: ${_gs.floor()}%')),
-              Expanded(
-                  child: Slider(
-                value: _gs,
-                min: 0,
-                max: 90,
-                divisions: 90,
-                label: '${_gs.floor()}%',
-                onChanged: (value) {
-                  _onGSChanged(value);
-                },
-              )),
-            ]),
-            // Aspect
-            Row(children: [
-              Expanded(
-                  child: Text(
-                      'Aspect: ${degreesToCompassPoint(_aspect)} ${_aspect.toString()}\u00B0')),
-              Expanded(
-                  child: Slider(
-                value: _aspect,
-                min: 0,
-                max: 360,
-                divisions: 16,
-                label:
-                    '${degreesToCompassPoint(_aspect)} ${_aspect.toString()}\u00B0',
-                onChanged: (value) {
-                  _onAspectChanged(value);
-                },
-              )),
-            ]),
-            Row(children: [
-              Expanded(child: Text('Buildup Index: ${_bui.toInt()}')),
-              Expanded(
-                  child: Slider(
-                value: _bui,
-                min: 0,
-                max: 200,
-                divisions: 200,
-                label: '${_bui.toInt()}',
-                onChanged: (value) {
-                  _onBUIChanged(value);
-                },
-              )),
-            ]),
-            Row(children: [
-              Expanded(child: Text('Curing: ${_cc.toInt()}%')),
-              Expanded(
-                  child: Slider(
-                value: _cc,
-                min: 0,
-                max: 100,
-                divisions: 100,
-                label: '${_cc.toInt()}%',
-                onChanged: (value) {
-                  _onCCChanged(value);
-                },
-              )),
-            ]),
-            // FFMC
-            Row(children: [
-              Expanded(
-                  child: Text('Fine Fuel Moisture Code: ${_ffmc.toInt()}')),
-              Expanded(
-                  child: Slider(
-                value: _ffmc,
-                min: 0,
-                max: 100,
-                divisions: 100,
-                label: '${_ffmc.toInt()}',
-                onChanged: (value) {
-                  _onFFMCChanged(value);
-                },
-              )),
-            ]),
+            Row(
+              children: [
+                Expanded(
+                  child: BasicInputWidget(
+                    onChanged: (BasicInput basicInput) {
+                      _onBasicInputChanged(basicInput);
+                    },
+                  ),
+                )
+              ],
+            ),
             // Text('Initial Spread Index: ${isi?.toStringAsFixed(0)}'),
             // Text('Foliar Moisture Content: ${fmc?.toStringAsFixed(0)}'),
             // Text('Surface Fuel Consumption (kg/m^2): ${sfc?.toStringAsFixed(0)}'),
@@ -700,8 +502,6 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final ButtonStyle style =
-        TextButton.styleFrom(primary: Theme.of(context).colorScheme.onPrimary);
     return Scaffold(
       appBar: AppBar(title: const Text('Fire Behaviour Prediction')),
       body: _getSelectedSection(_selectedSection),

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -26,14 +28,14 @@ class CoordinatePickerState extends State<CoordinatePicker> {
       Coordinate(latitude: 37, longitude: -122, altitude: 5);
 
   _getPosition() async {
-    print('calling _getPosition');
+    log('calling _getPosition');
     try {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
-      print('got position ${position}');
+      log('got position $position');
       return position;
     } catch (e) {
-      print('error getting position ${e}');
+      log('error getting position $e');
     }
   }
 
@@ -52,6 +54,7 @@ class CoordinatePickerState extends State<CoordinatePicker> {
   @override
   void initState() {
     super.initState();
+    _updatePosition();
     _updateCoordinateControllers();
   }
 

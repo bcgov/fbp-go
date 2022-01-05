@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'fire_widgets.dart';
 import 'fire.dart';
@@ -24,8 +26,8 @@ class BasicFireBehaviourPredictionFormState
         ]),
         Row(
           children: [
-            Expanded(child: BasicInput(onChanged: (dynamic thing) {
-              print('basic input changed to $thing');
+            Expanded(child: BasicInputWidget(onChanged: (dynamic thing) {
+              log('basic input changed to $thing');
             }))
           ],
         )

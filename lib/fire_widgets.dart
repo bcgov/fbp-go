@@ -26,7 +26,7 @@ class FuelTypePresetDropdown extends StatelessWidget {
   }
 }
 
-class BasicInputStruct {
+class BasicInput {
   double ws = 5;
   double waz = 0;
   double gs = 0;
@@ -43,8 +43,8 @@ class BasicInputStruct {
   }
 }
 
-class BasicInputState extends State<BasicInput> {
-  final BasicInputStruct _input = BasicInputStruct();
+class BasicInputState extends State<BasicInputWidget> {
+  final BasicInput _input = BasicInput();
 
   void _onWSChanged(double ws) {
     setState(() {
@@ -158,7 +158,7 @@ class BasicInputState extends State<BasicInput> {
             value: _input.gs,
             min: 0,
             max: 90,
-            divisions: 90,
+            divisions: 18,
             label: '${_input.gs.floor()}%',
             onChanged: (value) {
               _onGSChanged(value);
@@ -206,7 +206,7 @@ class BasicInputState extends State<BasicInput> {
             value: _input.cc,
             min: 0,
             max: 100,
-            divisions: 100,
+            divisions: 20,
             label: '${_input.cc.toInt()}%',
             onChanged: (value) {
               _onCCChanged(value);
@@ -234,7 +234,7 @@ class BasicInputState extends State<BasicInput> {
   }
 }
 
-class BasicInput extends StatefulWidget {
+class BasicInputWidget extends StatefulWidget {
   final Function onChanged;
 
   // default coordinates for basic input
@@ -242,7 +242,7 @@ class BasicInput extends StatefulWidget {
   final double longitude = -122;
   final double altitude = 100;
 
-  const BasicInput({Key? key, required this.onChanged}) : super(key: key);
+  const BasicInputWidget({Key? key, required this.onChanged}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
