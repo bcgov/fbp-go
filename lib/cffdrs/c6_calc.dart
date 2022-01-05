@@ -41,9 +41,13 @@ double C6calc(
   // #Average foliar moisture effect
   double FMEavg = 0.778;
   // #Eq. 59 (FCFDG 1992) Crown flame temperature (degrees K)
-  double tt = 1500 - 2.75 * FMC;
+  // this calculation is done in the original R code, but the variable isn't
+  // used anywhere.
+  // double tt = 1500 - 2.75 * FMC;
   // #Eq. 60 (FCFDG 1992) Head of ignition (kJ/kg)
-  double H = 460 + 25.9 * FMC;
+  // this calculation is done in the original R code, but the variable isn't
+  // used anywhere.
+  // double H = 460 + 25.9 * FMC;
   // #Eq. 61 (FCFDG 1992) Average foliar moisture effect
   double FME = pow((1.5 - 0.00275 * FMC), 4.0) / (460 + 25.9 * FMC) * 1000;
   // #Eq. 62 (FCFDG 1992) Intermediate surface fire spread rate

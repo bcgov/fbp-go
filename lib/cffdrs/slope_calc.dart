@@ -7,7 +7,7 @@ import 'ros_calc.dart';
 double Slopecalc(
     String fuelType,
     double FFMC,
-    double BUI,
+    double? BUI,
     double WS,
     double WAZ,
     double GS,
@@ -63,8 +63,7 @@ double Slopecalc(
   */
   // #check for valid output types
   if (!["RAZ", "WAZ", "WSV"].contains(output)) {
-    throw Exception(
-        "In 'slopecalc()', '${output}' is an invalid 'output' type.");
+    throw Exception("In 'slopecalc()', '$output' is an invalid 'output' type.");
   }
   double NoBUI = -1;
   // #Eq. 39 (FCFDG 1992) - Calculate Spread Factor

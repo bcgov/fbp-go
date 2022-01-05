@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:math';
 
 double ROStcalc(String FUELTYPE, double ROSeq, double HR, double CFB) {

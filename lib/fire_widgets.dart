@@ -62,15 +62,21 @@ class FuelTypePresetDropdown extends StatefulWidget {
 }
 
 class BasicInput {
-  double ws = 5;
+  double ws;
   double waz = 0;
   double gs = 0;
   double aspect = 0;
-  double bui = 50; // TODO: Redbook has default BUI's for presets.
+  double bui;
   double cc = 50;
   double ffmc = 77;
 
-  Coordinate coordinate = Coordinate(latitude: 0, longitude: 0, altitude: 0);
+  Coordinate coordinate;
+
+  BasicInput({
+    required this.ws,
+    required this.bui,
+    required this.coordinate,
+  });
 
   @override
   String toString() {
@@ -79,7 +85,7 @@ class BasicInput {
 }
 
 class BasicInputState extends State<BasicInputWidget> {
-  final BasicInput _input = BasicInput();
+  late BasicInput _input;
 
   void _onWSChanged(double ws) {
     setState(() {
@@ -139,9 +145,7 @@ class BasicInputState extends State<BasicInputWidget> {
 
   @override
   void initState() {
-    _input.coordinate.altitude = widget.altitude;
-    _input.coordinate.latitude = widget.latitude;
-    _input.coordinate.longitude = widget.longitude;
+    _input = widget.value;
     super.initState();
   }
 
@@ -219,6 +223,7 @@ class BasicInputState extends State<BasicInputWidget> {
           )),
         ]),
         // BUI
+        // TODO: hide this if it's grass
         Row(children: [
           Expanded(child: Text('Buildup Index: ${_input.bui.toInt()}')),
           Expanded(
@@ -271,13 +276,11 @@ class BasicInputState extends State<BasicInputWidget> {
 
 class BasicInputWidget extends StatefulWidget {
   final Function onChanged;
+  final BasicInput value;
 
-  // default coordinates for basic input
-  final double latitude = 37;
-  final double longitude = -122;
-  final double altitude = 100;
-
-  const BasicInputWidget({Key? key, required this.onChanged}) : super(key: key);
+  const BasicInputWidget(
+      {Key? key, required this.onChanged, required this.value})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
