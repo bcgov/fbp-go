@@ -82,7 +82,8 @@ List<FuelTypePreset> getFuelTypePresets() {
     FuelTypePreset(FuelType.C7, 'C-7 ponderosa pine/Douglas-far',
         cfl: 0.5, pc: 100, cbh: 10),
     FuelTypePreset(FuelType.D1, 'D-1 leafless aspen', cfl: 1.0),
-    FuelTypePreset(FuelType.D2, 'D-2 green aspen', cfl: 1.0),
+    // D2 is not implemented in FBPCalc.r
+    // FuelTypePreset(FuelType.D2, 'D-2 green aspen', cfl: 1.0),
     FuelTypePreset(FuelType.M1, 'M-1 boreal mixedwood-leafless, 75% conifer',
         cfl: 0.8, pc: 75, cbh: 6),
     FuelTypePreset(FuelType.M1, 'M-1 boreal mixedwood-leafless, 50% conifer',
