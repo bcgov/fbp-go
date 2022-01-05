@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:fire_behaviour_app/fire.dart';
+import 'fire.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/scheduler.dart';
 import 'package:geolocator/geolocator.dart';

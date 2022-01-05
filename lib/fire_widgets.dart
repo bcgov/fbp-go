@@ -1,4 +1,4 @@
-import 'package:fire_behaviour_app/fire.dart';
+import 'fire.dart';
 import 'package:flutter/material.dart';
 
 import 'coordinate_picker.dart';
