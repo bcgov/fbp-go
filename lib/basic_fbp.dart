@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'cffdrs/fbp_calc.dart';
 import 'fire_widgets.dart';
@@ -73,6 +75,7 @@ class BasicFireBehaviourPredictionFormState
 
   void _onPresetChanged(FuelTypePreset fuelTypePreset) {
     setState(() {
+      log('preset changed to $fuelTypePreset');
       _fuelTypePreset = fuelTypePreset;
     });
   }

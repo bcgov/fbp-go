@@ -52,6 +52,11 @@ class FuelTypePreset {
   final double? gfl;
   FuelTypePreset(this.code, this.description,
       {required this.cfl, this.pc, this.pdf, this.cbh, this.gfl});
+
+  @override
+  String toString() {
+    return 'FuelTypePreset{code: $code, description: $description, cfl: $cfl, pc: $pc, pdf: $pdf, cbh: $cbh, gfl: $gfl}';
+  }
 }
 
 FuelTypePreset getC2BorealSpruce() {

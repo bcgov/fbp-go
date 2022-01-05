@@ -22,11 +22,15 @@ Color getIntensityClassColor(int intensityClass) {
   }
 }
 
-class FuelTypePresetDropdown extends StatelessWidget {
+class FuelTypePresetDropdownState extends State<FuelTypePresetDropdown> {
   final _presets = getFuelTypePresets();
-  final ValueChanged<FuelTypePreset?>? onChanged;
 
-  FuelTypePresetDropdown({Key? key, required this.onChanged}) : super(key: key);
+  // FuelTypePresetDropdown({Key? key, required this.onChanged}) : super(key: key);
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +43,22 @@ class FuelTypePresetDropdown extends StatelessWidget {
             value: value, child: Text(value.description));
       }).toList(),
       onChanged: (FuelTypePreset? value) {
-        onChanged?.call(value);
+        setState(() {
+          widget.onChanged(value);
+        });
       },
     );
   }
+}
+
+class FuelTypePresetDropdown extends StatefulWidget {
+  final Function onChanged;
+
+  const FuelTypePresetDropdown({Key? key, required this.onChanged})
+      : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => FuelTypePresetDropdownState();
 }
 
 class BasicInput {
