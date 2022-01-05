@@ -1,0 +1,18 @@
+[
+    {
+        "FUELTYPE": "C1",
+        "LAT": 80.0,
+        "LONG": 100.0,
+        "ELV": 100.0,
+        "DJ": 10,
+        "FFMC": 10.0,
+        "BUI": 10.0,
+        "WS": 10.0,
+        "WD": 10.0,
+        "GS": 10.0,
+        "ACCEL": true,
+        "ASPECT": 10.0,
+        "BUIEFF": true,
+        "MINUTES": 60.0
+    }
+]
