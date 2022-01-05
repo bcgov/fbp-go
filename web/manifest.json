@@ -1,11 +1,11 @@
 {
-    "name": "flutter_application_1",
-    "short_name": "flutter_application_1",
+    "name": "Fire Behaviour App",
+    "short_name": "FBA App",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Fire Behaviour Application based on CFFDRS",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

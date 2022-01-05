@@ -1,8 +1,8 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:math';
-import 'ISIcalc.dart';
-import 'ROScalc.dart';
+import 'isi_calc.dart';
+import 'ros_calc.dart';
 
 double Slopecalc(
     String fuelType,
@@ -16,7 +16,7 @@ double Slopecalc(
     double SFC,
     double? PC,
     double? PDF,
-    double CC,
+    double? CC,
     double? CBH,
     double ISI,
     {String output = "RAZ"}) {
@@ -303,6 +303,9 @@ double Slopecalc(
   }
 
   if (["O1A", "O1B"].contains(fuelType)) {
+    if (CC == null) {
+      throw Exception("CC is null");
+    }
     // #Eqs. 35a, 35b (Wotton 2009) - Curing Factor pivoting around % 58.8
     CF = CC < 58.8 ? 0.005 * (exp(0.061 * CC) - 1) : 0.176 + 0.02 * (CC - 58.8);
     // #Eqs. 43a, 43b (Wotton 2009) - slope equivilent ISI for Grass
