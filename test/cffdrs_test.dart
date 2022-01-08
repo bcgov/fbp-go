@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:convert';
+import 'package:test/test.dart';
 
 import 'package:fire_behaviour_app/cffdrs/fbp_calc.dart';
-import 'package:test/test.dart';
 
 FireBehaviourPredictionInput loadInput(dynamic inputJson) {
   return FireBehaviourPredictionInput(

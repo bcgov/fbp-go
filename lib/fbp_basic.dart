@@ -1,7 +1,8 @@
 import 'dart:developer';
 
-import 'package:fire_behaviour_app/coordinate_picker.dart';
 import 'package:flutter/material.dart';
+
+import 'coordinate_picker.dart';
 import 'cffdrs/fbp_calc.dart';
 import 'fire_widgets.dart';
 import 'fire.dart';
