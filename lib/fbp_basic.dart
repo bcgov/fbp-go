@@ -160,10 +160,12 @@ class BasicFireBehaviourPredictionFormState
     }
     return Column(
       children: <Widget>[
-        // Picture
         Row(children: [
-          // const Spacer(),
-          Expanded(child: Image(image: getAssetImage()))
+          Expanded(
+              child: Container(
+            color: Colors.red,
+            child: Image(image: getAssetImage(), fit: BoxFit.contain),
+          ))
         ]),
         // Presets
         Row(children: [
