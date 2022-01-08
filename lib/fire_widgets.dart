@@ -68,7 +68,7 @@ class BasicInput {
   double aspect = 0;
   double bui;
   double cc = 50;
-  double ffmc = 77;
+  double ffmc = 80;
 
   Coordinate coordinate;
 
@@ -161,7 +161,7 @@ class BasicInputState extends State<BasicInputWidget> {
         Row(children: [
           Expanded(child: Text('Wind Speed (km/h) ${_input.ws.toInt()}')),
           Expanded(
-              child: Slider(
+              child: Slider.adaptive(
             value: _input.ws,
             min: 0,
             max: 50,
@@ -178,7 +178,7 @@ class BasicInputState extends State<BasicInputWidget> {
               child: Text(
                   'Wind Direction: ${degreesToCompassPoint(_input.waz)} ${_input.waz.toString()}\u00B0')),
           Expanded(
-              child: Slider(
+              child: Slider.adaptive(
             value: _input.waz,
             min: 0,
             max: 360,
@@ -193,7 +193,7 @@ class BasicInputState extends State<BasicInputWidget> {
         Row(children: [
           Expanded(child: Text('Ground Slope: ${_input.gs.floor()}%')),
           Expanded(
-              child: Slider(
+              child: Slider.adaptive(
             value: _input.gs,
             min: 0,
             max: 90,
@@ -210,7 +210,7 @@ class BasicInputState extends State<BasicInputWidget> {
               child: Text(
                   'Aspect: ${degreesToCompassPoint(_input.aspect)} ${_input.aspect.toString()}\u00B0')),
           Expanded(
-              child: Slider(
+              child: Slider.adaptive(
             value: _input.aspect,
             min: 0,
             max: 360,
@@ -223,11 +223,10 @@ class BasicInputState extends State<BasicInputWidget> {
           )),
         ]),
         // BUI
-        // TODO: hide this if it's grass
         Row(children: [
           Expanded(child: Text('Buildup Index: ${_input.bui.toInt()}')),
           Expanded(
-              child: Slider(
+              child: Slider.adaptive(
             value: _input.bui,
             min: 0,
             max: 200,
@@ -242,7 +241,7 @@ class BasicInputState extends State<BasicInputWidget> {
         Row(children: [
           Expanded(child: Text('Curing: ${_input.cc.toInt()}%')),
           Expanded(
-              child: Slider(
+              child: Slider.adaptive(
             value: _input.cc,
             min: 0,
             max: 100,
@@ -258,11 +257,11 @@ class BasicInputState extends State<BasicInputWidget> {
           Expanded(
               child: Text('Fine Fuel Moisture Code: ${_input.ffmc.toInt()}')),
           Expanded(
-              child: Slider(
+              child: Slider.adaptive(
             value: _input.ffmc,
-            min: 0,
+            min: 80,
             max: 100,
-            divisions: 100,
+            divisions: 20,
             label: '${_input.ffmc.toInt()}',
             onChanged: (value) {
               _onFFMCChanged(value);

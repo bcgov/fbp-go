@@ -18,4 +18,16 @@ similar.
 ## Todo
 
 - Localization - implement en-CA and fr-CA.
-- 
+- [x] Added crown fraction burned to basic screen.
+- [x] More space on left hand side.
+  - I added padding on the left and the right.
+- [x] FFMC scale from 80+
+  - I've made the scale start at 80.
+- FFMC scale at the bottom.
+  - Possible, but nothing out of the box - so leaving it alone for now.
+- Consider dropping lat/lon/elevation on basic - only has slight effect. (could be time of year as well!)
+- [x] Fuel type picture.
+  - I've added picture placeholders. Need actual images to put in.
+- With less space, the fuel type presets need to have shorter names.
+- Disclaimer.
+- App name.

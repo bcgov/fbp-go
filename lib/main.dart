@@ -52,23 +52,32 @@ class HomePageState extends State<HomePage> {
   }
 
   _getSelectedSection(Section _section) {
+    const double edgeInset = 3;
     switch (_section) {
       case (Section.about):
-        return const Text('About');
+        return Container(
+            padding: const EdgeInsets.only(left: edgeInset, right: edgeInset),
+            child: const Text('About'));
       case (Section.basic):
         return Center(
             child: SingleChildScrollView(
+                padding:
+                    const EdgeInsets.only(left: edgeInset, right: edgeInset),
                 child: Column(
-          children: const [BasicFireBehaviourPredictionForm()],
-        )));
+                  children: const [BasicFireBehaviourPredictionForm()],
+                )));
       case (Section.advanced):
         return Center(
             child: SingleChildScrollView(
+                padding:
+                    const EdgeInsets.only(left: edgeInset, right: edgeInset),
                 child: Column(
-          children: const [AdvancedFireBehaviourPredictionForm()],
-        )));
+                  children: const [AdvancedFireBehaviourPredictionForm()],
+                )));
       case (Section.fwi):
-        return const Text('FWI');
+        return Container(
+            padding: const EdgeInsets.only(left: edgeInset, right: edgeInset),
+            child: const Text('FWI'));
     }
   }
 

@@ -29,6 +29,11 @@ class BasicResults extends StatelessWidget {
         )
       ]),
       Row(children: [
+        const Expanded(child: Text('Crown fraction burned')),
+        Expanded(
+            child: Text('${((prediction.CFB * 100).toStringAsFixed(0))} %'))
+      ]),
+      Row(children: [
         const Expanded(child: Text('Rate of spread')),
         Expanded(child: Text('${prediction.ROS.toStringAsFixed(0)} (m/min)')),
       ]),
@@ -91,12 +96,27 @@ class BasicFireBehaviourPredictionFormState
 
   @override
   void initState() {
-    // TODO: get BUI default from dropdown
     _basicInput = BasicInput(
         ws: 5,
         bui: _fuelTypePreset.averageBUI,
         coordinate: Coordinate(latitude: 37, longitude: -122, altitude: 100));
     super.initState();
+  }
+
+  AssetImage getAssetImage() {
+    try {
+      switch (_fuelTypePreset.code) {
+        case (FuelType.C2):
+          return const AssetImage('graphics/c2.jpg');
+        case (FuelType.C3):
+          return const AssetImage('graphics/c3.jpg');
+        default:
+          return AssetImage(
+              'graphics/${_fuelTypePreset.code.name.toLowerCase()}.png');
+      }
+    } catch (e) {
+      return const AssetImage('graphics/unknown.png');
+    }
   }
 
   @override
@@ -140,6 +160,11 @@ class BasicFireBehaviourPredictionFormState
     }
     return Column(
       children: <Widget>[
+        // Picture
+        Row(children: [
+          // const Spacer(),
+          Expanded(child: Image(image: getAssetImage()))
+        ]),
         // Presets
         Row(children: [
           Expanded(child: FuelTypePresetDropdown(
