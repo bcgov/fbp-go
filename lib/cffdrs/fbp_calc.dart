@@ -197,6 +197,16 @@ class FireBehaviourPredictionSecondary {
       'DB': ValueDescriptionPair(DB, 'Fire Spread Distance Back'),
       'DF': ValueDescriptionPair(DF, 'Fire Spread Distance Flank'),
     };
+
+    @override
+    String toString() {
+      return 'SF: $SF, CSI: $CSI, RSO: $RSO, BE: $BE, LB: $LB, LBt: $LBt, '
+          'BROS: $BROS, FROS: $FROS, TROS: $TROS, BROSt: $BROSt, '
+          'FROSt: $FROSt, TROSt: $TROSt, FCFB: $FCFB, BCFB: $BCFB, '
+          'TCFB: $TCFB, FTFC: $FTFC, BTFC: $BTFC, TTFC: $TTFC, FFI: $FFI, '
+          'BFI: $BFI, TFI: $TFI, HROSt: $HROSt, TI: $TI, FTI: $FTI, '
+          'BTI: $BTI, TTI: $TTI, DH: $DH, DB: $DB, DF: $DF';
+    }
   }
 
   ValueDescriptionPair getProp(String key) {
@@ -243,6 +253,22 @@ class FireBehaviourPredictionPrimary {
       required this.FD,
       required this.CFC,
       this.secondary});
+
+  @override
+  String toString() {
+    return 'FMC: $FMC\n'
+        'SFC: $SFC\n'
+        'WSV: $WSV\n'
+        'RAZ: $RAZ\n'
+        'ISI: $ISI\n'
+        'ROS: $ROS\n'
+        'CFB: $CFB\n'
+        'TFC: $TFC\n'
+        'HFI: $HFI\n'
+        'FD: $FD\n'
+        'CFC: $CFC\n'
+        'Secondary: $secondary';
+  }
 }
 
 FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,

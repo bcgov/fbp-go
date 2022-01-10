@@ -2,7 +2,7 @@
     package="com.example.fire_behaviour_app">
    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
    <application
-        android:label="fire_behaviour_app"
+        android:label="FBP Go"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
