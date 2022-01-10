@@ -94,6 +94,8 @@ void main() {
     // print(json);
 
     test('Bad FBC', () {
+      // TODO: output the input values for _Slopecalc in dart, take those same
+      // input values, and plug it into the R script, and compare the output.
       var input = loadInput(inputJson[50]);
       print(input);
       final expected = loadOutput(outputJson[50]);
