@@ -2,6 +2,7 @@ import 'fbp_advanced.dart';
 import 'package:flutter/material.dart';
 import 'cffdrs/fbp_calc.dart';
 import 'fbp_basic.dart';
+import 'fmc.dart';
 
 void main() => runApp(const MyApp());
 
@@ -22,7 +23,7 @@ String getSecondaryText(FireBehaviourPredictionPrimary? prediction) {
   return '';
 }
 
-enum Section { basic, advanced, fwi, about }
+enum Section { basic, advanced, fwi, about, fmc }
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -46,6 +47,8 @@ class HomePageState extends State<HomePage> {
         return 'Fire Weather Index';
       case Section.about:
         return 'About';
+      case Section.fmc:
+        return 'FMC';
       default:
         throw Exception('Unknown section');
     }
@@ -78,6 +81,10 @@ class HomePageState extends State<HomePage> {
         return Container(
             padding: const EdgeInsets.only(left: edgeInset, right: edgeInset),
             child: const Text('FWI'));
+      case (Section.fmc):
+        return Container(
+            padding: const EdgeInsets.only(left: edgeInset, right: edgeInset),
+            child: const FoliarMoistureContent());
     }
   }
 
@@ -110,6 +117,11 @@ class HomePageState extends State<HomePage> {
               title: const Text('Fire Weather Index (FWI)'),
               onTap: () {
                 _changeSection(Section.fwi);
+              }),
+          ListTile(
+              title: const Text('Foliar Moisture Content (FMC)'),
+              onTap: () {
+                _changeSection(Section.fmc);
               }),
           ListTile(
               title: const Text('About'),
