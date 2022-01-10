@@ -46,7 +46,6 @@ FireBehaviourPredictionPrimary loadOutput(dynamic outputJson) {
         BROS: outputJson["BROS"],
         FROS: outputJson["FROS"],
         TROS: outputJson["TROS"],
-        ROSt: outputJson["ROSt"],
         BROSt: outputJson["BROSt"],
         FROSt: outputJson["FROSt"],
         TROSt: outputJson["TROSt"],
