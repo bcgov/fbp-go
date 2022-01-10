@@ -18,6 +18,7 @@ similar.
 ## Todo
 
 - Localization - implement en-CA and fr-CA.
+- Coordinates - provide user feedback on location button. (e.g. fetching and failed state).
 - [x] Added crown fraction burned to basic screen.
 - [x] More space on left hand side.
   - I added padding on the left and the right.

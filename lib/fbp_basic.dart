@@ -162,10 +162,8 @@ class BasicFireBehaviourPredictionFormState
       children: <Widget>[
         Row(children: [
           Expanded(
-              child: Container(
-            color: Colors.red,
             child: Image(image: getAssetImage(), fit: BoxFit.contain),
-          ))
+          )
         ]),
         // Presets
         Row(children: [
