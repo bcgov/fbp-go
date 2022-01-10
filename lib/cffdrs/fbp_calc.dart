@@ -100,7 +100,6 @@ class FireBehaviourPredictionSecondary {
   double LBt; // Length to breadth ratio time
   double BROS; // Back fire rate of spread
   double FROS; // Flank fire rate of spread
-  double E; // Eccentricity
   double TROS; // Rate of spread towards angle theta
   double ROSt; // Rate of spread ate time t
   double BROSt; // Rate of spread at time t for back fire
@@ -134,7 +133,6 @@ class FireBehaviourPredictionSecondary {
       required this.LBt,
       required this.BROS,
       required this.FROS,
-      required this.E,
       required this.TROS,
       required this.ROSt,
       required this.BROSt,
@@ -170,7 +168,6 @@ class FireBehaviourPredictionSecondary {
       'LBt': ValueDescriptionPair(LBt, 'Length to Breadth Ratio Time'),
       'BROS': ValueDescriptionPair(BROS, 'Back Fire Rate of Spread'),
       'FROS': ValueDescriptionPair(FROS, 'Flank Fire Rate of Spread'),
-      'E': ValueDescriptionPair(E, 'Eccentricity'),
       'TROS': ValueDescriptionPair(TROS, 'Rate of Spread Towards Angle Theta'),
       'ROSt': ValueDescriptionPair(ROSt, 'Rate of Spread At Time T'),
       'BROSt': ValueDescriptionPair(BROSt, 'Rate of Spread At Time T For Back'),
@@ -648,7 +645,6 @@ FireBehaviourPredictionSecondary FBPcalcSecondary(
       LBt: LBt,
       BROS: BROS,
       FROS: FROS,
-      E: E,
       TROS: TROS,
       ROSt: ROSt,
       BROSt: BROSt,

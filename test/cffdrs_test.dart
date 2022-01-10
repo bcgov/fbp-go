@@ -35,7 +35,39 @@ FireBehaviourPredictionPrimary loadOutput(dynamic outputJson) {
       TFC: outputJson["TFC"],
       HFI: outputJson["HFI"],
       FD: outputJson["FD"],
-      CFC: outputJson["CFC"]);
+      CFC: outputJson["CFC"],
+      secondary: FireBehaviourPredictionSecondary(
+        SF: outputJson["SF"],
+        CSI: outputJson["CSI"],
+        RSO: outputJson["RSO"],
+        BE: outputJson["BE"],
+        LB: outputJson["LB"],
+        LBt: outputJson["LBt"],
+        BROS: outputJson["BROS"],
+        FROS: outputJson["FROS"],
+        TROS: outputJson["TROS"],
+        ROSt: outputJson["ROSt"],
+        BROSt: outputJson["BROSt"],
+        FROSt: outputJson["FROSt"],
+        TROSt: outputJson["TROSt"],
+        FCFB: outputJson["FCFB"],
+        BCFB: outputJson["BCFB"],
+        TCFB: outputJson["TCFB"],
+        FTFC: outputJson["FTFC"],
+        BTFC: outputJson["BTFC"],
+        TTFC: outputJson["TTFC"],
+        FFI: outputJson["FFI"],
+        BFI: outputJson["BFI"],
+        TFI: outputJson["TFI"],
+        HROSt: outputJson["HROSt"],
+        TI: outputJson["TI"],
+        FTI: outputJson["FTI"],
+        BTI: outputJson["BTI"],
+        TTI: outputJson["TTI"],
+        DH: outputJson["DH"],
+        DB: outputJson["DB"],
+        DF: outputJson["DF"],
+      ));
 }
 
 void main() {
@@ -69,6 +101,8 @@ void main() {
         expect(result.HFI, expected.HFI, reason: 'HFI $i');
         expect(result.FD, expected.FD, reason: 'FD $i');
         expect(result.CFC, expected.CFC, reason: 'CFC $i');
+
+        // expect(result.secondary.BCFB)
       }
     });
   });
