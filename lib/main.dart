@@ -98,7 +98,7 @@ class HomePageState extends State<HomePage> {
         padding: EdgeInsets.zero,
         children: [
           const DrawerHeader(
-            child: Text('Fire Behaviour Prediction'),
+            child: Text('\u{1F525} Fire Behaviour Prediction'),
             decoration: BoxDecoration(color: Colors.blue),
           ),
           ListTile(

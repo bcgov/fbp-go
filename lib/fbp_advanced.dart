@@ -34,7 +34,7 @@ class AdvancedFireBehaviourPredictionFormState
   double? _pdf = 0;
   double? _cbh = 0;
   double _cfl = 0;
-  double _t = 60;
+  double _minutes = 60;
   double _gfl = 0.35;
   double _theta = 0;
 
@@ -117,7 +117,7 @@ class AdvancedFireBehaviourPredictionFormState
 
   void _onTChanged(double t) {
     setState(() {
-      _t = t;
+      _minutes = t;
     });
   }
 
@@ -193,7 +193,7 @@ class AdvancedFireBehaviourPredictionFormState
           BUIEFF: true,
           CBH: _cbh,
           CFL: _cfl,
-          MINUTES: _t);
+          HR: _minutes / 60.0);
       prediction = FBPcalc(input, output: "ALL");
       // Wind direction correction:
       prediction.RAZ -= 180;
@@ -217,7 +217,7 @@ class AdvancedFireBehaviourPredictionFormState
             _fuelType.name,
             prediction.ROS,
             prediction.secondary!.BROS,
-            _t,
+            _minutes,
             prediction.CFB,
             prediction.secondary!.LB);
       }
@@ -348,14 +348,15 @@ class AdvancedFireBehaviourPredictionFormState
                     // Ellapsed time
                     Row(children: [
                       Expanded(
-                          child: Text('Time ellapsed: ${_t.toInt()} minutes')),
+                          child: Text(
+                              'Time ellapsed: ${_minutes.toInt()} minutes')),
                       Expanded(
                           child: Slider(
-                        value: _t,
+                        value: _minutes,
                         min: 0,
                         max: 120,
                         divisions: 12,
-                        label: '${_t.toInt()} minutes',
+                        label: '${_minutes.toInt()} minutes',
                         onChanged: (value) {
                           _onTChanged(value);
                         },
@@ -423,7 +424,8 @@ class AdvancedFireBehaviourPredictionFormState
         ),
       ),
       prediction != null
-          ? Results(prediction: prediction, minutes: _t, fireSize: fireSize)
+          ? Results(
+              prediction: prediction, minutes: _minutes, fireSize: fireSize)
           : Container(),
     ]);
   }

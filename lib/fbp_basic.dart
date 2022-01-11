@@ -145,7 +145,7 @@ class BasicFireBehaviourPredictionFormState
         BUIEFF: true,
         CBH: _fuelTypePreset.cbh,
         CFL: _fuelTypePreset.cfl,
-        MINUTES: minutes);
+        HR: minutes / 60.0);
     FireBehaviourPredictionPrimary prediction = FBPcalc(input, output: "ALL");
     prediction.RAZ = prediction.RAZ < 0 ? prediction.RAZ + 360 : prediction.RAZ;
     double? fireSize;

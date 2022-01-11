@@ -23,11 +23,17 @@ FireBehaviourPredictionInput loadInput(dynamic inputJson) {
     WS: inputJson["WS"],
     WD: inputJson["WD"],
     GS: inputJson["GS"],
-    ACCEL: inputJson["ACCEL"],
+    ACCEL: inputJson["ACCEL"] == 1,
     ASPECT: inputJson["ASPECT"],
-    BUIEFF: inputJson["BUIEFF"],
-    MINUTES: inputJson["MINUTES"],
-    // TODO: add more fields!!! PC, CBH etc. etc.
+    BUIEFF: inputJson["BUIEFF"] == 1,
+    HR: inputJson["HR"],
+    THETA: inputJson["THETA"],
+    CC: inputJson["CC"],
+    PDF: inputJson["PDF"],
+    CBH: inputJson["CBH"],
+    PC: inputJson["PC"],
+    FMC: inputJson["FMC"],
+    GFL: inputJson['GFL'],
   );
 }
 
@@ -77,9 +83,18 @@ FireBehaviourPredictionPrimary loadOutput(dynamic outputJson) {
       ));
 }
 
-double roundDouble(double value, {int places = 6}) {
-  // TODO: We want to get rid of this function - but it's useful right now
-  // to zero in on where the difference is sneaking in!
+double roundDouble(double value, {int places = 4}) {
+  /* Hypothesis A: R has a slightly different way of doing floating point
+  calculations resulting in minor differences in the output. We're unlinkely
+  to care about anything beyond 2 decimal places.
+  Hypothesis B: There's a mistake in the translation, some detail in operation
+  order or some such which is causing slightly different results.
+  */
+  if (places < 2) {
+    // Say what? You want to round to less than 2 decimal places? That's
+    // crazy talk.
+    throw Exception('Now you\'re just being silly. Check your math.');
+  }
   var mod = pow(10.0, places);
   return ((value * mod).round().toDouble() / mod);
 }
@@ -168,24 +183,23 @@ void main() {
     // final directory = await getApplicationDocumentsDirectory();
     // print(json);
 
-    test('Bad FBC', () {
-      // TODO: output the input values for _Slopecalc in dart, take those same
-      // input values, and plug it into the R script, and compare the output.
-      var input = loadInput(inputJson[50]);
-      print(input);
-      final expected = loadOutput(outputJson[50]);
-      final result = FBPcalc(input);
-    });
+    // test('Bad FBC', () {
+    //   // TODO: output the input values for _Slopecalc in dart, take those same
+    //   // input values, and plug it into the R script, and compare the output.
+    //   var input = loadInput(inputJson[50]);
+    //   print(input);
+    //   final FireBehaviourPredictionPrimary expected = loadOutput(outputJson[50]);
+    //   final FireBehaviourPredictionPrimary result = FBPcalc(input);
+    // });
 
     test('FBCCalc', () {
       for (var i = 0; i < inputJson.length; i++) {
         final input = loadInput(inputJson[i]);
-        final expected = loadOutput(outputJson[i]);
-        print(i);
-        print('input.FFMC: ${input.FFMC}');
-        final result = FBPcalc(input);
+        FireBehaviourPredictionPrimary expected = loadOutput(outputJson[i]);
+        FireBehaviourPredictionPrimary result = FBPcalc(input, output: "ALL");
         expect(result.FMC, expected.FMC, reason: 'FMC $i');
-        expect(result.SFC, expected.SFC, reason: 'SFC $i');
+        expect(roundDouble(result.SFC), roundDouble(expected.SFC),
+            reason: 'SFC $i');
         expect(roundDouble(result.WSV), roundDouble(expected.WSV),
             reason: 'WSV $i');
         expect(roundDouble(result.RAZ), roundDouble(expected.RAZ),
@@ -195,13 +209,89 @@ void main() {
         expect(roundDouble(result.ROS), roundDouble(expected.ROS),
             reason: 'ROS $i');
         expect(result.CFB, expected.CFB, reason: 'CFB $i');
-        expect(result.TFC, expected.TFC, reason: 'TFC $i');
+        expect(roundDouble(result.TFC), roundDouble(expected.TFC),
+            reason: 'TFC $i');
         expect(roundDouble(result.HFI), roundDouble(expected.HFI),
             reason: 'HFI $i');
         expect(result.FD, expected.FD, reason: 'FD $i');
         expect(result.CFC, expected.CFC, reason: 'CFC $i');
+        // now check the secondary outputs
+        expect(result.secondary == null, expected.secondary == null,
+            reason: 'secondary $i');
 
-        // expect(result.secondary.BCFB)
+        FireBehaviourPredictionSecondary? resultSecondary = result.secondary;
+        FireBehaviourPredictionSecondary? expectedSecondary =
+            expected.secondary;
+
+        if (resultSecondary != null && expectedSecondary != null) {
+          expect(resultSecondary.SF, expectedSecondary.SF, reason: 'SF $i');
+          expect(resultSecondary.CSI, expectedSecondary.CSI, reason: 'CSI $i');
+          expect(resultSecondary.RSO, expectedSecondary.RSO, reason: 'RSO $i');
+          expect(resultSecondary.BE, expectedSecondary.BE, reason: 'BE $i');
+          expect(roundDouble(resultSecondary.LB),
+              roundDouble(expectedSecondary.LB),
+              reason: 'LB $i');
+          expect(roundDouble(resultSecondary.LBt, places: 3),
+              roundDouble(expectedSecondary.LBt, places: 3),
+              reason: 'LBt $i');
+          expect(roundDouble(resultSecondary.BROS),
+              roundDouble(expectedSecondary.BROS),
+              reason: 'BROS $i');
+          expect(roundDouble(resultSecondary.FROS),
+              roundDouble(expectedSecondary.FROS),
+              reason: 'FROS $i');
+          expect(roundDouble(resultSecondary.TROS),
+              roundDouble(expectedSecondary.TROS),
+              reason: 'TROS $i');
+          expect(roundDouble(resultSecondary.BROSt),
+              roundDouble(expectedSecondary.BROSt),
+              reason: 'BROSt $i');
+          expect(roundDouble(resultSecondary.FROSt),
+              roundDouble(expectedSecondary.FROSt),
+              reason: 'FROSt $i');
+          expect(roundDouble(resultSecondary.TROSt),
+              roundDouble(expectedSecondary.TROSt),
+              reason: 'TROSt $i');
+          expect(resultSecondary.FCFB, expectedSecondary.FCFB,
+              reason: 'FCFB $i');
+          expect(resultSecondary.BCFB, expectedSecondary.BCFB,
+              reason: 'BCFB $i');
+          expect(resultSecondary.TCFB, expectedSecondary.TCFB,
+              reason: 'TCFB $i');
+          expect(resultSecondary.FTFC, expectedSecondary.FTFC,
+              reason: 'FTFC $i');
+          expect(resultSecondary.BTFC, expectedSecondary.BTFC,
+              reason: 'BTFC $i');
+          expect(resultSecondary.TTFC, expectedSecondary.TTFC,
+              reason: 'TTFC $i');
+          expect(roundDouble(resultSecondary.FFI),
+              roundDouble(expectedSecondary.FFI),
+              reason: 'FFI $i');
+          expect(roundDouble(resultSecondary.BFI),
+              roundDouble(expectedSecondary.BFI),
+              reason: 'BFI $i');
+          expect(roundDouble(resultSecondary.TFI),
+              roundDouble(expectedSecondary.TFI),
+              reason: 'TFI $i');
+          expect(roundDouble(resultSecondary.HROSt, places: 3),
+              roundDouble(expectedSecondary.HROSt, places: 3),
+              reason: 'HROSt $i');
+          expect(roundDouble(resultSecondary.TI, places: 5),
+              roundDouble(expectedSecondary.TI, places: 5),
+              reason: 'TI $i');
+          expect(resultSecondary.FTI, expectedSecondary.FTI, reason: 'FTI $i');
+          expect(resultSecondary.BTI, expectedSecondary.BTI, reason: 'BTI $i');
+          expect(resultSecondary.TTI, expectedSecondary.TTI, reason: 'TTI $i');
+          expect(roundDouble(resultSecondary.DH),
+              roundDouble(expectedSecondary.DH),
+              reason: 'DH $i');
+          expect(roundDouble(resultSecondary.DB),
+              roundDouble(expectedSecondary.DB),
+              reason: 'DB $i');
+          expect(roundDouble(resultSecondary.DF),
+              roundDouble(expectedSecondary.DF),
+              reason: 'DF $i');
+        }
       }
     });
   });

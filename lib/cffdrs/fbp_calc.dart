@@ -60,7 +60,7 @@ class FireBehaviourPredictionInput {
   double? CBH; // Crown Base Height (m)
   double? CFL;
   double? ISI; // Initial Spread Index
-  double MINUTES; // Original uses hours and then corrects, we just use minutes.
+  double HR; // Hours.
 
   FireBehaviourPredictionInput(
       {required this.FUELTYPE,
@@ -88,7 +88,7 @@ class FireBehaviourPredictionInput {
       this.CBH,
       this.CFL,
       this.ISI,
-      required this.MINUTES});
+      required this.HR});
 }
 
 class FireBehaviourPredictionSecondary {
@@ -405,7 +405,7 @@ FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,
   // # Corrections
   // ############################################################################
   // #Convert hours to minutes
-  double HR = input.MINUTES;
+  double HR = input.HR * 60;
   // #Corrections to reorient Wind Azimuth(WAZ) and Uphill slode azimuth(SAZ)
   double WAZ = WD + pi;
   WAZ = WAZ > (2 * pi) ? WAZ - 2 * pi : WAZ;
@@ -470,7 +470,7 @@ FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,
   ];
   CFL = CFL == null || CFL <= 0 || CFL > 2 ? CFLs[fuelTypeIndex] : CFL;
   FMC = FMC <= 0 || FMC > 120 ? FMCcalc(LAT, LONG, ELV, DJ, D0) : FMC;
-  FMC = ["D1", "S1", "S2", "S3", "01A", "01B"].contains(FUELTYPE) ? 0 : FMC;
+  FMC = ["D1", "S1", "S2", "S3", "O1A", "O1B"].contains(FUELTYPE) ? 0 : FMC;
   // ############################################################################
   // #                         END
   // ############################################################################
@@ -492,6 +492,8 @@ FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,
   // #Calculate or keep Initial Spread Index (ISI)
   ISI = ISI > 0 ? ISI : ISIcalc(FFMC, WSV, fbpMod: true);
   // #Calculate the Rate of Spread (ROS), C6 has different calculations
+  print('ROScalc($FUELTYPE, $ISI, $BUI, $FMC, $SFC, $PC, $PDF, $CC, $CBH) = '
+      '${ROScalc(FUELTYPE, ISI, BUI, FMC, SFC, PC, PDF, CC, CBH)}');
   ROS = FUELTYPE == "C6"
       ? C6calc(FUELTYPE, ISI, BUI, FMC, SFC, CBH, option: "ROS")
       : ROScalc(FUELTYPE, ISI, BUI, FMC, SFC, PC, PDF, CC, CBH);
@@ -655,6 +657,7 @@ FireBehaviourPredictionSecondary FBPcalcSecondary(
   final TTI = log(1 - RSO / TROS > 0 ? 1 - RSO / TROS : 1) / (-a4);
 
   //   #Fire spread distance for Head, Back, and Flank of fire
+  print('ACCELL: $ACCEL ; ROS * HR == ($ROS * $HR)');
   final DH = ACCEL ? DISTtcalc(FUELTYPE, ROS, HR, CFB) : ROS * HR;
   final DB = ACCEL ? DISTtcalc(FUELTYPE, BROS, HR, CFB) : BROS * HR;
   final DF = ACCEL ? (DH + DB) / (LBt * 2) : (DH + DB) / (LB * 2);
