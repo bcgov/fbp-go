@@ -655,7 +655,6 @@ FireBehaviourPredictionSecondary FBPcalcSecondary(
   final TTI = log(1 - RSO / TROS > 0 ? 1 - RSO / TROS : 1) / (-a4);
 
   //   #Fire spread distance for Head, Back, and Flank of fire
-  print('ACCELL: $ACCEL ; ROS * HR == ($ROS * $HR)');
   final DH = ACCEL ? DISTtcalc(FUELTYPE, ROS, HR, CFB) : ROS * HR;
   final DB = ACCEL ? DISTtcalc(FUELTYPE, BROS, HR, CFB) : BROS * HR;
   final DF = ACCEL ? (DH + DB) / (LBt * 2) : (DH + DB) / (LB * 2);

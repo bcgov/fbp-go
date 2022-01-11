@@ -83,18 +83,14 @@ FireBehaviourPredictionPrimary loadOutput(dynamic outputJson) {
       ));
 }
 
-double roundDouble(double value, {int places = 4}) {
-  /* Hypothesis A: R has a slightly different way of doing floating point
+double roundDouble(double value) {
+  /*Hypothesis A: R has a slightly different way of doing floating point
   calculations resulting in minor differences in the output. We're unlinkely
   to care about anything beyond 2 decimal places.
   Hypothesis B: There's a mistake in the translation, some detail in operation
   order or some such which is causing slightly different results.
   */
-  if (places < 2) {
-    // Say what? You want to round to less than 2 decimal places? That's
-    // crazy talk.
-    throw Exception('Now you\'re just being silly. Check your math.');
-  }
+  const int places = 5; // 5 decimal places isn't too bad.
   var mod = pow(10.0, places);
   return ((value * mod).round().toDouble() / mod);
 }
@@ -103,8 +99,7 @@ void main() {
   group('ISIcalc', () {
     test('Scenario', () {
       final result = ISIcalc(57.55481411251054, 0);
-      expect(roundDouble(result, places: 14),
-          roundDouble(0.345473329095927, places: 14));
+      expect(roundDouble(result), roundDouble(0.345473329095927));
     });
   });
 
@@ -121,7 +116,7 @@ void main() {
       final result = C6calc('C6', 0.3454733290959275, -1.0, 109.69520000000001,
           3.4742543847234075, 7.0,
           option: "ROS");
-      expect(roundDouble(result, places: 10), 0.0006076756);
+      expect(roundDouble(result), roundDouble(0.0006076756));
     });
   });
 
@@ -254,15 +249,15 @@ void main() {
           expect(roundDouble(resultSecondary.CSI),
               roundDouble(expectedSecondary.CSI),
               reason: 'CSI $i');
-          expect(roundDouble(resultSecondary.RSO, places: 14),
-              roundDouble(expectedSecondary.RSO, places: 14),
+          expect(roundDouble(resultSecondary.RSO),
+              roundDouble(expectedSecondary.RSO),
               reason: 'RSO $i');
           expect(resultSecondary.BE, expectedSecondary.BE, reason: 'BE $i');
           expect(roundDouble(resultSecondary.LB),
               roundDouble(expectedSecondary.LB),
               reason: 'LB $i');
-          expect(roundDouble(resultSecondary.LBt, places: 3),
-              roundDouble(expectedSecondary.LBt, places: 3),
+          expect(roundDouble(resultSecondary.LBt),
+              roundDouble(expectedSecondary.LBt),
               reason: 'LBt $i');
           expect(roundDouble(resultSecondary.BROS),
               roundDouble(expectedSecondary.BROS),
@@ -276,11 +271,11 @@ void main() {
           expect(roundDouble(resultSecondary.BROSt),
               roundDouble(expectedSecondary.BROSt),
               reason: 'BROSt $i');
-          expect(roundDouble(resultSecondary.FROSt, places: 3),
-              roundDouble(expectedSecondary.FROSt, places: 3),
+          expect(roundDouble(resultSecondary.FROSt),
+              roundDouble(expectedSecondary.FROSt),
               reason: 'FROSt $i');
-          expect(roundDouble(resultSecondary.TROSt, places: 3),
-              roundDouble(expectedSecondary.TROSt, places: 3),
+          expect(roundDouble(resultSecondary.TROSt),
+              roundDouble(expectedSecondary.TROSt),
               reason: 'TROSt $i');
           expect(resultSecondary.FCFB, expectedSecondary.FCFB,
               reason: 'FCFB $i');
@@ -288,11 +283,11 @@ void main() {
               reason: 'BCFB $i');
           expect(resultSecondary.TCFB, expectedSecondary.TCFB,
               reason: 'TCFB $i');
-          expect(roundDouble(resultSecondary.FTFC, places: 14),
-              roundDouble(expectedSecondary.FTFC, places: 14),
+          expect(roundDouble(resultSecondary.FTFC),
+              roundDouble(expectedSecondary.FTFC),
               reason: 'FTFC $i');
-          expect(roundDouble(resultSecondary.BTFC, places: 14),
-              roundDouble(expectedSecondary.BTFC, places: 14),
+          expect(roundDouble(resultSecondary.BTFC),
+              roundDouble(expectedSecondary.BTFC),
               reason: 'BTFC $i');
           expect(roundDouble(resultSecondary.TTFC),
               roundDouble(expectedSecondary.TTFC),
@@ -306,11 +301,11 @@ void main() {
           expect(roundDouble(resultSecondary.TFI),
               roundDouble(expectedSecondary.TFI),
               reason: 'TFI $i');
-          expect(roundDouble(resultSecondary.HROSt, places: 3),
-              roundDouble(expectedSecondary.HROSt, places: 3),
+          expect(roundDouble(resultSecondary.HROSt),
+              roundDouble(expectedSecondary.HROSt),
               reason: 'HROSt $i');
-          expect(roundDouble(resultSecondary.TI, places: 5),
-              roundDouble(expectedSecondary.TI, places: 5),
+          expect(roundDouble(resultSecondary.TI),
+              roundDouble(expectedSecondary.TI),
               reason: 'TI $i');
           expect(roundDouble(resultSecondary.FTI),
               roundDouble(expectedSecondary.FTI),
@@ -330,6 +325,6 @@ void main() {
               reason: 'DF $i');
         }
       }
-    }, skip: true);
+    }, skip: false);
   });
 }
