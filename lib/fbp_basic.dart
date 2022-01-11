@@ -103,21 +103,21 @@ class BasicFireBehaviourPredictionFormState
     super.initState();
   }
 
-  AssetImage getAssetImage() {
-    try {
-      switch (_fuelTypePreset.code) {
-        case (FuelType.C2):
-          return const AssetImage('graphics/c2.jpg');
-        case (FuelType.C3):
-          return const AssetImage('graphics/c3.jpg');
-        default:
-          return AssetImage(
-              'graphics/${_fuelTypePreset.code.name.toLowerCase()}.png');
-      }
-    } catch (e) {
-      return const AssetImage('graphics/unknown.png');
-    }
-  }
+  // AssetImage getAssetImage() {
+  //   try {
+  //     switch (_fuelTypePreset.code) {
+  //       case (FuelType.C2):
+  //         return const AssetImage('graphics/c2.jpg');
+  //       case (FuelType.C3):
+  //         return const AssetImage('graphics/c3.jpg');
+  //       default:
+  //         return AssetImage(
+  //             'graphics/${_fuelTypePreset.code.name.toLowerCase()}.png');
+  //     }
+  //   } catch (e) {
+  //     return const AssetImage('graphics/unknown.png');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -160,11 +160,13 @@ class BasicFireBehaviourPredictionFormState
     }
     return Column(
       children: <Widget>[
-        Row(children: [
-          Expanded(
-            child: Image(image: getAssetImage(), fit: BoxFit.contain),
-          )
-        ]),
+        // There's an idea to add pictures of the fuel types - but that's
+        // been put on hold.
+        // Row(children: [
+        //   Expanded(
+        //     child: Image(image: getAssetImage(), fit: BoxFit.contain),
+        //   )
+        // ]),
         // Presets
         Row(children: [
           Expanded(child: FuelTypePresetDropdown(

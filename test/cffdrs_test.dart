@@ -175,34 +175,34 @@ void main() {
       print(input);
       final expected = loadOutput(outputJson[50]);
       final result = FBPcalc(input);
-      print('expected: ${expected.WSV}');
-      print('result: ${result.WSV}');
     });
 
-    // test('FBCCalc', () {
-    //   for (var i = 0; i < inputJson.length; i++) {
-    //     final input = loadInput(inputJson[i]);
-    //     final expected = loadOutput(outputJson[i]);
-    //     final result = FBPcalc(input);
-    //     expect(result.FMC, expected.FMC, reason: 'FMC $i');
-    //     expect(result.SFC, expected.SFC, reason: 'SFC $i');
-    //     expect(roundDouble(result.WSV), roundDouble(expected.WSV),
-    //         reason: 'WSV $i');
-    //     expect(roundDouble(result.RAZ), roundDouble(expected.RAZ),
-    //         reason: 'RAZ $i');
-    //     expect(roundDouble(result.ISI), roundDouble(expected.ISI),
-    //         reason: 'ISI $i');
-    //     expect(roundDouble(result.ROS), roundDouble(expected.ROS),
-    //         reason: 'ROS $i');
-    //     expect(result.CFB, expected.CFB, reason: 'CFB $i');
-    //     expect(result.TFC, expected.TFC, reason: 'TFC $i');
-    //     expect(roundDouble(result.HFI), roundDouble(expected.HFI),
-    //         reason: 'HFI $i');
-    //     expect(result.FD, expected.FD, reason: 'FD $i');
-    //     expect(result.CFC, expected.CFC, reason: 'CFC $i');
+    test('FBCCalc', () {
+      for (var i = 0; i < inputJson.length; i++) {
+        final input = loadInput(inputJson[i]);
+        final expected = loadOutput(outputJson[i]);
+        print(i);
+        print('input.FFMC: ${input.FFMC}');
+        final result = FBPcalc(input);
+        expect(result.FMC, expected.FMC, reason: 'FMC $i');
+        expect(result.SFC, expected.SFC, reason: 'SFC $i');
+        expect(roundDouble(result.WSV), roundDouble(expected.WSV),
+            reason: 'WSV $i');
+        expect(roundDouble(result.RAZ), roundDouble(expected.RAZ),
+            reason: 'RAZ $i');
+        expect(roundDouble(result.ISI), roundDouble(expected.ISI),
+            reason: 'ISI $i');
+        expect(roundDouble(result.ROS), roundDouble(expected.ROS),
+            reason: 'ROS $i');
+        expect(result.CFB, expected.CFB, reason: 'CFB $i');
+        expect(result.TFC, expected.TFC, reason: 'TFC $i');
+        expect(roundDouble(result.HFI), roundDouble(expected.HFI),
+            reason: 'HFI $i');
+        expect(result.FD, expected.FD, reason: 'FD $i');
+        expect(result.CFC, expected.CFC, reason: 'CFC $i');
 
-    //     // expect(result.secondary.BCFB)
-    //   }
-    // });
-  }, skip: true);
+        // expect(result.secondary.BCFB)
+      }
+    });
+  });
 }
