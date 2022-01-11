@@ -20,7 +20,6 @@ similar.
 - Localization - implement en-CA and fr-CA.
 - Coordinates - provide user feedback on location button. (e.g. fetching and failed state).
 - Add FMC option in advanced.
-- Change icon.
 - Change font color.
 - FFMC scale at the bottom.
   - Possible, but nothing out of the box - so leaving it alone for now.
@@ -38,3 +37,4 @@ similar.
   - Added fuel type pictures, but request for licensed images resulted in pictures being removed for now.
 - [x] Coordinate affects FMC (it may not seem to for some part of the year), so we are keeping coordinates instead of using some default.
 - [x] App name: decided to call it FBP Go.
+- [x] Changed default flutter icon to fire emoji: 🔥
