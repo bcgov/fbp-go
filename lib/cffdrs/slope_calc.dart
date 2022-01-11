@@ -179,10 +179,10 @@ double Slopecalc(
   // # and D1 types, and combine
   // #Surface spread rate with 0 wind on level ground
   else if (["M1", "M2"].contains(fuelType)) {
-    RSZ = ROScalc("C2", ISZ, BUI = NoBUI, FMC, SFC, PC, PDF, CC, CBH);
+    RSZ = ROScalc("C2", ISZ, NoBUI, FMC, SFC, PC, PDF, CC, CBH);
     // #Eq. 40 (FCFDG 1992) - Surface spread rate with 0 wind upslope for C2
     RSF_C2 = RSZ * SF;
-    RSZ = ROScalc("D1", ISZ, BUI = NoBUI, FMC, SFC, PC, PDF, CC, CBH);
+    RSZ = ROScalc("D1", ISZ, NoBUI, FMC, SFC, PC, PDF, CC, CBH);
     // #Eq. 40 (FCFDG 1992) - Surface spread rate with 0 wind upslope for D1
     RSF_D1 = RSZ * SF;
   }
@@ -208,7 +208,7 @@ double Slopecalc(
           (-b[d1Index]);
     } else {
       // #Eq. 41b (Wotton 2009) - Calculate the slope equivalent ISI
-      ISF_D1 < -log(0.01) / (-b[d1Index]);
+      ISF_D1 = log(0.01) / (-b[d1Index]);
     }
     // #Eq. 42a (Wotton 2009) - Calculate weighted average for the M1/M2 types
     if (PC == null) {

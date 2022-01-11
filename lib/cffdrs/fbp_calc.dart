@@ -492,8 +492,6 @@ FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,
   // #Calculate or keep Initial Spread Index (ISI)
   ISI = ISI > 0 ? ISI : ISIcalc(FFMC, WSV, fbpMod: true);
   // #Calculate the Rate of Spread (ROS), C6 has different calculations
-  print('ROScalc($FUELTYPE, $ISI, $BUI, $FMC, $SFC, $PC, $PDF, $CC, $CBH) = '
-      '${ROScalc(FUELTYPE, ISI, BUI, FMC, SFC, PC, PDF, CC, CBH)}');
   ROS = FUELTYPE == "C6"
       ? C6calc(FUELTYPE, ISI, BUI, FMC, SFC, CBH, option: "ROS")
       : ROScalc(FUELTYPE, ISI, BUI, FMC, SFC, PC, PDF, CC, CBH);
@@ -603,11 +601,11 @@ FireBehaviourPredictionSecondary FBPcalcSecondary(
   double TROS = ROS * (1 - E) / (1 - E * cos(THETA - RAZ));
   //   #Calculate rate of spread at time t for Flank, Back of fire and at angle
   //   #  theta.
-  double ROSt = ACCEL ? ROS : ROStcalc(FUELTYPE, ROS, HR, CFB);
-  double BROSt = ACCEL ? BROS : ROStcalc(FUELTYPE, BROS, HR, CFB);
-  double FROSt = ACCEL ? FROS : FROScalc(ROSt, BROSt, LBt);
+  double ROSt = ACCEL == false ? ROS : ROStcalc(FUELTYPE, ROS, HR, CFB);
+  double BROSt = ACCEL == false ? BROS : ROStcalc(FUELTYPE, BROS, HR, CFB);
+  double FROSt = ACCEL == false ? FROS : FROScalc(ROSt, BROSt, LBt);
   //   #Calculate rate of spread towards angle theta at time t (TROSt)
-  double TROSt = ACCEL
+  double TROSt = ACCEL == false
       ? TROS
       : ROSt *
           (1 - sqrt(1 - 1 / LBt / LBt)) /
