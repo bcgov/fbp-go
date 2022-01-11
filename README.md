@@ -19,6 +19,9 @@ similar.
 
 - Localization - implement en-CA and fr-CA.
 - Coordinates - provide user feedback on location button. (e.g. fetching and failed state).
+- Add FMC option in advanced.
+- Change icon.
+- Change font color.
 - FFMC scale at the bottom.
   - Possible, but nothing out of the box - so leaving it alone for now.
 - With less space, the fuel type presets need to have shorter names.
