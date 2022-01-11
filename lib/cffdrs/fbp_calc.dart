@@ -592,7 +592,7 @@ FireBehaviourPredictionSecondary FBPcalcSecondary(
   double BE = BEcalc(FUELTYPE, BUI);
   //   #Calculate length to breadth ratio
   double LB = LBcalc(FUELTYPE, WSV);
-  double LBt = ACCEL ? LB : LBtcalc(FUELTYPE, LB, HR, CFB);
+  double LBt = ACCEL == false ? LB : LBtcalc(FUELTYPE, LB, HR, CFB);
   //   #Calculate Back fire rate of spread (BROS)
   double BROS = BROScalc(FUELTYPE, FFMC, BUI, WSV, FMC, SFC, PC, PDF, CC, CBH);
   //   #Calculate Flank fire rate of spread (FROS)
