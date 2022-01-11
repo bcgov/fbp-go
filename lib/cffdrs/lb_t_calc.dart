@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:math';
 
 double LBtcalc(String FUELTYPE, double LB, double HR, double CFB) {

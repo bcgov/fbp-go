@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+
+import 'coordinate_picker.dart';
 import 'cffdrs/fbp_calc.dart';
 import 'fire_widgets.dart';
 import 'fire.dart';
@@ -25,6 +27,11 @@ class BasicResults extends StatelessWidget {
         Expanded(
           child: Text(prediction.ISI.toStringAsFixed(0)),
         )
+      ]),
+      Row(children: [
+        const Expanded(child: Text('Crown fraction burned')),
+        Expanded(
+            child: Text('${((prediction.CFB * 100).toStringAsFixed(0))} %'))
       ]),
       Row(children: [
         const Expanded(child: Text('Rate of spread')),
@@ -71,12 +78,13 @@ class BasicResults extends StatelessWidget {
 class BasicFireBehaviourPredictionFormState
     extends State<BasicFireBehaviourPredictionForm> {
   FuelTypePreset _fuelTypePreset = getC2BorealSpruce();
-  BasicInput _basicInput = BasicInput();
+  late BasicInput _basicInput;
 
   void _onPresetChanged(FuelTypePreset fuelTypePreset) {
     setState(() {
       log('preset changed to $fuelTypePreset');
       _fuelTypePreset = fuelTypePreset;
+      _basicInput.bui = _fuelTypePreset.averageBUI;
     });
   }
 
@@ -88,8 +96,28 @@ class BasicFireBehaviourPredictionFormState
 
   @override
   void initState() {
+    _basicInput = BasicInput(
+        ws: 5,
+        bui: _fuelTypePreset.averageBUI,
+        coordinate: Coordinate(latitude: 37, longitude: -122, altitude: 100));
     super.initState();
   }
+
+  // AssetImage getAssetImage() {
+  //   try {
+  //     switch (_fuelTypePreset.code) {
+  //       case (FuelType.C2):
+  //         return const AssetImage('graphics/c2.jpg');
+  //       case (FuelType.C3):
+  //         return const AssetImage('graphics/c3.jpg');
+  //       default:
+  //         return AssetImage(
+  //             'graphics/${_fuelTypePreset.code.name.toLowerCase()}.png');
+  //     }
+  //   } catch (e) {
+  //     return const AssetImage('graphics/unknown.png');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +145,7 @@ class BasicFireBehaviourPredictionFormState
         BUIEFF: true,
         CBH: _fuelTypePreset.cbh,
         CFL: _fuelTypePreset.cfl,
-        MINUTES: minutes);
+        HR: minutes / 60.0);
     FireBehaviourPredictionPrimary prediction = FBPcalc(input, output: "ALL");
     prediction.RAZ = prediction.RAZ < 0 ? prediction.RAZ + 360 : prediction.RAZ;
     double? fireSize;
@@ -132,6 +160,13 @@ class BasicFireBehaviourPredictionFormState
     }
     return Column(
       children: <Widget>[
+        // There's an idea to add pictures of the fuel types - but that's
+        // been put on hold.
+        // Row(children: [
+        //   Expanded(
+        //     child: Image(image: getAssetImage(), fit: BoxFit.contain),
+        //   )
+        // ]),
         // Presets
         Row(children: [
           Expanded(child: FuelTypePresetDropdown(
@@ -145,9 +180,11 @@ class BasicFireBehaviourPredictionFormState
         Row(
           children: [
             Expanded(
-                child: BasicInputWidget(onChanged: (BasicInput basicInput) {
-              _onBasicInputChanged(basicInput);
-            }))
+                child: BasicInputWidget(
+                    value: _basicInput,
+                    onChanged: (BasicInput basicInput) {
+                      _onBasicInputChanged(basicInput);
+                    }))
           ],
         ),
         BasicResults(

@@ -60,7 +60,7 @@ class FireBehaviourPredictionInput {
   double? CBH; // Crown Base Height (m)
   double? CFL;
   double? ISI; // Initial Spread Index
-  double MINUTES; // Original uses hours and then corrects, we just use minutes.
+  double HR; // Hours.
 
   FireBehaviourPredictionInput(
       {required this.FUELTYPE,
@@ -88,7 +88,7 @@ class FireBehaviourPredictionInput {
       this.CBH,
       this.CFL,
       this.ISI,
-      required this.MINUTES});
+      required this.HR});
 }
 
 class FireBehaviourPredictionSecondary {
@@ -100,9 +100,7 @@ class FireBehaviourPredictionSecondary {
   double LBt; // Length to breadth ratio time
   double BROS; // Back fire rate of spread
   double FROS; // Flank fire rate of spread
-  double E; // Eccentricity
   double TROS; // Rate of spread towards angle theta
-  double ROSt; // Rate of spread ate time t
   double BROSt; // Rate of spread at time t for back fire
   double FROSt; // Rate of spread at time t for flank
   double TROSt; // Rate of spread towards angle theta at time t
@@ -134,9 +132,7 @@ class FireBehaviourPredictionSecondary {
       required this.LBt,
       required this.BROS,
       required this.FROS,
-      required this.E,
       required this.TROS,
-      required this.ROSt,
       required this.BROSt,
       required this.FROSt,
       required this.TROSt,
@@ -170,9 +166,7 @@ class FireBehaviourPredictionSecondary {
       'LBt': ValueDescriptionPair(LBt, 'Length to Breadth Ratio Time'),
       'BROS': ValueDescriptionPair(BROS, 'Back Fire Rate of Spread'),
       'FROS': ValueDescriptionPair(FROS, 'Flank Fire Rate of Spread'),
-      'E': ValueDescriptionPair(E, 'Eccentricity'),
       'TROS': ValueDescriptionPair(TROS, 'Rate of Spread Towards Angle Theta'),
-      'ROSt': ValueDescriptionPair(ROSt, 'Rate of Spread At Time T'),
       'BROSt': ValueDescriptionPair(BROSt, 'Rate of Spread At Time T For Back'),
       'FROSt':
           ValueDescriptionPair(FROSt, 'Rate of Spread At Time T For Flank'),
@@ -203,6 +197,16 @@ class FireBehaviourPredictionSecondary {
       'DB': ValueDescriptionPair(DB, 'Fire Spread Distance Back'),
       'DF': ValueDescriptionPair(DF, 'Fire Spread Distance Flank'),
     };
+
+    @override
+    String toString() {
+      return 'SF: $SF, CSI: $CSI, RSO: $RSO, BE: $BE, LB: $LB, LBt: $LBt, '
+          'BROS: $BROS, FROS: $FROS, TROS: $TROS, BROSt: $BROSt, '
+          'FROSt: $FROSt, TROSt: $TROSt, FCFB: $FCFB, BCFB: $BCFB, '
+          'TCFB: $TCFB, FTFC: $FTFC, BTFC: $BTFC, TTFC: $TTFC, FFI: $FFI, '
+          'BFI: $BFI, TFI: $TFI, HROSt: $HROSt, TI: $TI, FTI: $FTI, '
+          'BTI: $BTI, TTI: $TTI, DH: $DH, DB: $DB, DF: $DF';
+    }
   }
 
   ValueDescriptionPair getProp(String key) {
@@ -249,6 +253,22 @@ class FireBehaviourPredictionPrimary {
       required this.FD,
       required this.CFC,
       this.secondary});
+
+  @override
+  String toString() {
+    return 'FMC: $FMC\n'
+        'SFC: $SFC\n'
+        'WSV: $WSV\n'
+        'RAZ: $RAZ\n'
+        'ISI: $ISI\n'
+        'ROS: $ROS\n'
+        'CFB: $CFB\n'
+        'TFC: $TFC\n'
+        'HFI: $HFI\n'
+        'FD: $FD\n'
+        'CFC: $CFC\n'
+        'Secondary: $secondary';
+  }
 }
 
 FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,
@@ -385,7 +405,7 @@ FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,
   // # Corrections
   // ############################################################################
   // #Convert hours to minutes
-  double HR = input.MINUTES;
+  double HR = input.HR * 60;
   // #Corrections to reorient Wind Azimuth(WAZ) and Uphill slode azimuth(SAZ)
   double WAZ = WD + pi;
   WAZ = WAZ > (2 * pi) ? WAZ - 2 * pi : WAZ;
@@ -450,7 +470,7 @@ FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,
   ];
   CFL = CFL == null || CFL <= 0 || CFL > 2 ? CFLs[fuelTypeIndex] : CFL;
   FMC = FMC <= 0 || FMC > 120 ? FMCcalc(LAT, LONG, ELV, DJ, D0) : FMC;
-  FMC = ["D1", "S1", "S2", "S3", "01A", "01B"].contains(FUELTYPE) ? 0 : FMC;
+  FMC = ["D1", "S1", "S2", "S3", "O1A", "O1B"].contains(FUELTYPE) ? 0 : FMC;
   // ############################################################################
   // #                         END
   // ############################################################################
@@ -570,7 +590,7 @@ FireBehaviourPredictionSecondary FBPcalcSecondary(
   double BE = BEcalc(FUELTYPE, BUI);
   //   #Calculate length to breadth ratio
   double LB = LBcalc(FUELTYPE, WSV);
-  double LBt = ACCEL ? LB : LBtcalc(FUELTYPE, LB, HR, CFB);
+  double LBt = ACCEL == false ? LB : LBtcalc(FUELTYPE, LB, HR, CFB);
   //   #Calculate Back fire rate of spread (BROS)
   double BROS = BROScalc(FUELTYPE, FFMC, BUI, WSV, FMC, SFC, PC, PDF, CC, CBH);
   //   #Calculate Flank fire rate of spread (FROS)
@@ -581,11 +601,11 @@ FireBehaviourPredictionSecondary FBPcalcSecondary(
   double TROS = ROS * (1 - E) / (1 - E * cos(THETA - RAZ));
   //   #Calculate rate of spread at time t for Flank, Back of fire and at angle
   //   #  theta.
-  double ROSt = ACCEL ? ROS : ROStcalc(FUELTYPE, ROS, HR, CFB);
-  double BROSt = ACCEL ? BROS : ROStcalc(FUELTYPE, BROS, HR, CFB);
-  double FROSt = ACCEL ? FROS : FROScalc(ROSt, BROSt, LBt);
+  double ROSt = ACCEL == false ? ROS : ROStcalc(FUELTYPE, ROS, HR, CFB);
+  double BROSt = ACCEL == false ? BROS : ROStcalc(FUELTYPE, BROS, HR, CFB);
+  double FROSt = ACCEL == false ? FROS : FROScalc(ROSt, BROSt, LBt);
   //   #Calculate rate of spread towards angle theta at time t (TROSt)
-  double TROSt = ACCEL
+  double TROSt = ACCEL == false
       ? TROS
       : ROSt *
           (1 - sqrt(1 - 1 / LBt / LBt)) /
@@ -648,9 +668,7 @@ FireBehaviourPredictionSecondary FBPcalcSecondary(
       LBt: LBt,
       BROS: BROS,
       FROS: FROS,
-      E: E,
       TROS: TROS,
-      ROSt: ROSt,
       BROSt: BROSt,
       FROSt: FROSt,
       TROSt: TROSt,

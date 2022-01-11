@@ -41,13 +41,17 @@ class CoordinatePickerState extends State<CoordinatePicker> {
 
   void _updatePosition() {
     _getPosition().then((position) {
-      setState(() {
-        _coordinate.latitude = position.latitude;
-        _coordinate.longitude = position.longitude;
-        _coordinate.altitude = position.altitude;
-        widget.onChanged(_coordinate);
-        _updateCoordinateControllers();
-      });
+      // The position might come back after the component has been disposed,
+      // so we need to check before setting the state.
+      if (mounted) {
+        setState(() {
+          _coordinate.latitude = position.latitude;
+          _coordinate.longitude = position.longitude;
+          _coordinate.altitude = position.altitude;
+          widget.onChanged(_coordinate);
+          _updateCoordinateControllers();
+        });
+      }
     });
   }
 
