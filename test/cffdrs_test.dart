@@ -1,6 +1,12 @@
 import 'dart:io';
 import 'dart:math';
 import 'dart:convert';
+import 'package:fire_behaviour_app/cffdrs/be_calc.dart';
+import 'package:fire_behaviour_app/cffdrs/cfb_calc.dart';
+import 'package:fire_behaviour_app/cffdrs/isi_calc.dart';
+import 'package:fire_behaviour_app/cffdrs/ros_calc.dart';
+import 'package:fire_behaviour_app/cffdrs/slope_calc.dart';
+import 'package:fire_behaviour_app/cffdrs/c6_calc.dart';
 import 'package:test/test.dart';
 
 import 'package:fire_behaviour_app/cffdrs/fbp_calc.dart';
@@ -79,6 +85,75 @@ double roundDouble(double value, {int places = 6}) {
 }
 
 void main() {
+  group('ISIcalc', () {
+    test('Scenario', () {
+      final result = ISIcalc(57.55481411251054, 0);
+      expect(roundDouble(result, places: 14),
+          roundDouble(0.345473329095927, places: 14));
+    });
+  });
+
+  group('CFBcalc', () {
+    test('Scenario', () {
+      final result = CFBcalc('C6', 109.69520000000001, 3.4742543847234075,
+          0.0006076755997436044, 7.0);
+      expect(result, 0.0);
+    });
+  });
+
+  group('C6calc', () {
+    test('Scenario', () {
+      final result = C6calc('C6', 0.3454733290959275, -1.0, 109.69520000000001,
+          3.4742543847234075, 7.0,
+          option: "ROS");
+      expect(roundDouble(result, places: 10), 0.0006076756);
+    });
+  });
+
+  group('BEcalc', () {
+    test('Scenario', () {
+      final result = BEcalc('C6', -1.0);
+      expect(result, 1.0);
+    });
+  });
+
+  group('ROScalc', () {
+    test('Scenario', () {
+      final result = ROScalc(
+        "C6",
+        0.3454733290959275,
+        -1.0,
+        109.69520000000001,
+        3.4742543847234075,
+        0,
+        35.0,
+        80.0,
+        7.0,
+      );
+      expect(result, 0.0006076755997436044);
+    });
+  });
+  group('Slopecalc', () {
+    test('Scenario', () {
+      final result = Slopecalc(
+          'C6',
+          57.55481411251054,
+          133.63769408909872,
+          16.81983099456876,
+          6.247412014352667,
+          29.251275109988352,
+          4.474380979600264,
+          109.69520000000001,
+          3.4742543847234075,
+          null,
+          35,
+          80,
+          7.0,
+          0.0,
+          output: "WSV");
+      expect(result, 16.604545444707842);
+    });
+  });
   group('FBCCcalc', () {
     late dynamic inputJson;
     late dynamic outputJson;
@@ -129,5 +204,5 @@ void main() {
     //     // expect(result.secondary.BCFB)
     //   }
     // });
-  });
+  }, skip: true);
 }

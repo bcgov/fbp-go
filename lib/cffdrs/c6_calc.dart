@@ -51,7 +51,7 @@ double C6calc(
   // #Eq. 61 (FCFDG 1992) Average foliar moisture effect
   double FME = pow((1.5 - 0.00275 * FMC), 4.0) / (460 + 25.9 * FMC) * 1000;
   // #Eq. 62 (FCFDG 1992) Intermediate surface fire spread rate
-  double RSI = pow(30 * (1 - exp(-0.08 * ISI)), 3.0) as double;
+  double RSI = 30.0 * pow((1 - exp(-0.08 * ISI)), 3.0);
   // #Return at this point, if specified by caller
   if (option == "RSI") {
     return (RSI);

@@ -71,7 +71,7 @@ double Slopecalc(
   // #ISI with 0 wind on level grounds
   double ISZ = ISIcalc(FFMC, 0);
   // #Surface spread rate with 0 wind on level ground
-  double RSZ = ROScalc(fuelType, ISZ, BUI = NoBUI, FMC, SFC, PC, PDF, CC, CBH);
+  double RSZ = ROScalc(fuelType, ISZ, NoBUI, FMC, SFC, PC, PDF, CC, CBH);
   // #Eq. 40 (FCFDG 1992) - Surface spread rate with 0 wind upslope
   double RSF = RSZ * SF;
 
