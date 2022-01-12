@@ -43,7 +43,7 @@ class Results extends StatelessWidget {
                 style: textStyle,
               ))
             ]),
-            ...getSecondaryTextRow(prediction)
+            ...getSecondaryTextRow(prediction, textStyle),
           ],
         ));
   }
@@ -63,7 +63,8 @@ class Results extends StatelessWidget {
     return rows;
   }
 
-  List<Row> getSecondaryTextRow(FireBehaviourPredictionPrimary? prediction) {
+  List<Row> getSecondaryTextRow(
+      FireBehaviourPredictionPrimary? prediction, TextStyle textStyle) {
     List<Row> rows = <Row>[];
     if (prediction != null) {
       var secondary = prediction.secondary;
@@ -71,8 +72,12 @@ class Results extends StatelessWidget {
         for (var key in secondary.lookup.keys) {
           ValueDescriptionPair value = secondary.getProp(key);
           rows.add(Row(children: [
-            Expanded(child: Text(value.description)),
-            Expanded(child: Text(value.toString()))
+            Expanded(
+                child: Text(
+              value.description,
+              style: textStyle,
+            )),
+            Expanded(child: Text(value.toString(), style: textStyle))
           ]));
         }
       }
