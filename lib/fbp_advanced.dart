@@ -149,6 +149,8 @@ class AdvancedFireBehaviourPredictionFormState
         ws: 5,
         bui: 0,
         coordinate: Coordinate(latitude: 37, longitude: -122, altitude: 100));
+
+    setPreset(getC2BorealSpruce());
     super.initState();
   }
 
@@ -168,49 +170,43 @@ class AdvancedFireBehaviourPredictionFormState
   @override
   Widget build(BuildContext context) {
     double? fireSize;
-    FireBehaviourPredictionPrimary? prediction;
-    try {
-      final dayOfYear = getDayOfYear();
-      final input = FireBehaviourPredictionInput(
-          FUELTYPE: _fuelType.name,
-          LAT: _basicInput.coordinate.latitude,
-          LONG: _basicInput.coordinate.longitude,
-          ELV: _basicInput.coordinate.altitude,
-          DJ: dayOfYear,
-          D0: null,
-          FMC: null,
-          FFMC: _basicInput.ffmc,
-          BUI: _basicInput.bui,
-          WS: _basicInput.ws,
-          WD: _basicInput.waz,
-          GS: _basicInput.gs,
-          PC: _pc,
-          PDF: _pdf,
-          GFL: _gfl,
-          CC: _basicInput.cc,
-          THETA: _theta,
-          ACCEL: false,
-          ASPECT: _basicInput.aspect,
-          BUIEFF: true,
-          CBH: _cbh,
-          CFL: _cfl,
-          HR: _minutes / 60.0);
-      prediction = FBPcalc(input, output: "ALL");
-      // Wind direction correction:
-      prediction.RAZ -= 180;
-      prediction.RAZ =
-          prediction.RAZ < 0 ? prediction.RAZ + 360 : prediction.RAZ;
-      if (prediction.secondary != null) {
-        fireSize = getFireSize(
-            _fuelType.name,
-            prediction.ROS,
-            prediction.secondary!.BROS,
-            _minutes,
-            prediction.CFB,
-            prediction.secondary!.LB);
-      }
-    } catch (e) {
-      log('error $e');
+    final dayOfYear = getDayOfYear();
+    final input = FireBehaviourPredictionInput(
+        FUELTYPE: _fuelType.name,
+        LAT: _basicInput.coordinate.latitude,
+        LONG: _basicInput.coordinate.longitude,
+        ELV: _basicInput.coordinate.altitude,
+        DJ: dayOfYear,
+        D0: null,
+        FMC: null,
+        FFMC: _basicInput.ffmc,
+        BUI: _basicInput.bui,
+        WS: _basicInput.ws,
+        WD: _basicInput.waz,
+        GS: _basicInput.gs,
+        PC: _pc,
+        PDF: _pdf,
+        GFL: _gfl,
+        CC: _basicInput.cc,
+        THETA: _theta,
+        ACCEL: false,
+        ASPECT: _basicInput.aspect,
+        BUIEFF: true,
+        CBH: _cbh,
+        CFL: _cfl,
+        HR: _minutes / 60.0);
+    FireBehaviourPredictionPrimary prediction = FBPcalc(input, output: "ALL");
+    // Wind direction correction:
+    prediction.RAZ -= 180;
+    prediction.RAZ = prediction.RAZ < 0 ? prediction.RAZ + 360 : prediction.RAZ;
+    if (prediction.secondary != null) {
+      fireSize = getFireSize(
+          _fuelType.name,
+          prediction.ROS,
+          prediction.secondary!.BROS,
+          _minutes,
+          prediction.CFB,
+          prediction.secondary!.LB);
     }
     // Build a Form widget using the _formKey created above.
     return Column(children: [
@@ -349,22 +345,22 @@ class AdvancedFireBehaviourPredictionFormState
                       )),
                     ]),
                     // Theta
-                    Row(children: [
-                      Expanded(
-                          child: Text(
-                              'Theta: ${degreesToCompassPoint(_theta)} ${_theta.toString()}\u00B0')),
-                      Expanded(
-                          child: Slider(
-                        value: _theta,
-                        min: 0,
-                        max: 360,
-                        divisions: 16,
-                        label: '${degreesToCompassPoint(_theta)} $_theta\u00B0',
-                        onChanged: (value) {
-                          _onThetaChanged(value);
-                        },
-                      )),
-                    ]),
+                    // Row(children: [
+                    //   Expanded(
+                    //       child: Text(
+                    //           'Theta: ${degreesToCompassPoint(_theta)} ${_theta.toString()}\u00B0')),
+                    //   Expanded(
+                    //       child: Slider(
+                    //     value: _theta,
+                    //     min: 0,
+                    //     max: 360,
+                    //     divisions: 16,
+                    //     label: '${degreesToCompassPoint(_theta)} $_theta\u00B0',
+                    //     onChanged: (value) {
+                    //       _onThetaChanged(value);
+                    //     },
+                    //   )),
+                    // ]),
                   ]),
                   isExpanded: _expanded,
                   canTapOnHeader: true,
@@ -390,10 +386,7 @@ class AdvancedFireBehaviourPredictionFormState
           ],
         ),
       ),
-      prediction != null
-          ? Results(
-              prediction: prediction, minutes: _minutes, fireSize: fireSize)
-          : Container(),
+      Results(prediction: prediction, minutes: _minutes, fireSize: fireSize)
     ]);
   }
 }

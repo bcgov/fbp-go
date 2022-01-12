@@ -217,48 +217,49 @@ class FireBehaviourPredictionSecondary {
     // consequence, so we have to painfully construct this lookup - which is
     // fine, because we need the descriptions in somewhere anyway.
     lookup = <String, ValueDescriptionPair>{
-      'SF': ValueDescriptionPair(() => SF, 'Spread Factor'),
+      // 'SF': ValueDescriptionPair(() => SF, 'Spread Factor'),
       'CSI': ValueDescriptionPair(() => CSI, 'Critical Surface Interval'),
-      'RSO': ValueDescriptionPair(() => RSO, 'Surface Fire Rate of Spread'),
+      'RSO': ValueDescriptionPair(() => RSO, 'Surface Fire Rate of Spread',
+          unit: 'm/min'),
       'BE': ValueDescriptionPair(() => BE, 'Buildup Effect'),
       'LB': ValueDescriptionPair(() => LB, 'Length to Breadth Ratio'),
-      'LBt': ValueDescriptionPair(() => LBt, 'Length to Breadth Ratio Time'),
+      // 'LBt': ValueDescriptionPair(() => LBt, 'Length to Breadth Ratio Time'),
       'BROS': ValueDescriptionPair(() => BROS, 'Back Fire Rate of Spread',
           unit: 'm/min'),
       'FROS': ValueDescriptionPair(() => FROS, 'Flank Fire Rate of Spread'),
-      'TROS': ValueDescriptionPair(
-          () => TROS, 'Rate of Spread Towards Angle Theta'),
-      'BROSt': ValueDescriptionPair(
-          () => BROSt, 'Rate of Spread At Time T For Back'),
-      'FROSt': ValueDescriptionPair(
-          () => FROSt, 'Rate of Spread At Time T For Flank'),
-      'TROSt': ValueDescriptionPair(
-          () => TROSt, 'Rate of Spread Towards Angle Theta At Time T'),
+      // 'TROS': ValueDescriptionPair(
+      //     () => TROS, 'Rate of Spread Towards Angle Theta'),
+      // 'BROSt': ValueDescriptionPair(
+      //     () => BROSt, 'Rate of Spread At Time T For Back'),
+      // 'FROSt': ValueDescriptionPair(
+      //     () => FROSt, 'Rate of Spread At Time T For Flank'),
+      // 'TROSt': ValueDescriptionPair(
+      //     () => TROSt, 'Rate of Spread Towards Angle Theta At Time T'),
       'FCFB':
           ValueDescriptionPair(() => FCFB, 'Crown Fraction Burned For Flank'),
       'BCFB':
           ValueDescriptionPair(() => BCFB, 'Crown Fraction Burned For Back'),
-      'TCFB': ValueDescriptionPair(
-          () => TCFB, 'Crown Fraction Burned At Angle Theta'),
+      // 'TCFB': ValueDescriptionPair(
+      //     () => TCFB, 'Crown Fraction Burned At Angle Theta'),
       'FTFC': ValueDescriptionPair(
           () => FTFC, 'Total Fuel Consumption For The Flank'),
       'BTFC': ValueDescriptionPair(
           () => BTFC, 'Total Fuel Consumption For The Back'),
-      'TTFC': ValueDescriptionPair(
-          () => TTFC, 'Total Fuel Consumption At Angle Theta'),
+      // 'TTFC': ValueDescriptionPair(
+      //     () => TTFC, 'Total Fuel Consumption At Angle Theta'),
       'FFI': ValueDescriptionPair(() => FFI, 'Fire Intensity At The Flank'),
       'BFI': ValueDescriptionPair(() => BFI, 'Fire Intensity At The Back'),
-      'TFI': ValueDescriptionPair(() => TFI, 'Fire Intensity At Angle Theta'),
-      'HROSt': ValueDescriptionPair(
-          () => HROSt, 'Rate of Spread At Time T For Head'),
+      // 'TFI': ValueDescriptionPair(() => TFI, 'Fire Intensity At Angle Theta'),
+      // 'HROSt': ValueDescriptionPair(
+      //     () => HROSt, 'Rate of Spread At Time T For Head'),
       'TI': ValueDescriptionPair(
           () => TI, 'Elapsed Time to Crown Fire Initiation for Head'),
       'FTI': ValueDescriptionPair(
           () => FTI, 'Elapsed Time to Crown Fire Initiation for Flank'),
       'BTI': ValueDescriptionPair(
           () => BTI, 'Elapsed Time to Crown Fire Initiation for Back'),
-      'TTI': ValueDescriptionPair(
-          () => TTI, 'Elapsed Time to Crown Fire Initiation for theta'),
+      // 'TTI': ValueDescriptionPair(
+      //     () => TTI, 'Elapsed Time to Crown Fire Initiation for theta'),
       'DH': ValueDescriptionPair(() => DH, 'Fire Spread Distance Head'),
       'DB': ValueDescriptionPair(() => DB, 'Fire Spread Distance Back'),
       'DF': ValueDescriptionPair(() => DF, 'Fire Spread Distance Flank'),
