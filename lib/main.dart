@@ -59,8 +59,10 @@ class HomePageState extends State<HomePage> {
     switch (_section) {
       case (Section.about):
         return Container(
-            padding: const EdgeInsets.only(left: edgeInset, right: edgeInset),
-            child: const Text('About'));
+            // padding: const EdgeInsets.only(left: edgeInset, right: edgeInset),
+            // child: RichText(text: const TextSpan(text: 'About')));
+            child:
+                const Text('About\nhttps://www.gnu.org/licenses/gpl-3.0.html'));
       case (Section.basic):
         return Center(
             child: SingleChildScrollView(
