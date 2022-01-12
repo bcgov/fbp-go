@@ -130,7 +130,7 @@ List<FuelTypePreset> getFuelTypePresets() {
 }
 
 double getFireSize(String fuelType, double ros, double bros,
-    double ellapsedMinutes, double cfb, double lbRatio) {
+    double elapsedMinutes, double cfb, double lbRatio) {
   /*
     Fire size based on Eq. 8 (Alexander, M.E. 1985. Estimating the
     length-to-breadth ratio of elliptical
@@ -140,15 +140,14 @@ double getFireSize(String fuelType, double ros, double bros,
     */
   // Using acceleration:
   final fireSpreadDistance =
-      DISTtcalc(fuelType, ros + bros, ellapsedMinutes, cfb);
-  final lengthToBreadthAtTime =
-      LBtcalc(fuelType, lbRatio, ellapsedMinutes, cfb);
+      DISTtcalc(fuelType, ros + bros, elapsedMinutes, cfb);
+  final lengthToBreadthAtTime = LBtcalc(fuelType, lbRatio, elapsedMinutes, cfb);
   // Not using acceleration:
   // fros = cffdrs.flank_rate_of_spread(ros, bros, lb_ratio)
   // # Flank Fire Spread Distance a.k.a. DF in R/FBPcalc.r
   // flank_fire_spread_distance = (ros + bros) / (2.0 * fros)
   // length_to_breadth_at_time = flank_fire_spread_distance
-  // fire_spread_distance = (ros + bros) * ellapsed_minutes
+  // fire_spread_distance = (ros + bros) * elapsed_minutes
 
   // Essentially using Eq. 8 (Alexander, M.E. 1985. Estimating the
   // length-to-breadth ratio of elliptical forest fire patterns.) - but

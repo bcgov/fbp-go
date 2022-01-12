@@ -331,11 +331,11 @@ class AdvancedFireBehaviourPredictionFormState
                         },
                       ))
                     ]),
-                    // Ellapsed time
+                    // Elapsed time
                     Row(children: [
                       Expanded(
                           child: Text(
-                              'Time ellapsed: ${_minutes.toInt()} minutes')),
+                              'Time elapsed: ${_minutes.toInt()} minutes')),
                       Expanded(
                           child: Slider(
                         value: _minutes,

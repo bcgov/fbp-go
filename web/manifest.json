@@ -1,11 +1,11 @@
 {
-    "name": "Fire Behaviour App",
-    "short_name": "FBA App",
+    "name": "Fire Behaviour Prediction on the Go",
+    "short_name": "FBP Go",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "Fire Behaviour Application based on CFFDRS",
+    "description": "Fire Behaviour Prediction using the The Canadian Forest Fire Danger Rating System.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

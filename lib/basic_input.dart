@@ -101,7 +101,7 @@ class BasicInputState extends State<BasicInputWidget> {
         }),
         // Wind Speed
         Row(children: [
-          Expanded(child: Text('Wind Speed (km/h) ${_input.ws.toInt()}')),
+          Expanded(child: Text('Wind Speed: ${_input.ws.toInt()} (km/h)')),
           Expanded(
               child: Slider(
             value: _input.ws,
