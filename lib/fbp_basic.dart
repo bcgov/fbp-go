@@ -145,44 +145,49 @@ class BasicFireBehaviourPredictionFormState
         CBH: _fuelTypePreset.cbh,
         CFL: _fuelTypePreset.cfl,
         HR: minutes / 60.0);
-    FireBehaviourPredictionPrimary prediction = FBPcalc(input, output: "ALL");
-    prediction.RAZ = prediction.RAZ < 0 ? prediction.RAZ + 360 : prediction.RAZ;
-    double? fireSize;
-    if (prediction.secondary != null) {
-      fireSize = getFireSize(
-          _fuelTypePreset.code.name,
-          prediction.ROS,
-          prediction.secondary!.BROS,
-          minutes,
-          prediction.CFB,
-          prediction.secondary!.LB);
+    try {
+      FireBehaviourPredictionPrimary prediction = FBPcalc(input, output: "ALL");
+      prediction.RAZ =
+          prediction.RAZ < 0 ? prediction.RAZ + 360 : prediction.RAZ;
+      double? fireSize;
+      if (prediction.secondary != null) {
+        fireSize = getFireSize(
+            _fuelTypePreset.code.name,
+            prediction.ROS,
+            prediction.secondary!.BROS,
+            minutes,
+            prediction.CFB,
+            prediction.secondary!.LB);
+      }
+      return Column(
+        children: <Widget>[
+          // Presets
+          Row(children: [
+            Expanded(child: FuelTypePresetDropdown(
+              onChanged: (FuelTypePreset? value) {
+                if (value != null) {
+                  _onPresetChanged(value);
+                }
+              },
+            ))
+          ]),
+          Row(
+            children: [
+              Expanded(
+                  child: BasicInputWidget(
+                      value: _basicInput,
+                      onChanged: (BasicInput basicInput) {
+                        _onBasicInputChanged(basicInput);
+                      }))
+            ],
+          ),
+          BasicResults(
+              prediction: prediction, minutes: minutes, fireSize: fireSize)
+        ],
+      );
+    } catch (e) {
+      return Text('$e');
     }
-    return Column(
-      children: <Widget>[
-        // Presets
-        Row(children: [
-          Expanded(child: FuelTypePresetDropdown(
-            onChanged: (FuelTypePreset? value) {
-              if (value != null) {
-                _onPresetChanged(value);
-              }
-            },
-          ))
-        ]),
-        Row(
-          children: [
-            Expanded(
-                child: BasicInputWidget(
-                    value: _basicInput,
-                    onChanged: (BasicInput basicInput) {
-                      _onBasicInputChanged(basicInput);
-                    }))
-          ],
-        ),
-        BasicResults(
-            prediction: prediction, minutes: minutes, fireSize: fireSize)
-      ],
-    );
   }
 }
 

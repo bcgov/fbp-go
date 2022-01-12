@@ -47,7 +47,7 @@ class CoordinatePickerState extends State<CoordinatePicker> {
         setState(() {
           _coordinate.latitude = position.latitude;
           _coordinate.longitude = position.longitude;
-          _coordinate.altitude = position.altitude;
+          _coordinate.altitude = position.altitude > 0 ? position.altitude : 0;
           widget.onChanged(_coordinate);
           _updateCoordinateControllers();
         });

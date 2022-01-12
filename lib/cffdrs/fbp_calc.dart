@@ -445,7 +445,7 @@ FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,
     throw Exception("D0 is out of range, must be between 0 and 366");
   }
   if (ELV < 0 || ELV > 10000) {
-    throw Exception("ELV is out of range, must be between 0 and 10000");
+    throw Exception("ELV $ELV is out of range, must be between 0 and 10000");
   }
   if (FFMC < 0 || FFMC > 100) {
     throw Exception("FFMC is out of range, must be between 0 and 100");
