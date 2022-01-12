@@ -6,6 +6,7 @@ import 'coordinate_picker.dart';
 import 'cffdrs/fbp_calc.dart';
 import 'fire_widgets.dart';
 import 'fire.dart';
+import 'basic_input.dart';
 
 class BasicResults extends StatelessWidget {
   final FireBehaviourPredictionPrimary prediction;
@@ -20,47 +21,61 @@ class BasicResults extends StatelessWidget {
       : intensityClass = getHeadFireIntensityClass(prediction.HFI),
         super(key: key);
 
-  List<Widget> buildRows() {
+  List<Widget> buildRows(TextStyle textStyle) {
     List<Widget> rows = [
       Row(children: [
-        const Expanded(child: Text('Initial Spread Index')),
+        Expanded(child: Text('Initial Spread Index', style: textStyle)),
         Expanded(
-          child: Text(prediction.ISI.toStringAsFixed(0)),
+          child: Text(
+            prediction.ISI.toStringAsFixed(0),
+            style: textStyle,
+          ),
         )
       ]),
       Row(children: [
-        const Expanded(child: Text('Crown fraction burned')),
+        Expanded(child: Text('Crown fraction burned', style: textStyle)),
         Expanded(
-            child: Text('${((prediction.CFB * 100).toStringAsFixed(0))} %'))
+            child: Text('${((prediction.CFB * 100).toStringAsFixed(0))} %',
+                style: textStyle))
       ]),
       Row(children: [
-        const Expanded(child: Text('Rate of spread')),
-        Expanded(child: Text('${prediction.ROS.toStringAsFixed(0)} (m/min)')),
+        Expanded(child: Text('Rate of spread', style: textStyle)),
+        Expanded(
+            child: Text('${prediction.ROS.toStringAsFixed(0)} (m/min)',
+                style: textStyle)),
       ]),
       Row(children: [
-        const Expanded(child: Text('Head fire intensity')),
-        Expanded(child: Text('${prediction.HFI.toStringAsFixed(0)} (kW/m)')),
+        Expanded(child: Text('Head fire intensity', style: textStyle)),
+        Expanded(
+            child: Text('${prediction.HFI.toStringAsFixed(0)} (kW/m)',
+                style: textStyle)),
       ]),
       Row(children: [
-        const Expanded(child: Text('Intensity class')),
-        Expanded(child: Text('$intensityClass')),
+        Expanded(child: Text('Intensity class', style: textStyle)),
+        Expanded(child: Text('$intensityClass', style: textStyle)),
       ]),
       Row(children: [
-        const Expanded(child: Text('Type of fire')),
-        Expanded(child: Text(getFireDescription(prediction.FD)))
+        Expanded(child: Text('Type of fire', style: textStyle)),
+        Expanded(
+            child: Text(getFireDescription(prediction.FD), style: textStyle))
       ]),
       Row(children: [
-        Expanded(child: Text('${minutes.toStringAsFixed(0)} minute fire size')),
-        Expanded(child: Text('${fireSize?.toStringAsFixed(0)} (ha)'))
+        Expanded(
+            child: Text('${minutes.toStringAsFixed(0)} minute fire size',
+                style: textStyle)),
+        Expanded(
+            child:
+                Text('${fireSize?.toStringAsFixed(0)} (ha)', style: textStyle))
       ])
     ];
 
     if (prediction.WSV != 0) {
       rows.add(Row(children: [
-        const Expanded(child: Text('Direction of spread')),
+        Expanded(child: Text('Direction of spread', style: textStyle)),
         Expanded(
             child: Text(
-                '${degreesToCompassPoint(prediction.RAZ)} ${prediction.RAZ.toStringAsFixed(1)}(\u00B0)'))
+                '${degreesToCompassPoint(prediction.RAZ)} ${prediction.RAZ.toStringAsFixed(1)}(\u00B0)',
+                style: textStyle))
       ]));
     }
 
@@ -71,7 +86,7 @@ class BasicResults extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         color: getIntensityClassColor(intensityClass),
-        child: Column(children: buildRows()));
+        child: Column(children: buildRows(getTextStyle(prediction.FD))));
   }
 }
 
@@ -102,22 +117,6 @@ class BasicFireBehaviourPredictionFormState
         coordinate: Coordinate(latitude: 37, longitude: -122, altitude: 100));
     super.initState();
   }
-
-  // AssetImage getAssetImage() {
-  //   try {
-  //     switch (_fuelTypePreset.code) {
-  //       case (FuelType.C2):
-  //         return const AssetImage('graphics/c2.jpg');
-  //       case (FuelType.C3):
-  //         return const AssetImage('graphics/c3.jpg');
-  //       default:
-  //         return AssetImage(
-  //             'graphics/${_fuelTypePreset.code.name.toLowerCase()}.png');
-  //     }
-  //   } catch (e) {
-  //     return const AssetImage('graphics/unknown.png');
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -160,13 +159,6 @@ class BasicFireBehaviourPredictionFormState
     }
     return Column(
       children: <Widget>[
-        // There's an idea to add pictures of the fuel types - but that's
-        // been put on hold.
-        // Row(children: [
-        //   Expanded(
-        //     child: Image(image: getAssetImage(), fit: BoxFit.contain),
-        //   )
-        // ]),
         // Presets
         Row(children: [
           Expanded(child: FuelTypePresetDropdown(

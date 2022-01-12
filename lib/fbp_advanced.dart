@@ -8,6 +8,7 @@ import 'cffdrs/fbp_calc.dart';
 import 'fbp_results.dart';
 import 'fire.dart';
 import 'fire_widgets.dart';
+import 'basic_input.dart';
 
 class AdvancedFireBehaviourPredictionForm extends StatefulWidget {
   const AdvancedFireBehaviourPredictionForm({Key? key}) : super(key: key);
@@ -199,19 +200,6 @@ class AdvancedFireBehaviourPredictionFormState
       prediction.RAZ -= 180;
       prediction.RAZ =
           prediction.RAZ < 0 ? prediction.RAZ + 360 : prediction.RAZ;
-      // print('ffmc: $_ffmc');
-      // print('day of year: $dayOfYear');
-      log('prediction.SFC: ${prediction.SFC}');
-      log('prediction.FMC: ${prediction.FMC}');
-      log('prediction.WSV: ${prediction.WSV}');
-      log('prediction.RAZ: ${prediction.RAZ}');
-      log('prediction.ISI: ${prediction.ISI}');
-      log('prediction.ROS: ${prediction.ROS}');
-      log('prediction.CFB: ${prediction.CFB}');
-      log('prediction.TFC: ${prediction.TFC}');
-      log('prediction.HFI: ${prediction.HFI}');
-      log('prediction.FD: ${prediction.FD}');
-      log('prediction.FD: ${prediction.CFC}');
       if (prediction.secondary != null) {
         fireSize = getFireSize(
             _fuelType.name,
@@ -221,8 +209,6 @@ class AdvancedFireBehaviourPredictionFormState
             prediction.CFB,
             prediction.secondary!.LB);
       }
-
-      log('fireSize: $fireSize');
     } catch (e) {
       log('error $e');
     }
@@ -401,25 +387,6 @@ class AdvancedFireBehaviourPredictionFormState
                 )
               ],
             ),
-            // Text('Initial Spread Index: ${isi?.toStringAsFixed(0)}'),
-            // Text('Foliar Moisture Content: ${fmc?.toStringAsFixed(0)}'),
-            // Text('Surface Fuel Consumption (kg/m^2): ${sfc?.toStringAsFixed(0)}'),
-            // Text(
-            //     'Crown fraction burned: ${(cfb == null ? 0.0 : cfb * 100).toStringAsFixed(0)} %'),
-            // Text('Fuel Consumption (kg/m^2): ${fc?.toStringAsFixed(0)}'),
-            // Text('Rate of spread: ${ros?.toStringAsFixed(0)} (m/min)'),
-            // Text(
-            //   'Head fire intensity: ${hfi?.toStringAsFixed(0)} (kW/m)',
-            //   style: TextStyle(
-            //       backgroundColor: getIntensityClassColor(intensityClass!)),
-            // ),
-            // Text('Intensity class: $intensityClass',
-            //     style: TextStyle(
-            //         backgroundColor: getIntensityClassColor(intensityClass))),
-            // Text('Type of fire: $fireDescription')
-            // Text(
-            //     // ignore: unnecessary_brace_in_string_interps
-            //     'fuel: ${fuelType}, bui: ${_bui}, fmc: ${_fmc}, sfc: ${_sfc}, pc: ${_pc}, pdf: ${_pdf}, cc: ${_cc}, cbh: ${_cbh}, cfl: ${_cfl}'),
           ],
         ),
       ),

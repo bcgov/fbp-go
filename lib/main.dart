@@ -113,16 +113,18 @@ class HomePageState extends State<HomePage> {
               onTap: () {
                 _changeSection(Section.advanced);
               }),
-          ListTile(
-              title: const Text('Fire Weather Index (FWI)'),
-              onTap: () {
-                _changeSection(Section.fwi);
-              }),
-          ListTile(
-              title: const Text('Foliar Moisture Content (FMC)'),
-              onTap: () {
-                _changeSection(Section.fmc);
-              }),
+          // TODO: Would be nice to have FWI
+          // ListTile(
+          //     title: const Text('Fire Weather Index (FWI)'),
+          //     onTap: () {
+          //       _changeSection(Section.fwi);
+          //     }),
+          // TODO: No-one wants this, but just keep it here for now.
+          // ListTile(
+          //     title: const Text('Foliar Moisture Content (FMC)'),
+          //     onTap: () {
+          //       _changeSection(Section.fmc);
+          //     }),
           ListTile(
               title: const Text('About'),
               onTap: () {

@@ -19,88 +19,48 @@ class Results extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(children: [
-          const Expanded(child: Text('Initial Spread Index')),
-          Expanded(
-            child: Text(prediction.ISI.toStringAsFixed(0)),
-          )
-        ]),
-        Row(children: [
-          const Expanded(child: Text('Foliar Moisture Content')),
-          Expanded(child: Text(prediction.FMC.toStringAsFixed(0)))
-        ]),
-        Row(children: [
-          const Expanded(child: Text('Surface Fuel Consumption')),
-          Expanded(child: Text('${prediction.SFC.toStringAsFixed(0)} (kg/m^2)'))
-        ]),
-        Row(children: [
-          const Expanded(child: Text('Crown fraction burned')),
-          Expanded(
-              child: Text('${((prediction.CFB * 100).toStringAsFixed(0))} %'))
-        ]),
-        Row(children: [
-          const Expanded(child: Text('Fuel Consumption')),
-          Expanded(child: Text('${prediction.TFC.toStringAsFixed(2)} (kg/m^2)'))
-        ]),
-        Container(
-            color: getIntensityClassColor(intensityClass),
-            child: Row(children: [
-              const Expanded(child: Text('Rate of spread')),
+    TextStyle textStyle = getTextStyle(prediction.FD);
+    return Container(
+        color: getIntensityClassColor(intensityClass),
+        child: Column(
+          children: [
+            ...getPrimaryTextRow(prediction, textStyle),
+            Row(children: [
               Expanded(
-                  child: Text('${prediction.ROS.toStringAsFixed(0)} (m/min)')),
-            ])),
-        Container(
-            color: getIntensityClassColor(intensityClass),
-            child: Row(children: [
-              const Expanded(child: Text('Head fire intensity')),
+                  child: Text(
+                'Intensity class',
+                style: textStyle,
+              )),
+              Expanded(child: Text('$intensityClass', style: textStyle)),
+            ]),
+            Row(children: [
               Expanded(
-                  child: Text('${prediction.HFI.toStringAsFixed(0)} (kW/m)')),
-            ])),
-        Container(
-            color: getIntensityClassColor(intensityClass),
-            child: Row(children: [
-              const Expanded(child: Text('Intensity class')),
-              Expanded(child: Text('$intensityClass')),
-            ])),
-        Row(children: [
-          const Expanded(child: Text('Type of fire')),
-          Expanded(child: Text(getFireDescription(prediction.FD)))
-        ]),
-        Row(children: [
-          const Expanded(child: Text('Crown Fuel Consumption')),
-          Expanded(child: Text('${prediction.CFC.toStringAsFixed(0)} (kg/m^2)'))
-        ]),
-        Row(children: [
-          Expanded(
-              child: Text('${minutes.toStringAsFixed(0)} minute fire size')),
-          Expanded(child: Text('${fireSize?.toStringAsFixed(0)} (ha)'))
-        ]),
-        Row(children: [
-          const Expanded(child: Text('Back rate of spread')),
-          Expanded(
-              child: Text(
-                  '${prediction.secondary?.BROS.toStringAsFixed(0)} (m/min)'))
-        ]),
-        Row(children: [
-          const Expanded(child: Text('Length to breadth ratio')),
-          Expanded(
-              child: Text('${prediction.secondary?.LB.toStringAsFixed(2)}'))
-        ]),
-        Row(children: [
-          const Expanded(child: Text('Net effective wind speed')),
-          Expanded(child: Text('${prediction.WSV.toStringAsFixed(0)} (km/h)'))
-        ]),
-        Row(children: [
-          const Expanded(child: Text('Net effective wind direction')),
-          Expanded(
-              child: Text(
-                  '${degreesToCompassPoint(prediction.RAZ)} ${prediction.RAZ.toStringAsFixed(1)}(\u00B0)'))
-        ]),
-        ...getSecondaryTextRow(prediction)
-      ],
-    );
+                  child: Text('${minutes.toStringAsFixed(0)} minute fire size',
+                      style: textStyle)),
+              Expanded(
+                  child: Text(
+                '${fireSize?.toStringAsFixed(0)} (ha)',
+                style: textStyle,
+              ))
+            ]),
+            ...getSecondaryTextRow(prediction)
+          ],
+        ));
+  }
+
+  List<Row> getPrimaryTextRow(
+      FireBehaviourPredictionPrimary? prediction, TextStyle textStyle) {
+    List<Row> rows = <Row>[];
+    if (prediction != null) {
+      for (var key in prediction.lookup.keys) {
+        ValueDescriptionPair value = prediction.getProp(key);
+        rows.add(Row(children: [
+          Expanded(child: Text(value.description, style: textStyle)),
+          Expanded(child: Text(value.toString(), style: textStyle))
+        ]));
+      }
+    }
+    return rows;
   }
 
   List<Row> getSecondaryTextRow(FireBehaviourPredictionPrimary? prediction) {
@@ -112,7 +72,7 @@ class Results extends StatelessWidget {
           ValueDescriptionPair value = secondary.getProp(key);
           rows.add(Row(children: [
             Expanded(child: Text(value.description)),
-            Expanded(child: Text(value.valueToString()))
+            Expanded(child: Text(value.toString()))
           ]));
         }
       }
