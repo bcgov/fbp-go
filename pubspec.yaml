@@ -64,6 +64,7 @@ flutter:
   assets:
     - ABOUT.txt
     - LICENSE
+    - assets/DISCLAIMER.txt
   #   - graphics/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
