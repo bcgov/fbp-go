@@ -16,8 +16,6 @@ You should have received a copy of the GNU General Public License along with
 FBP Go. If not, see <https://www.gnu.org/licenses/>.
 */
 // Define a custom Form widget.
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 
 import 'coordinate_picker.dart';

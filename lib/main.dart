@@ -1,3 +1,21 @@
+/*
+Copyright 2021, 2022 Province of British Columbia
+
+This file is part of FBP Go.
+
+FBP Go is free software: you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+FBP Go is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+FBP Go. If not, see <https://www.gnu.org/licenses/>.
+*/
+import 'about.dart';
 import 'fbp_advanced.dart';
 import 'package:flutter/material.dart';
 import 'cffdrs/fbp_calc.dart';
@@ -61,8 +79,12 @@ class HomePageState extends State<HomePage> {
         return Container(
             // padding: const EdgeInsets.only(left: edgeInset, right: edgeInset),
             // child: RichText(text: const TextSpan(text: 'About')));
-            child:
-                const Text('About\nhttps://www.gnu.org/licenses/gpl-3.0.html'));
+            child: SingleChildScrollView(
+                padding:
+                    const EdgeInsets.only(left: edgeInset, right: edgeInset),
+                child: Column(
+                  children: [AboutPage()],
+                )));
       case (Section.basic):
         return Center(
             child: SingleChildScrollView(

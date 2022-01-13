@@ -15,3 +15,57 @@ A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with 
 FBP Go. If not, see <https://www.gnu.org/licenses/>.
 */
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+class AboutPageState extends State<AboutPage> {
+  String aboutText = 'About: loading...';
+  String licenseText = 'License: Loading...';
+
+  void getAboutText() {
+    rootBundle.loadString('ABOUT.txt').then((value) => {
+          setState(() {
+            aboutText = value;
+          })
+        });
+  }
+
+  void getLicenseText() {
+    rootBundle.loadString('LICENSE').then((value) => {
+          setState(() {
+            licenseText = value;
+          })
+        });
+  }
+
+  @override
+  void initState() {
+    getAboutText();
+    getLicenseText();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+        text: TextSpan(style: DefaultTextStyle.of(context).style, children: [
+      const TextSpan(
+          text: 'About\n\n', style: TextStyle(fontWeight: FontWeight.bold)),
+      TextSpan(text: aboutText),
+      const TextSpan(
+          text: '\n\nLicense\n\n',
+          style: TextStyle(fontWeight: FontWeight.bold)),
+      TextSpan(text: licenseText),
+    ]));
+    // return Text('about');
+  }
+}
+
+class AboutPage extends StatefulWidget {
+  const AboutPage({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return AboutPageState();
+  }
+}
