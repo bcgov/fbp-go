@@ -1,3 +1,20 @@
+/*
+Copyright 2021, 2022 Province of British Columbia
+
+This file is part of FBP Go.
+
+FBP Go is free software: you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+FBP Go is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+FBP Go. If not, see <https://www.gnu.org/licenses/>.
+*/
 import 'dart:math';
 
 import 'cffdrs/dist_calc.dart';
@@ -90,33 +107,29 @@ List<FuelTypePreset> getFuelTypePresets() {
     FuelTypePreset(FuelType.D1, 'D-1 leafless aspen', cfl: 1.0, averageBUI: 35),
     // D2 is not implemented in FBPCalc.r
     // FuelTypePreset(FuelType.D2, 'D-2 green aspen', cfl: 1.0),
-    FuelTypePreset(FuelType.M1, 'M-1 boreal mixedwood-leafless, 75% conifer',
+    FuelTypePreset(FuelType.M1, 'M-1 boreal mixed-leafless, 75% conifer',
         cfl: 0.8, pc: 75, cbh: 6, averageBUI: 50),
-    FuelTypePreset(FuelType.M1, 'M-1 boreal mixedwood-leafless, 50% conifer',
+    FuelTypePreset(FuelType.M1, 'M-1 boreal mixed-leafless, 50% conifer',
         cfl: 0.8, pc: 50, cbh: 6, averageBUI: 50),
-    FuelTypePreset(FuelType.M1, 'M-1 boreal mixedwood-leafless, 25% conifer',
+    FuelTypePreset(FuelType.M1, 'M-1 boreal mixed-leafless, 25% conifer',
         cfl: 0.8, pc: 25, cbh: 6, averageBUI: 50),
-    FuelTypePreset(FuelType.M2, 'M-2 boreal mixedwood-green, 75% conifer',
+    FuelTypePreset(FuelType.M2, 'M-2 boreal mixed-green, 75% conifer',
         cfl: 0.8, pc: 75, cbh: 6, averageBUI: 50),
-    FuelTypePreset(FuelType.M2, 'M-2 boreal mixedwood-green, 50% conifer',
+    FuelTypePreset(FuelType.M2, 'M-2 boreal mixed-green, 50% conifer',
         cfl: 0.8, pc: 50, cbh: 6, averageBUI: 50),
-    FuelTypePreset(FuelType.M2, 'M-2 boreal mixedwood-green, 25% conifer',
+    FuelTypePreset(FuelType.M2, 'M-2 boreal mixed-green, 25% conifer',
         cfl: 0.8, pc: 25, cbh: 6, averageBUI: 50),
-    FuelTypePreset(
-        FuelType.M3, 'M-3 dead balsam mixedwood-leafless, 30% dead fir',
+    FuelTypePreset(FuelType.M3, 'M-3 dead balsam mixed-leafless, 30% dead fir',
         cfl: 0.8, pdf: 30, cbh: 6, averageBUI: 50),
-    FuelTypePreset(
-        FuelType.M3, 'M-3 dead balsam mixedwood-leafless, 60% dead fir',
+    FuelTypePreset(FuelType.M3, 'M-3 dead balsam mixed-leafless, 60% dead fir',
         cfl: 0.8, pdf: 60, cbh: 6, averageBUI: 50),
-    FuelTypePreset(
-        FuelType.M3, 'M-3 dead balsam mixedwood-leafless, 100% dead fir',
+    FuelTypePreset(FuelType.M3, 'M-3 dead balsam mixed-leafless, 100% dead fir',
         cfl: 0.8, pdf: 100, cbh: 6, averageBUI: 50),
-    FuelTypePreset(FuelType.M4, 'M-4 dead balsam mixedwood-green, 30% dead fir',
+    FuelTypePreset(FuelType.M4, 'M-4 dead balsam mixed-green, 30% dead fir',
         cfl: 0.8, pdf: 30, cbh: 6, averageBUI: 50),
-    FuelTypePreset(FuelType.M4, 'M-4 dead balsam mixedwood-green, 60% dead fir',
+    FuelTypePreset(FuelType.M4, 'M-4 dead balsam mixed-green, 60% dead fir',
         cfl: 0.8, pdf: 60, cbh: 6, averageBUI: 50),
-    FuelTypePreset(
-        FuelType.M4, 'M-4 dead balsam mixedwood-green, 100% dead fir',
+    FuelTypePreset(FuelType.M4, 'M-4 dead balsam mixed-green, 100% dead fir',
         cfl: 0.8, pdf: 100, cbh: 6, averageBUI: 50),
     // Taking some liberties here - O1A and O1B don't  have an average
     // BUI a.f.a.i.k.
@@ -134,7 +147,7 @@ List<FuelTypePreset> getFuelTypePresets() {
 }
 
 double getFireSize(String fuelType, double ros, double bros,
-    double ellapsedMinutes, double cfb, double lbRatio) {
+    double elapsedMinutes, double cfb, double lbRatio) {
   /*
     Fire size based on Eq. 8 (Alexander, M.E. 1985. Estimating the
     length-to-breadth ratio of elliptical
@@ -144,15 +157,14 @@ double getFireSize(String fuelType, double ros, double bros,
     */
   // Using acceleration:
   final fireSpreadDistance =
-      DISTtcalc(fuelType, ros + bros, ellapsedMinutes, cfb);
-  final lengthToBreadthAtTime =
-      LBtcalc(fuelType, lbRatio, ellapsedMinutes, cfb);
+      DISTtcalc(fuelType, ros + bros, elapsedMinutes, cfb);
+  final lengthToBreadthAtTime = LBtcalc(fuelType, lbRatio, elapsedMinutes, cfb);
   // Not using acceleration:
   // fros = cffdrs.flank_rate_of_spread(ros, bros, lb_ratio)
   // # Flank Fire Spread Distance a.k.a. DF in R/FBPcalc.r
   // flank_fire_spread_distance = (ros + bros) / (2.0 * fros)
   // length_to_breadth_at_time = flank_fire_spread_distance
-  // fire_spread_distance = (ros + bros) * ellapsed_minutes
+  // fire_spread_distance = (ros + bros) * elapsed_minutes
 
   // Essentially using Eq. 8 (Alexander, M.E. 1985. Estimating the
   // length-to-breadth ratio of elliptical forest fire patterns.) - but

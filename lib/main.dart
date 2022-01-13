@@ -1,3 +1,23 @@
+/*
+Copyright 2021, 2022 Province of British Columbia
+
+This file is part of FBP Go.
+
+FBP Go is free software: you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+FBP Go is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+FBP Go. If not, see <https://www.gnu.org/licenses/>.
+*/
+import 'package:flutter/services.dart';
+
+import 'about.dart';
 import 'fbp_advanced.dart';
 import 'package:flutter/material.dart';
 import 'cffdrs/fbp_calc.dart';
@@ -12,7 +32,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-        title: 'Fire Behaviour Prediction', home: HomePage());
+        title: 'FBP Go (Fire Behaviour Prediction)', home: HomePage());
   }
 }
 
@@ -36,6 +56,7 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   Section _selectedSection = Section.basic;
+  bool showDisclaimer = true;
 
   String _getSectionText() {
     switch (_selectedSection) {
@@ -54,13 +75,36 @@ class HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> _showDisclaimer(BuildContext context) async {
+    String disclaimer = await rootBundle.loadString('assets/DISCLAIMER.txt');
+    return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Disclaimer'),
+            content: SingleChildScrollView(
+              child: Text(disclaimer),
+            ),
+            actions: <Widget>[
+              TextButton(
+                  child: const Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  })
+            ],
+          );
+        });
+  }
+
   _getSelectedSection(Section _section) {
     const double edgeInset = 3;
     switch (_section) {
       case (Section.about):
-        return Container(
+        return SingleChildScrollView(
             padding: const EdgeInsets.only(left: edgeInset, right: edgeInset),
-            child: const Text('About'));
+            child: Column(
+              children: const [AboutPage()],
+            ));
       case (Section.basic):
         return Center(
             child: SingleChildScrollView(
@@ -90,6 +134,10 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (showDisclaimer) {
+      Future.delayed(Duration.zero, () => _showDisclaimer(context));
+      showDisclaimer = false;
+    }
     return Scaffold(
       appBar: AppBar(title: Text(_getSectionText())),
       body: _getSelectedSection(_selectedSection),
@@ -98,7 +146,7 @@ class HomePageState extends State<HomePage> {
         padding: EdgeInsets.zero,
         children: [
           const DrawerHeader(
-            child: Text('\u{1F525} Fire Behaviour Prediction'),
+            child: Text('FBP Go\n\nFire Behaviour Prediction on the go'),
             decoration: BoxDecoration(color: Colors.blue),
           ),
           ListTile(
@@ -113,16 +161,18 @@ class HomePageState extends State<HomePage> {
               onTap: () {
                 _changeSection(Section.advanced);
               }),
-          ListTile(
-              title: const Text('Fire Weather Index (FWI)'),
-              onTap: () {
-                _changeSection(Section.fwi);
-              }),
-          ListTile(
-              title: const Text('Foliar Moisture Content (FMC)'),
-              onTap: () {
-                _changeSection(Section.fmc);
-              }),
+          // TODO: Would be nice to have FWI
+          // ListTile(
+          //     title: const Text('Fire Weather Index (FWI)'),
+          //     onTap: () {
+          //       _changeSection(Section.fwi);
+          //     }),
+          // TODO: No-one wants this, but just keep it here for now.
+          // ListTile(
+          //     title: const Text('Foliar Moisture Content (FMC)'),
+          //     onTap: () {
+          //       _changeSection(Section.fmc);
+          //     }),
           ListTile(
               title: const Text('About'),
               onTap: () {

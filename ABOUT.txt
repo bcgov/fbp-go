@@ -1,0 +1,11 @@
+FBP Go provides users a mobile solution to perform fire behaviour calculations in the field. FBP Go is intended to supplement, not replace, the experience and judgment of fire personnel.
+
+The Canadian Forest Fire Behavior Prediction (FBP) System is a systematic method for assessing wildfire behaviour potential. Quantitative estimates of head fire spread rate, fire intensity, type of fire, spread distance, elliptical fire area, perimeter, and perimeter growth rate are provided for eighteen fuel types within five broad groupings (coniferous, deciduous, and mixedwood forests, logging slash, and grass), covering most of the major wildfire fuel types found in Canada.
+
+FBP Go calculations are based on the “R package for the Canadian Forest Fire Danger Rating System”:
+“Wang X, Wotton B M, Cantin A, Parisien M-A, Anderson K, Moore B and Flannigan M D (2017).
+cffdrs: An R package for the Canadian Forest Fire Danger Rating System.
+Ecological Processes, 6(1), 5.
+URL https://ecologicalprocesses.springeropen.com/articles/10.1186/s13717-017-0070-z”
+
+Copyright 2021, 2022 Province of British Columbia and distributed under the terms of the GNU General Public License version 3 (https://www.gnu.org/licenses/gpl-3.0.html).

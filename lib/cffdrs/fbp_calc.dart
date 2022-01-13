@@ -1,6 +1,33 @@
+/*
+Copyright 2021, 2022 Province of British Columbia.
+
+This file is part of FBP Go.
+
+The code contained in this file was copied from the CRAN R package CFFDRS
+(Wang X, Wotton B M, Cantin A, Parisien M-A, Anderson K, Moore B and
+Flannigan M D (2017).
+cffdrs: An R package for the Canadian Forest Fire Danger Rating System.
+Ecological Processes, 6(1), 5.
+URL
+https://ecologicalprocesses.springeropen.com/articles/10.1186/s13717-017-0070-z)
+and translated into dart for FBP Go.
+
+FBP Go is free software: you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+FBP Go is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+FBP Go. If not, see <https://www.gnu.org/licenses/>.
+*/
 // ignore_for_file: non_constant_identifier_names
 import 'dart:math';
 
+import '../fire.dart';
 import 'dist_calc.dart';
 import 'ros_t_calc.dart';
 import 'b_ros_calc.dart';
@@ -19,18 +46,76 @@ import 'ros_calc.dart';
 import 'tfc_calc.dart';
 
 class ValueDescriptionPair {
-  final dynamic value;
   final String description;
+  final Function getValue;
+  String? unit;
 
-  ValueDescriptionPair(this.value, this.description);
+  ValueDescriptionPair(this.getValue, this.description, {this.unit});
 
-  String valueToString() {
+  String _valueToString() {
+    final value = getValue();
     if (value is double) {
       return value.toStringAsFixed(2);
     } else if (value is String) {
       return value.toString();
     }
     throw Exception('Unsupported value type for $description');
+  }
+
+  @override
+  String toString() {
+    String stringValue = _valueToString();
+    if (unit != null) {
+      return '$stringValue ($unit)';
+    }
+    return stringValue;
+  }
+}
+
+class PercentageValueDescriptionPair extends ValueDescriptionPair {
+  PercentageValueDescriptionPair(value, String description, {unit})
+      : super(value, description, unit: unit);
+
+  @override
+  String _valueToString() {
+    final value = getValue();
+    if (value is double) {
+      return '${(value * 100).toStringAsFixed(2)}%';
+    } else if (value is String) {
+      return value.toString();
+    }
+    throw Exception('Unsupported value type for $description');
+  }
+
+  @override
+  String toString() {
+    String stringValue = _valueToString();
+    if (unit != null) {
+      return '$stringValue $unit';
+    }
+    return stringValue;
+  }
+}
+
+class FireDescriptionValuePair extends ValueDescriptionPair {
+  FireDescriptionValuePair(value, String description)
+      : super(value, description);
+
+  @override
+  String toString() {
+    final value = getValue();
+    return getFireDescription(value);
+  }
+}
+
+class CompassValueDescriptionPair extends ValueDescriptionPair {
+  CompassValueDescriptionPair(value, String description)
+      : super(value, description, unit: '°');
+
+  @override
+  String toString() {
+    final value = getValue();
+    return '${degreesToCompassPoint(value)} ${value.toStringAsFixed(1)}$unit';
   }
 }
 
@@ -158,55 +243,63 @@ class FireBehaviourPredictionSecondary {
     // consequence, so we have to painfully construct this lookup - which is
     // fine, because we need the descriptions in somewhere anyway.
     lookup = <String, ValueDescriptionPair>{
-      'SF': ValueDescriptionPair(SF, 'Spread Factor'),
-      'CSI': ValueDescriptionPair(CSI, 'Critical Surface Interval'),
-      'RSO': ValueDescriptionPair(RSO, 'Surface Fire Rate of Spread'),
-      'BE': ValueDescriptionPair(BE, 'Buildup Effect'),
-      'LB': ValueDescriptionPair(LB, 'Length to Breadth Ratio'),
-      'LBt': ValueDescriptionPair(LBt, 'Length to Breadth Ratio Time'),
-      'BROS': ValueDescriptionPair(BROS, 'Back Fire Rate of Spread'),
-      'FROS': ValueDescriptionPair(FROS, 'Flank Fire Rate of Spread'),
-      'TROS': ValueDescriptionPair(TROS, 'Rate of Spread Towards Angle Theta'),
-      'BROSt': ValueDescriptionPair(BROSt, 'Rate of Spread At Time T For Back'),
-      'FROSt':
-          ValueDescriptionPair(FROSt, 'Rate of Spread At Time T For Flank'),
-      'TROSt': ValueDescriptionPair(
-          TROSt, 'Rate of Spread Towards Angle Theta At Time T'),
-      'FCFB': ValueDescriptionPair(FCFB, 'Crown Fraction Burned For Flank'),
-      'BCFB': ValueDescriptionPair(BCFB, 'Crown Fraction Burned For Back'),
-      'TCFB':
-          ValueDescriptionPair(TCFB, 'Crown Fraction Burned At Angle Theta'),
-      'FTFC':
-          ValueDescriptionPair(FTFC, 'Total Fuel Consumption For The Flank'),
-      'BTFC': ValueDescriptionPair(BTFC, 'Total Fuel Consumption For The Back'),
-      'TTFC':
-          ValueDescriptionPair(TTFC, 'Total Fuel Consumption At Angle Theta'),
-      'FFI': ValueDescriptionPair(FFI, 'Fire Intensity At The Flank'),
-      'BFI': ValueDescriptionPair(BFI, 'Fire Intensity At The Back'),
-      'TFI': ValueDescriptionPair(TFI, 'Fire Intensity At Angle Theta'),
-      'HROSt': ValueDescriptionPair(HROSt, 'Rate of Spread At Time T For Head'),
+      // 'SF': ValueDescriptionPair(() => SF, 'Spread Factor'),
+      'CSI': ValueDescriptionPair(() => CSI, 'Critical Surface Interval'),
+      'RSO': ValueDescriptionPair(() => RSO, 'Surface Fire Rate of Spread',
+          unit: 'm/min'),
+      'BE': ValueDescriptionPair(() => BE, 'Buildup Effect'),
+      'LB': ValueDescriptionPair(() => LB, 'Length to Breadth Ratio'),
+      // 'LBt': ValueDescriptionPair(() => LBt, 'Length to Breadth Ratio Time'),
+      'BROS': ValueDescriptionPair(() => BROS, 'Back Fire Rate of Spread',
+          unit: 'm/min'),
+      'FROS': ValueDescriptionPair(() => FROS, 'Flank Fire Rate of Spread'),
+      // 'TROS': ValueDescriptionPair(
+      //     () => TROS, 'Rate of Spread Towards Angle Theta'),
+      // 'BROSt': ValueDescriptionPair(
+      //     () => BROSt, 'Rate of Spread At Time T For Back'),
+      // 'FROSt': ValueDescriptionPair(
+      //     () => FROSt, 'Rate of Spread At Time T For Flank'),
+      // 'TROSt': ValueDescriptionPair(
+      //     () => TROSt, 'Rate of Spread Towards Angle Theta At Time T'),
+      'FCFB':
+          ValueDescriptionPair(() => FCFB, 'Crown Fraction Burned For Flank'),
+      'BCFB':
+          ValueDescriptionPair(() => BCFB, 'Crown Fraction Burned For Back'),
+      // 'TCFB': ValueDescriptionPair(
+      //     () => TCFB, 'Crown Fraction Burned At Angle Theta'),
+      'FTFC': ValueDescriptionPair(
+          () => FTFC, 'Total Fuel Consumption For The Flank'),
+      'BTFC': ValueDescriptionPair(
+          () => BTFC, 'Total Fuel Consumption For The Back'),
+      // 'TTFC': ValueDescriptionPair(
+      //     () => TTFC, 'Total Fuel Consumption At Angle Theta'),
+      'FFI': ValueDescriptionPair(() => FFI, 'Fire Intensity At The Flank'),
+      'BFI': ValueDescriptionPair(() => BFI, 'Fire Intensity At The Back'),
+      // 'TFI': ValueDescriptionPair(() => TFI, 'Fire Intensity At Angle Theta'),
+      // 'HROSt': ValueDescriptionPair(
+      //     () => HROSt, 'Rate of Spread At Time T For Head'),
       'TI': ValueDescriptionPair(
-          TI, 'Elapsed Time to Crown Fire Initiation for Head'),
+          () => TI, 'Elapsed Time to Crown Fire Initiation for Head'),
       'FTI': ValueDescriptionPair(
-          FTI, 'Elapsed Time to Crown Fire Initiation for Flank'),
+          () => FTI, 'Elapsed Time to Crown Fire Initiation for Flank'),
       'BTI': ValueDescriptionPair(
-          BTI, 'Elapsed Time to Crown Fire Initiation for Back'),
-      'TTI': ValueDescriptionPair(
-          TTI, 'Elapsed Time to Crown Fire Initiation for theta'),
-      'DH': ValueDescriptionPair(DH, 'Fire Spread Distance Head'),
-      'DB': ValueDescriptionPair(DB, 'Fire Spread Distance Back'),
-      'DF': ValueDescriptionPair(DF, 'Fire Spread Distance Flank'),
+          () => BTI, 'Elapsed Time to Crown Fire Initiation for Back'),
+      // 'TTI': ValueDescriptionPair(
+      //     () => TTI, 'Elapsed Time to Crown Fire Initiation for theta'),
+      'DH': ValueDescriptionPair(() => DH, 'Fire Spread Distance Head'),
+      'DB': ValueDescriptionPair(() => DB, 'Fire Spread Distance Back'),
+      'DF': ValueDescriptionPair(() => DF, 'Fire Spread Distance Flank'),
     };
 
-    @override
-    String toString() {
-      return 'SF: $SF, CSI: $CSI, RSO: $RSO, BE: $BE, LB: $LB, LBt: $LBt, '
-          'BROS: $BROS, FROS: $FROS, TROS: $TROS, BROSt: $BROSt, '
-          'FROSt: $FROSt, TROSt: $TROSt, FCFB: $FCFB, BCFB: $BCFB, '
-          'TCFB: $TCFB, FTFC: $FTFC, BTFC: $BTFC, TTFC: $TTFC, FFI: $FFI, '
-          'BFI: $BFI, TFI: $TFI, HROSt: $HROSt, TI: $TI, FTI: $FTI, '
-          'BTI: $BTI, TTI: $TTI, DH: $DH, DB: $DB, DF: $DF';
-    }
+    // @override
+    // String toString() {
+    //   return 'SF: $SF, CSI: $CSI, RSO: $RSO, BE: $BE, LB: $LB, LBt: $LBt, '
+    //       'BROS: $BROS, FROS: $FROS, TROS: $TROS, BROSt: $BROSt, '
+    //       'FROSt: $FROSt, TROSt: $TROSt, FCFB: $FCFB, BCFB: $BCFB, '
+    //       'TCFB: $TCFB, FTFC: $FTFC, BTFC: $BTFC, TTFC: $TTFC, FFI: $FFI, '
+    //       'BFI: $BFI, TFI: $TFI, HROSt: $HROSt, TI: $TI, FTI: $FTI, '
+    //       'BTI: $BTI, TTI: $TTI, DH: $DH, DB: $DB, DF: $DF';
+    // }
   }
 
   ValueDescriptionPair getProp(String key) {
@@ -221,7 +314,7 @@ class FireBehaviourPredictionSecondary {
   String toString() {
     String result = 'Secondary Outputs:\n';
     lookup.forEach((String key, ValueDescriptionPair pair) {
-      result += '${pair.description}: ${pair.valueToString()}\n';
+      result += '${pair.description}: ${pair.toString()}\n';
     });
     return result;
   }
@@ -239,6 +332,8 @@ class FireBehaviourPredictionPrimary {
   double HFI; // Head Fire Intensity
   String FD; // Fire Type
   double CFC; // Crown Fuel Consumption
+  Map<String, ValueDescriptionPair> lookup;
+
   FireBehaviourPredictionSecondary? secondary;
   FireBehaviourPredictionPrimary(
       {required this.FMC,
@@ -252,23 +347,53 @@ class FireBehaviourPredictionPrimary {
       required this.HFI,
       required this.FD,
       required this.CFC,
-      this.secondary});
-
-  @override
-  String toString() {
-    return 'FMC: $FMC\n'
-        'SFC: $SFC\n'
-        'WSV: $WSV\n'
-        'RAZ: $RAZ\n'
-        'ISI: $ISI\n'
-        'ROS: $ROS\n'
-        'CFB: $CFB\n'
-        'TFC: $TFC\n'
-        'HFI: $HFI\n'
-        'FD: $FD\n'
-        'CFC: $CFC\n'
-        'Secondary: $secondary';
+      this.secondary,
+      this.lookup = const <String, ValueDescriptionPair>{}}) {
+    lookup = <String, ValueDescriptionPair>{
+      'FMC': ValueDescriptionPair(() => FMC, 'Foliar Moisture Content'),
+      'SFC': ValueDescriptionPair(() => SFC, 'Surface Fuel Consumption',
+          unit: 'kg/m^2'),
+      'WSV': ValueDescriptionPair(() => WSV, 'Net effective windspeed',
+          unit: 'km/h'),
+      'RAZ': CompassValueDescriptionPair(
+          () => RAZ, 'Net effective wind direction'),
+      'ISI': ValueDescriptionPair(() => ISI, 'Initial Spread Index'),
+      'ROS': ValueDescriptionPair(() => ROS, 'Rate of Spread', unit: 'm/min'),
+      'CFB': PercentageValueDescriptionPair(() => CFB, 'Crown Fraction Burned',
+          unit: '%'),
+      'TFC': ValueDescriptionPair(() => TFC, 'Total Fuel Consumption',
+          unit: 'kg/m^2'),
+      'HFI':
+          ValueDescriptionPair(() => HFI, 'Head Fire Intensity', unit: 'kW/m'),
+      'FD': FireDescriptionValuePair(() => FD, 'Fire Type'),
+      'CFC': ValueDescriptionPair(() => CFC, 'Crown Fuel Consumption',
+          unit: 'kg/m^2'),
+    };
   }
+
+  ValueDescriptionPair getProp(String key) {
+    var result = lookup[key];
+    if (result == null) {
+      throw ArgumentError('Unknown key: $key');
+    }
+    return result;
+  }
+
+  // @override
+  // String toString() {
+  //   return 'FMC: $FMC\n'
+  //       'SFC: $SFC\n'
+  //       'WSV: $WSV\n'
+  //       'RAZ: $RAZ\n'
+  //       'ISI: $ISI\n'
+  //       'ROS: $ROS\n'
+  //       'CFB: $CFB\n'
+  //       'TFC: $TFC\n'
+  //       'HFI: $HFI\n'
+  //       'FD: $FD\n'
+  //       'CFC: $CFC\n'
+  //       'Secondary: $secondary';
+  // }
 }
 
 FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,
@@ -347,7 +472,7 @@ FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,
     throw Exception("D0 is out of range, must be between 0 and 366");
   }
   if (ELV < 0 || ELV > 10000) {
-    throw Exception("ELV is out of range, must be between 0 and 10000");
+    throw Exception("ELV $ELV is out of range, must be between 0 and 10000");
   }
   if (FFMC < 0 || FFMC > 100) {
     throw Exception("FFMC is out of range, must be between 0 and 100");
