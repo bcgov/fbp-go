@@ -52,9 +52,8 @@ class AdvancedFireBehaviourPredictionFormState
   double _cfl = 0;
   double _minutes = 60;
   double _gfl = 0.35;
-  double _theta = 0;
 
-  bool _expanded = false;
+  // bool _expanded = false;
 
   final _fuelTypeState = GlobalKey<FormFieldState>();
 
@@ -137,12 +136,6 @@ class AdvancedFireBehaviourPredictionFormState
     });
   }
 
-  void _onThetaChanged(double theta) {
-    setState(() {
-      _theta = theta;
-    });
-  }
-
   final ccController = TextEditingController();
   final pcController = TextEditingController();
   final pdfController = TextEditingController();
@@ -203,7 +196,7 @@ class AdvancedFireBehaviourPredictionFormState
         PDF: _pdf,
         GFL: _gfl,
         CC: _basicInput.cc,
-        THETA: _theta,
+        THETA: 0, // we don't use THETA - so just default to 0
         ACCEL: false,
         ASPECT: _basicInput.aspect,
         BUIEFF: true,
@@ -237,155 +230,115 @@ class AdvancedFireBehaviourPredictionFormState
                 },
               ))
             ]),
-            ExpansionPanelList(
+            Row(
               children: [
-                ExpansionPanel(
-                  headerBuilder: (context, isExpanded) {
-                    return const ListTile(
-                      title: Text(
-                        'Advanced',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    );
-                  },
-                  body: Column(children: <Widget>[
-                    Row(
-                      children: [
-                        Expanded(
-                            child: DropdownButtonFormField(
-                                key: _fuelTypeState,
-                                decoration: const InputDecoration(
-                                    labelText: "Fuel Type"),
-                                items: FuelType.values.map((FuelType value) {
-                                  return DropdownMenuItem(
-                                      value: value,
-                                      child: Row(
-                                        children: [
-                                          // const Icon(Icons.park_outlined),
-                                          Text(value.name)
-                                        ],
-                                      ));
-                                }).toList(),
-                                onChanged: (FuelType? value) {
-                                  _onFuelTypeChanged(value!);
-                                }))
-                      ],
-                    ),
-                    Row(children: [
-                      // CFL field
-                      Expanded(
-                          child: TextField(
-                        controller: _cflController,
-                        decoration: const InputDecoration(
-                            labelText: "Crown Fuel Load (kg/m^2)"),
-                        keyboardType: TextInputType.number,
-                        onChanged: (value) {
-                          if (double.tryParse(value) != null) {
-                            _onCFLChanged(double.parse(value));
-                          }
-                        },
-                      )),
-                      // GFL field
-                      Expanded(
-                          child: TextField(
-                        controller: _gflController,
-                        decoration: const InputDecoration(
-                            labelText: "Grass Fuel Load (kg/m^2)"),
-                        keyboardType: TextInputType.number,
-                        onChanged: (value) {
-                          if (double.tryParse(value) != null) {
-                            _onGFLChanged(double.parse(value));
-                          }
-                        },
-                      )),
-                    ]),
-                    // PDF field
-                    Row(children: [
-                      Expanded(
-                          child: TextField(
-                        controller: pdfController,
-                        decoration: const InputDecoration(
-                            labelText: "Percent Dead Balsam Fir"),
-                        keyboardType: TextInputType.number,
-                        onChanged: (value) {
-                          if (double.tryParse(value) != null) {
-                            _onPDFChanged(double.parse(value));
-                          }
-                        },
-                      )),
-                      // CBH field
-                      Expanded(
-                          child: TextField(
-                        controller: cbhController,
-                        decoration: const InputDecoration(
-                            labelText: "Crown to base height (m)"),
-                        keyboardType: TextInputType.number,
-                        onChanged: (value) {
-                          if (double.tryParse(value) != null) {
-                            _onCBHChanged(double.parse(value));
-                          }
-                        },
-                      ))
-                    ]),
-                    Row(children: [
-                      // PC field
-                      Expanded(
-                          child: TextField(
-                        controller: pcController,
+                Expanded(
+                    child: DropdownButtonFormField(
+                        key: _fuelTypeState,
+                        value: _fuelType,
                         decoration:
-                            const InputDecoration(labelText: "Percent Conifer"),
-                        keyboardType: TextInputType.number,
-                        onChanged: (value) {
-                          if (double.tryParse(value) != null) {
-                            _onPCChanged(double.parse(value));
-                          }
-                        },
-                      ))
-                    ]),
-                    // Elapsed time
-                    Row(children: [
-                      Expanded(
-                          child: Text(
-                              'Time elapsed: ${_minutes.toInt()} minutes')),
-                      Expanded(
-                          child: Slider(
-                        value: _minutes,
-                        min: 0,
-                        max: 120,
-                        divisions: 12,
-                        label: '${_minutes.toInt()} minutes',
-                        onChanged: (value) {
-                          _onTChanged(value);
-                        },
-                      )),
-                    ]),
-                    // Theta
-                    // Row(children: [
-                    //   Expanded(
-                    //       child: Text(
-                    //           'Theta: ${degreesToCompassPoint(_theta)} ${_theta.toString()}\u00B0')),
-                    //   Expanded(
-                    //       child: Slider(
-                    //     value: _theta,
-                    //     min: 0,
-                    //     max: 360,
-                    //     divisions: 16,
-                    //     label: '${degreesToCompassPoint(_theta)} $_theta\u00B0',
-                    //     onChanged: (value) {
-                    //       _onThetaChanged(value);
-                    //     },
-                    //   )),
-                    // ]),
-                  ]),
-                  isExpanded: _expanded,
-                  canTapOnHeader: true,
-                ),
+                            const InputDecoration(labelText: "Fuel Type"),
+                        items: FuelType.values.map((FuelType value) {
+                          return DropdownMenuItem(
+                              value: value,
+                              child: Row(
+                                children: [
+                                  // const Icon(Icons.park_outlined),
+                                  Text(value.name)
+                                ],
+                              ));
+                        }).toList(),
+                        onChanged: (FuelType? value) {
+                          _onFuelTypeChanged(value!);
+                        }))
               ],
-              expansionCallback: (panelIndex, isExpanded) {
-                _expanded = !_expanded;
-                setState(() {});
-              },
             ),
+            Row(children: [
+              // CFL field
+              Expanded(
+                  child: TextField(
+                controller: _cflController,
+                decoration: const InputDecoration(
+                    labelText: "Crown Fuel Load (kg/m^2)"),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  if (double.tryParse(value) != null) {
+                    _onCFLChanged(double.parse(value));
+                  }
+                },
+              )),
+              // GFL field
+              Expanded(
+                  child: TextField(
+                controller: _gflController,
+                decoration: const InputDecoration(
+                    labelText: "Grass Fuel Load (kg/m^2)"),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  if (double.tryParse(value) != null) {
+                    _onGFLChanged(double.parse(value));
+                  }
+                },
+              )),
+            ]),
+            // PDF field
+            Row(children: [
+              Expanded(
+                  child: TextField(
+                controller: pdfController,
+                decoration:
+                    const InputDecoration(labelText: "Percent Dead Balsam Fir"),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  if (double.tryParse(value) != null) {
+                    _onPDFChanged(double.parse(value));
+                  }
+                },
+              )),
+              // CBH field
+              Expanded(
+                  child: TextField(
+                controller: cbhController,
+                decoration: const InputDecoration(
+                    labelText: "Crown to base height (m)"),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  if (double.tryParse(value) != null) {
+                    _onCBHChanged(double.parse(value));
+                  }
+                },
+              ))
+            ]),
+            Row(children: [
+              // PC field
+              Expanded(
+                  child: TextField(
+                controller: pcController,
+                decoration: const InputDecoration(labelText: "Percent Conifer"),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  if (double.tryParse(value) != null) {
+                    _onPCChanged(double.parse(value));
+                  }
+                },
+              ))
+            ]),
+            // Elapsed time
+            Row(children: [
+              Expanded(
+                  child: Text('Time elapsed: ${_minutes.toInt()} minutes')),
+              Expanded(
+                  child: Slider(
+                value: _minutes,
+                min: 0,
+                max: 120,
+                divisions: 12,
+                label: '${_minutes.toInt()} minutes',
+                onChanged: (value) {
+                  _onTChanged(value);
+                },
+              )),
+            ]),
             Row(
               children: [
                 Expanded(
