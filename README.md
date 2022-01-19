@@ -27,6 +27,10 @@ similar.
   - Possible, but nothing out of the box - so leaving it alone for now.
 - Finalise disclaimer.
 - Finalise popup.
+- Diurnal FFMC screen.
+  - Add a screen where you can input yesterday's FFMC the RH and the Wind, to get the daily FFMC.
+  - Add a screen where you you can see the impact of the diurnal FFMC (maybe sliding time?)
+  - Work towards a screen where you can see the impact of changing FFMC on fire.
 
 ## Log of changes & decisions.
 
