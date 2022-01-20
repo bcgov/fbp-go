@@ -28,8 +28,8 @@ similar.
 - Finalise disclaimer.
 - Finalise popup.
 - Diurnal FFMC screen.
-  - Add a screen where you can input yesterday's FFMC the RH and the Wind, to get the daily FFMC.
-  - Add a screen where you you can see the impact of the diurnal FFMC (maybe sliding time?)
+  - Add a screen where you can input yesterday's FFMC the RH and the Wind, to get the daily FFMC - see: ffmcCalc.
+  - Add a screen where you you can see the impact of the diurnal FFMC (maybe sliding time?) - see: hffmc.
   - Work towards a screen where you can see the impact of changing FFMC on fire.
 
 ## Log of changes & decisions.
