@@ -282,19 +282,26 @@ class AdvancedFireBehaviourPredictionFormState
               )),
             ]),
             // PDF field
+            Row(
+              children: [
+                Expanded(
+                    child:
+                        Text('Dead Balsam Fir: ${_pdf?.toStringAsFixed(1)}%')),
+                Expanded(
+                    child: Slider(
+                  value: _pdf ?? 0,
+                  min: 0,
+                  max: 100,
+                  divisions: 100,
+                  label: '${_pdf?.toStringAsFixed(1)}%',
+                  onChanged: (value) {
+                    _onPDFChanged(value);
+                  },
+                ))
+              ],
+            ),
+            // PDF field
             Row(children: [
-              Expanded(
-                  child: TextField(
-                controller: pdfController,
-                decoration:
-                    const InputDecoration(labelText: "Percent Dead Balsam Fir"),
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  if (double.tryParse(value) != null) {
-                    _onPDFChanged(double.parse(value));
-                  }
-                },
-              )),
               // CBH field
               Expanded(
                   child: TextField(
