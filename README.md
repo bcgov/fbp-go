@@ -9,6 +9,27 @@ Fire behavior application
 flutter build web --base-href /MyBaseFolder/
 ```
 
+## Build for iOS - on M1 silicon
+
+If you use the default ruby+gem setup that comes out of the box, you'll get errors about
+ffi not being x86_64 - you COULD fix that by running:
+
+```
+# don't do this
+sudo arch -x86_64 gem install ffi
+```
+
+Who wants to run rosetta? That's nuts. Rather get the latest version of ruby and go from there.
+(It's no use trying to run gem update --system with the system ruby, it's just going to break things for you)
+This also solves having to run sudo with gem, everything neatly goes into .rbenv
+
+```
+rbenv install 3.1.0
+rbenv global 3.1.0
+gem update --system
+gem install cocoapods
+```
+
 ## Code Conventions
 
 - Dart naming convention rules are often broken in order to conform with the CFFDRS R library. The R code has been
