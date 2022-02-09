@@ -30,6 +30,11 @@ gem update --system
 gem install cocoapods
 ```
 
+## App store issues
+
+You may receive an email warning: "ITMS-90078: Missing Push Notification Entitlement" from the app store. FBP Go doesn't use push notifications,
+it seems to be a side efffect of some flutter stuff. See: https://github.com/flutter/flutter/issues/9984 ; this issue is unresolved at this point in time.
+
 ## Code Conventions
 
 - Dart naming convention rules are often broken in order to conform with the CFFDRS R library. The R code has been
