@@ -50,6 +50,7 @@ similar.
 
 ## Todo
 
+- Coordinates - permission handler - implemeted and tested for Android, need to test on iOS
 - Add screenshots for iOS.
 - Localization - implement en-CA and fr-CA.
 - Coordinates - provide user feedback on location button. (e.g. fetching and failed state).
