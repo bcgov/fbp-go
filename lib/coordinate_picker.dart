@@ -19,6 +19,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class Coordinate {
   double latitude;
@@ -57,19 +58,23 @@ class CoordinatePickerState extends State<CoordinatePicker> {
   }
 
   void _updatePosition() {
-    _getPosition().then((position) {
-      // The position might come back after the component has been disposed,
-      // so we need to check before setting the state.
-      if (mounted) {
-        setState(() {
-          _coordinate.latitude = position.latitude;
-          _coordinate.longitude = position.longitude;
-          _coordinate.altitude = position.altitude > 0 ? position.altitude : 0;
-          widget.onChanged(_coordinate);
-          _updateCoordinateControllers();
+    Permission.location.request().then((request) => {
+          if (request.isGranted)
+            {
+              _getPosition().then((position) {
+                if (mounted) {
+                  setState(() {
+                    _coordinate.latitude = position.latitude;
+                    _coordinate.longitude = position.longitude;
+                    _coordinate.altitude =
+                        position.altitude > 0 ? position.altitude : 0;
+                    widget.onChanged(_coordinate);
+                    _updateCoordinateControllers();
+                  });
+                }
+              })
+            }
         });
-      }
-    });
   }
 
   @override
