@@ -35,6 +35,13 @@ gem install cocoapods
 You may receive an email warning: "ITMS-90078: Missing Push Notification Entitlement" from the app store. FBP Go doesn't use push notifications,
 it seems to be a side efffect of some flutter stuff. See: https://github.com/flutter/flutter/issues/9984 ; this issue is unresolved at this point in time.
 
+## iOS development notes
+
+```
+open -a Simulator
+open ios/Runner.xcworkspace
+```
+
 ## Code Conventions
 
 - Dart naming convention rules are often broken in order to conform with the CFFDRS R library. The R code has been
@@ -43,7 +50,7 @@ similar.
 
 ## Todo
 
-- Change icon for iOS.
+- Add screenshots for iOS.
 - Localization - implement en-CA and fr-CA.
 - Coordinates - provide user feedback on location button. (e.g. fetching and failed state).
 - Add FMC option in advanced.
@@ -82,6 +89,7 @@ Cheers,
 
 ## Log of changes & decisions.
 
+- [x] Changed icon for iOS.
 - [x] Added crown fraction burned to basic screen.
 - [x] More space on left hand side.
   - Added padding on the left and the right.
