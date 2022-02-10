@@ -43,6 +43,7 @@ similar.
 
 ## Todo
 
+- Change icon for iOS.
 - Localization - implement en-CA and fr-CA.
 - Coordinates - provide user feedback on location button. (e.g. fetching and failed state).
 - Add FMC option in advanced.
