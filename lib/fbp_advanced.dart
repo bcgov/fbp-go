@@ -63,14 +63,7 @@ class AdvancedFireBehaviourPredictionFormState
       _fuelTypeState.currentState?.didChange(_fuelType);
 
       _pc = preset.pc;
-      pcController.text = _pc.toString();
-
       _pdf = preset.pdf;
-      if (_pdf == null) {
-        pdfController.text = '';
-      } else {
-        pdfController.text = _pdf.toString();
-      }
 
       _cbh = preset.cbh;
       cbhController.text = _cbh.toString();
@@ -103,12 +96,18 @@ class AdvancedFireBehaviourPredictionFormState
   void _onPCChanged(double pc) {
     setState(() {
       _pc = pc;
+      if ((_pc ?? 0) + (_pdf ?? 0) > 100.0) {
+        _pdf = 100.0 - _pc!;
+      }
     });
   }
 
   void _onPDFChanged(double pdf) {
     setState(() {
       _pdf = pdf;
+      if ((_pdf ?? 0) + (_pc ?? 0) > 100.0) {
+        _pc = 100.0 - _pdf!;
+      }
     });
   }
 
@@ -137,8 +136,6 @@ class AdvancedFireBehaviourPredictionFormState
   }
 
   final ccController = TextEditingController();
-  final pcController = TextEditingController();
-  final pdfController = TextEditingController();
   final cbhController = TextEditingController();
   final _cflController = TextEditingController();
   final _gflController = TextEditingController();
@@ -148,8 +145,6 @@ class AdvancedFireBehaviourPredictionFormState
   @override
   void initState() {
     // _onPresetChanged(_getDefaultPreset());
-    pcController.text = _pc.toString();
-    pdfController.text = _pdf.toString();
     cbhController.text = _cbh.toString();
     _cflController.text = _cfl.toString();
     _gflController.text = _gfl.toString();
@@ -167,8 +162,6 @@ class AdvancedFireBehaviourPredictionFormState
     // Clean up the controller when the widget is removed from the
     // widget tree.
     ccController.dispose();
-    pcController.dispose();
-    pdfController.dispose();
     cbhController.dispose();
     _cflController.dispose();
     _gflController.dispose();
@@ -285,22 +278,36 @@ class AdvancedFireBehaviourPredictionFormState
             Row(
               children: [
                 Expanded(
-                    child:
-                        Text('Dead Balsam Fir: ${_pdf?.toStringAsFixed(1)}%')),
+                    child: Text(
+                        'Dead Balsam Fir: ${(_pdf ?? 0).toStringAsFixed(0)}%')),
                 Expanded(
                     child: Slider(
                   value: _pdf ?? 0,
                   min: 0,
                   max: 100,
                   divisions: 100,
-                  label: '${_pdf?.toStringAsFixed(1)}%',
+                  label: '${(_pdf ?? 0).toStringAsFixed(0)}%',
                   onChanged: (value) {
                     _onPDFChanged(value);
                   },
                 ))
               ],
             ),
-            // PDF field
+            Row(children: [
+              Expanded(
+                  child: Text('Conifer: ${(_pc ?? 0).toStringAsFixed(0)}%')),
+              Expanded(
+                  child: Slider(
+                value: _pc ?? 0,
+                min: 0,
+                max: 100,
+                divisions: 100,
+                label: '${(_pc ?? 0).toStringAsFixed(0)}%',
+                onChanged: (value) {
+                  _onPCChanged(value);
+                },
+              ))
+            ]),
             Row(children: [
               // CBH field
               Expanded(
@@ -312,20 +319,6 @@ class AdvancedFireBehaviourPredictionFormState
                 onChanged: (value) {
                   if (double.tryParse(value) != null) {
                     _onCBHChanged(double.parse(value));
-                  }
-                },
-              ))
-            ]),
-            Row(children: [
-              // PC field
-              Expanded(
-                  child: TextField(
-                controller: pcController,
-                decoration: const InputDecoration(labelText: "Percent Conifer"),
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  if (double.tryParse(value) != null) {
-                    _onPCChanged(double.parse(value));
                   }
                 },
               ))

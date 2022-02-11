@@ -55,7 +55,6 @@ similar.
 - Localization - implement en-CA and fr-CA.
 - Coordinates - provide user feedback on location button. (e.g. fetching and failed state).
 - Add FMC option in advanced.
-- Advanced: Change PDF and PC to sliders.
 - Advanced: Problem: pre-set can conflict with entered values. The moment. anything is changed, the pre-set should become un-set OR You need a "load preset" button - maybe that's better?
 - Advanced: Result columns - there are some "two line" columns. Would be nice if the result columns could size better.
 - FFMC scale at the bottom.
@@ -90,6 +89,7 @@ Cheers,
 
 ## Log of changes & decisions.
 
+- [x] Advanced: Change PDF and PC to sliders.
 - [x] Changed icon for iOS.
 - [x] Added crown fraction burned to basic screen.
 - [x] More space on left hand side.
