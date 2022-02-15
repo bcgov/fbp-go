@@ -196,21 +196,6 @@ class BasicInputState extends State<BasicInputWidget> {
             },
           )),
         ]),
-        // Curing
-        Row(children: [
-          Expanded(child: Text('Curing: ${_input.cc.toInt()}%')),
-          Expanded(
-              child: Slider(
-            value: _input.cc,
-            min: 0,
-            max: 100,
-            divisions: 20,
-            label: '${_input.cc.toInt()}%',
-            onChanged: (value) {
-              _onCCChanged(value);
-            },
-          )),
-        ]),
         // FFMC
         Row(children: [
           Expanded(
@@ -224,6 +209,21 @@ class BasicInputState extends State<BasicInputWidget> {
             label: '${_input.ffmc.toInt()}',
             onChanged: (value) {
               _onFFMCChanged(value);
+            },
+          )),
+        ]),
+        // Curing
+        Row(children: [
+          Expanded(child: Text('Curing: ${_input.cc.toInt()}%')),
+          Expanded(
+              child: Slider(
+            value: _input.cc,
+            min: 0,
+            max: 100,
+            divisions: 20,
+            label: '${_input.cc.toInt()}%',
+            onChanged: (value) {
+              _onCCChanged(value);
             },
           )),
         ]),

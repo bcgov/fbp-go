@@ -51,6 +51,7 @@ similar.
 ## Todo
 
 - Coordinates - permission handler - implemeted and tested for Android, need to test on iOS
+- Grey out the curing slider for fuel types it doesn't apply to.
 - Add screenshots for iOS.
 - Localization - implement en-CA and fr-CA.
 - Coordinates - provide user feedback on location button. (e.g. fetching and failed state).
@@ -67,29 +68,13 @@ similar.
   - Work towards a screen where you can see the impact of changing FFMC on fire.
 - Do lots of re-factoring (code was written as p.o.c. in a big rush).
 - Persist last settings? (Except for lat/long - since that's a log of the persons location and we don't want to persist anything personal)
-
-NOTES FROM B:
-Hey again Sy!
-
-Been playing around with the App for a little bit now, and I’ve gotta say it’s pretty awesome!  I haven’t actually compared any of the calculations from the App to the RedBook, cause I’m fairly confident that the coding was done correctly.
-
-One of the only things that stood out for me was the slider for % curing.  As you explained in the Sprint review a while back, this will only have an impact on the grass fuel types.
-
-I was curious if there was a way to have this slider be “greyed out” when any non-grass fuel type was selected?  It’s a small thing, I know, but I think doing so would make it very clear to the user that it’s not a relevant/necessary input to the overall calculation, and may prevent some newer people from scratching their head and asking “wait, why am I being asked this when I selected C-2?”
- 
-Partially related, I would personally put the “curing” row at the very bottom instead of second-to-last (i.e below FFMC) just based on how seldom it will be used.
-
-And lastly, I noticed that the FFMC bottom limit is 80.  While I understand that it would be very unlikely for anything crazy to go on with an FFMC below this value, I feel like I would still prefer to have the option to check this as a user.  Maybe something like a bottom limit of 60?  Or, actually, I’m not sure if you even need a bottom limit, now that I think about it … the BUI on there starts at 0 …. Hmmm.
- 
-Anyway, these were the only thoughts I had.  I was glad to see your note about the location button not working – I went in to change the permissions manually and it works well, so woo!
-
-Will continue to play around with it when I get the chance.  But I can tell this will be a hit with many people!
-
-Cheers,
+- Consider: reducing the lower range of FFMC to 60.
 
 ## Log of changes & decisions.
 
+- [x] Advanced+Basic: Moved curing from 2nd to last, to last.
 - [x] Advanced: Change PDF and PC to sliders.
+- [x] Advanced+Basic: Prompting for location permissions if not already granted.
 - [x] Changed icon for iOS.
 - [x] Added crown fraction burned to basic screen.
 - [x] More space on left hand side.
