@@ -49,6 +49,7 @@ class AdvancedFireBehaviourPredictionFormState
   double? _pc = 0;
   double? _pdf = 0;
   double? _cbh = 0;
+  double? _fmc = 0;
   double _cfl = 0;
   double _minutes = 60;
   double _gfl = 0.35;
@@ -135,6 +136,12 @@ class AdvancedFireBehaviourPredictionFormState
     });
   }
 
+  void _onFMCChanged(double fmc) {
+    setState(() {
+      _fmc = fmc;
+    });
+  }
+
   final ccController = TextEditingController();
   final cbhController = TextEditingController();
   final _cflController = TextEditingController();
@@ -197,6 +204,7 @@ class AdvancedFireBehaviourPredictionFormState
         CFL: _cfl,
         HR: _minutes / 60.0);
     FireBehaviourPredictionPrimary prediction = FBPcalc(input, output: "ALL");
+    _onFMCChanged(prediction.FMC);
     // Wind direction correction:
     prediction.RAZ -= 180;
     prediction.RAZ = prediction.RAZ < 0 ? prediction.RAZ + 360 : prediction.RAZ;
@@ -274,6 +282,28 @@ class AdvancedFireBehaviourPredictionFormState
                 },
               )),
             ]),
+            // FMC
+            // TODO: You can't move the slider, because that re-calculates the FMC
+            // we need to de-couple the overreding FMC from the calculated on in some
+            // way!
+            // Row(
+            //   children: [
+            //     Expanded(
+            //       child: Text(
+            //           'Foliar Moisture Content: ${(_fmc ?? 0).toStringAsFixed(0)}'),
+            //     ),
+            //     Expanded(
+            //         child: Slider(
+            //       value: _fmc ?? 0,
+            //       min: 0,
+            //       max: 130,
+            //       divisions: 130,
+            //       onChanged: (value) {
+            //         _onFMCChanged(value);
+            //       },
+            //     ))
+            //   ],
+            // ),
             // PDF field
             Row(
               children: [
