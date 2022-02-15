@@ -51,6 +51,7 @@ similar.
 ## Todo
 
 - Coordinates - permission handler - implemeted and tested for Android, need to test on iOS
+- Consider: reducing the lower range of FFMC to 60.
 - Grey out the curing slider for fuel types it doesn't apply to.
 - Add screenshots for iOS.
 - Localization - implement en-CA and fr-CA.
@@ -68,13 +69,12 @@ similar.
   - Work towards a screen where you can see the impact of changing FFMC on fire.
 - Do lots of re-factoring (code was written as p.o.c. in a big rush).
 - Persist last settings? (Except for lat/long - since that's a log of the persons location and we don't want to persist anything personal)
-- Consider: reducing the lower range of FFMC to 60.
 
 ## Log of changes & decisions.
 
 - [x] Advanced+Basic: Moved curing from 2nd to last, to last.
 - [x] Advanced: Change PDF and PC to sliders.
-- [x] Advanced+Basic: Prompting for location permissions if not already granted.
+- [x] Advanced+Basic: Prompting for location permissions if not already granted. (Implemented and test for Android, iOS testing outstanding.)
 - [x] Changed icon for iOS.
 - [x] Added crown fraction burned to basic screen.
 - [x] More space on left hand side.
