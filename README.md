@@ -57,6 +57,7 @@ similar.
 
 ## Todo
 
+- Invalid App Store Icon. The App Store Icon in the asset catalog in 'Runner.app' can't be transparent nor contain an alpha channel. With error code STATE_ERROR.VALIDATION_ERROR.90717 for id 1c0da6c4-80df-4e3d-935a-103da3192694
 - Coordinates - permission handler - implemeted and tested for Android, need to test on iOS
 - Add FWI.
 - Consider: reducing the lower range of FFMC to 60.
