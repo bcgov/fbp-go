@@ -51,6 +51,7 @@ similar.
 ## Todo
 
 - Coordinates - permission handler - implemeted and tested for Android, need to test on iOS
+- Add FWI.
 - Consider: reducing the lower range of FFMC to 60.
 - Grey out the curing slider for fuel types it doesn't apply to.
 - Add screenshots for iOS.
@@ -72,6 +73,8 @@ similar.
 
 ## Log of changes & decisions.
 
+- [x] Increased slider width, reduced label width and put line break between label and value.
+- [x] Added check for invalid latitude and longitude (was causing exception)
 - [x] Advanced+Basic: Moved curing from 2nd to last, to last.
 - [x] Advanced: Change PDF and PC to sliders.
 - [x] Advanced+Basic: Prompting for location permissions if not already granted. (Implemented and test for Android, iOS testing outstanding.)

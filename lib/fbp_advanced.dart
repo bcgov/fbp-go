@@ -217,6 +217,8 @@ class AdvancedFireBehaviourPredictionFormState
           prediction.CFB,
           prediction.secondary!.LB);
     }
+    const labelFlex = 1;
+    const sliderFlex = 2;
     // Build a Form widget using the _formKey created above.
     return Column(children: [
       Form(
@@ -308,35 +310,39 @@ class AdvancedFireBehaviourPredictionFormState
             Row(
               children: [
                 Expanded(
+                    flex: labelFlex,
                     child: Text(
-                        'Dead Balsam Fir: ${(_pdf ?? 0).toStringAsFixed(0)}%')),
+                        'Dead Balsam Fir:\n${(_pdf ?? 0).toStringAsFixed(0)}%')),
                 Expanded(
+                    flex: sliderFlex,
                     child: Slider(
-                  value: _pdf ?? 0,
-                  min: 0,
-                  max: 100,
-                  divisions: 100,
-                  label: '${(_pdf ?? 0).toStringAsFixed(0)}%',
-                  onChanged: (value) {
-                    _onPDFChanged(value);
-                  },
-                ))
+                      value: _pdf ?? 0,
+                      min: 0,
+                      max: 100,
+                      divisions: 100,
+                      label: '${(_pdf ?? 0).toStringAsFixed(0)}%',
+                      onChanged: (value) {
+                        _onPDFChanged(value);
+                      },
+                    ))
               ],
             ),
             Row(children: [
               Expanded(
-                  child: Text('Conifer: ${(_pc ?? 0).toStringAsFixed(0)}%')),
+                  flex: labelFlex,
+                  child: Text('Conifer:\n${(_pc ?? 0).toStringAsFixed(0)}%')),
               Expanded(
+                  flex: sliderFlex,
                   child: Slider(
-                value: _pc ?? 0,
-                min: 0,
-                max: 100,
-                divisions: 100,
-                label: '${(_pc ?? 0).toStringAsFixed(0)}%',
-                onChanged: (value) {
-                  _onPCChanged(value);
-                },
-              ))
+                    value: _pc ?? 0,
+                    min: 0,
+                    max: 100,
+                    divisions: 100,
+                    label: '${(_pc ?? 0).toStringAsFixed(0)}%',
+                    onChanged: (value) {
+                      _onPCChanged(value);
+                    },
+                  ))
             ]),
             Row(children: [
               // CBH field
@@ -356,18 +362,20 @@ class AdvancedFireBehaviourPredictionFormState
             // Elapsed time
             Row(children: [
               Expanded(
-                  child: Text('Time elapsed: ${_minutes.toInt()} minutes')),
+                  flex: labelFlex,
+                  child: Text('Time elapsed:\n${_minutes.toInt()} minutes')),
               Expanded(
+                  flex: sliderFlex,
                   child: Slider(
-                value: _minutes,
-                min: 0,
-                max: 120,
-                divisions: 12,
-                label: '${_minutes.toInt()} minutes',
-                onChanged: (value) {
-                  _onTChanged(value);
-                },
-              )),
+                    value: _minutes,
+                    min: 0,
+                    max: 120,
+                    divisions: 12,
+                    label: '${_minutes.toInt()} minutes',
+                    onChanged: (value) {
+                      _onTChanged(value);
+                    },
+                  )),
             ]),
             Row(
               children: [
