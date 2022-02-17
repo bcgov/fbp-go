@@ -11,6 +11,24 @@ flutter build web --base-href /MyBaseFolder/
 ```
 
 ## Build for Android
+Maybe you want to update first?
+
+I have my android studio install in `~/.local/android-studio` - with a symlink in `~/.local/bin/studio.sh`
+```bash
+studio.sh
+```
+
+then System Settings -> Updates -> Check now
+If it fails because it can't update java - exit - check for java processes and kill them
+
+```bash
+ps -A |grep jav
+kill -9 PID
+```
+
+```
+flutter upgrade
+```
 
 Update the build in:
 android/local.properties
@@ -29,8 +47,10 @@ flutter pub get
 ```
 NOTE: also had to up flutterVersionCode  in android\app\build.gradle
 
+Make sure you have a way to sign it!
+
 ```
-flutter build appbundle
+flutter build appbundle --release
 ```
 
 internal testing -> create new release -> upload
