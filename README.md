@@ -9,6 +9,13 @@ Fire behavior application
 flutter build web --base-href /MyBaseFolder/
 ```
 
+## Build for Android
+
+```
+flutter build appbundle
+```
+
+
 ## Build for iOS - on M1 silicon
 
 If you use the default ruby+gem setup that comes out of the box, you'll get errors about
