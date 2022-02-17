@@ -11,11 +11,18 @@ flutter build web --base-href /MyBaseFolder/
 
 ## Build for Android
 
-Up the version in pubspec.yaml
+Up the version in pubspec.yaml, then run
+```
+flutter pub get
+```
+NOTE: also had to up flutterVersionCode  in android\app\build.gradle
 
 ```
 flutter build appbundle
 ```
+
+internal testing -> create new release -> upload
+relesases overview -> review it
 
 
 ## Build for iOS - on M1 silicon
