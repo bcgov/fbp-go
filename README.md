@@ -11,6 +11,8 @@ flutter build web --base-href /MyBaseFolder/
 
 ## Build for Android
 
+Up the version in pubspec.yaml
+
 ```
 flutter build appbundle
 ```
