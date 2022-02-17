@@ -58,6 +58,10 @@ open -a Simulator
 open ios/Runner.xcworkspace
 ```
 
+## Deploy to app store
+
+Product -> Archive (make sure you've seleted the correct target)
+
 ## Code Conventions
 
 - Dart naming convention rules are often broken in order to conform with the CFFDRS R library. The R code has been
