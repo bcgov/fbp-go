@@ -49,6 +49,7 @@ class AdvancedFireBehaviourPredictionFormState
   double? _pc = 0;
   double? _pdf = 0;
   double? _cbh = 0;
+  double? _fmc = 0;
   double _cfl = 0;
   double _minutes = 60;
   double _gfl = 0.35;
@@ -63,14 +64,7 @@ class AdvancedFireBehaviourPredictionFormState
       _fuelTypeState.currentState?.didChange(_fuelType);
 
       _pc = preset.pc;
-      pcController.text = _pc.toString();
-
       _pdf = preset.pdf;
-      if (_pdf == null) {
-        pdfController.text = '';
-      } else {
-        pdfController.text = _pdf.toString();
-      }
 
       _cbh = preset.cbh;
       cbhController.text = _cbh.toString();
@@ -103,12 +97,18 @@ class AdvancedFireBehaviourPredictionFormState
   void _onPCChanged(double pc) {
     setState(() {
       _pc = pc;
+      if ((_pc ?? 0) + (_pdf ?? 0) > 100.0) {
+        _pdf = 100.0 - _pc!;
+      }
     });
   }
 
   void _onPDFChanged(double pdf) {
     setState(() {
       _pdf = pdf;
+      if ((_pdf ?? 0) + (_pc ?? 0) > 100.0) {
+        _pc = 100.0 - _pdf!;
+      }
     });
   }
 
@@ -136,9 +136,13 @@ class AdvancedFireBehaviourPredictionFormState
     });
   }
 
+  void _onFMCChanged(double fmc) {
+    setState(() {
+      _fmc = fmc;
+    });
+  }
+
   final ccController = TextEditingController();
-  final pcController = TextEditingController();
-  final pdfController = TextEditingController();
   final cbhController = TextEditingController();
   final _cflController = TextEditingController();
   final _gflController = TextEditingController();
@@ -148,8 +152,6 @@ class AdvancedFireBehaviourPredictionFormState
   @override
   void initState() {
     // _onPresetChanged(_getDefaultPreset());
-    pcController.text = _pc.toString();
-    pdfController.text = _pdf.toString();
     cbhController.text = _cbh.toString();
     _cflController.text = _cfl.toString();
     _gflController.text = _gfl.toString();
@@ -167,8 +169,6 @@ class AdvancedFireBehaviourPredictionFormState
     // Clean up the controller when the widget is removed from the
     // widget tree.
     ccController.dispose();
-    pcController.dispose();
-    pdfController.dispose();
     cbhController.dispose();
     _cflController.dispose();
     _gflController.dispose();
@@ -204,6 +204,7 @@ class AdvancedFireBehaviourPredictionFormState
         CFL: _cfl,
         HR: _minutes / 60.0);
     FireBehaviourPredictionPrimary prediction = FBPcalc(input, output: "ALL");
+    _onFMCChanged(prediction.FMC);
     // Wind direction correction:
     prediction.RAZ -= 180;
     prediction.RAZ = prediction.RAZ < 0 ? prediction.RAZ + 360 : prediction.RAZ;
@@ -216,6 +217,8 @@ class AdvancedFireBehaviourPredictionFormState
           prediction.CFB,
           prediction.secondary!.LB);
     }
+    const labelFlex = 1;
+    const sliderFlex = 2;
     // Build a Form widget using the _formKey created above.
     return Column(children: [
       Form(
@@ -281,26 +284,66 @@ class AdvancedFireBehaviourPredictionFormState
                 },
               )),
             ]),
+            // FMC
+            // TODO: You can't move the slider, because that re-calculates the FMC
+            // we need to de-couple the overreding FMC from the calculated on in some
+            // way!
+            // Row(
+            //   children: [
+            //     Expanded(
+            //       child: Text(
+            //           'Foliar Moisture Content: ${(_fmc ?? 0).toStringAsFixed(0)}'),
+            //     ),
+            //     Expanded(
+            //         child: Slider(
+            //       value: _fmc ?? 0,
+            //       min: 0,
+            //       max: 130,
+            //       divisions: 130,
+            //       onChanged: (value) {
+            //         _onFMCChanged(value);
+            //       },
+            //     ))
+            //   ],
+            // ),
             // PDF field
             Row(
               children: [
                 Expanded(
-                    child:
-                        Text('Dead Balsam Fir: ${_pdf?.toStringAsFixed(1)}%')),
+                    flex: labelFlex,
+                    child: Text(
+                        'Dead Balsam Fir:\n${(_pdf ?? 0).toStringAsFixed(0)}%')),
                 Expanded(
+                    flex: sliderFlex,
                     child: Slider(
-                  value: _pdf ?? 0,
-                  min: 0,
-                  max: 100,
-                  divisions: 100,
-                  label: '${_pdf?.toStringAsFixed(1)}%',
-                  onChanged: (value) {
-                    _onPDFChanged(value);
-                  },
-                ))
+                      value: _pdf ?? 0,
+                      min: 0,
+                      max: 100,
+                      divisions: 100,
+                      label: '${(_pdf ?? 0).toStringAsFixed(0)}%',
+                      onChanged: (value) {
+                        _onPDFChanged(value);
+                      },
+                    ))
               ],
             ),
-            // PDF field
+            Row(children: [
+              Expanded(
+                  flex: labelFlex,
+                  child: Text('Conifer:\n${(_pc ?? 0).toStringAsFixed(0)}%')),
+              Expanded(
+                  flex: sliderFlex,
+                  child: Slider(
+                    value: _pc ?? 0,
+                    min: 0,
+                    max: 100,
+                    divisions: 100,
+                    label: '${(_pc ?? 0).toStringAsFixed(0)}%',
+                    onChanged: (value) {
+                      _onPCChanged(value);
+                    },
+                  ))
+            ]),
             Row(children: [
               // CBH field
               Expanded(
@@ -316,35 +359,23 @@ class AdvancedFireBehaviourPredictionFormState
                 },
               ))
             ]),
-            Row(children: [
-              // PC field
-              Expanded(
-                  child: TextField(
-                controller: pcController,
-                decoration: const InputDecoration(labelText: "Percent Conifer"),
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  if (double.tryParse(value) != null) {
-                    _onPCChanged(double.parse(value));
-                  }
-                },
-              ))
-            ]),
             // Elapsed time
             Row(children: [
               Expanded(
-                  child: Text('Time elapsed: ${_minutes.toInt()} minutes')),
+                  flex: labelFlex,
+                  child: Text('Time elapsed:\n${_minutes.toInt()} minutes')),
               Expanded(
+                  flex: sliderFlex,
                   child: Slider(
-                value: _minutes,
-                min: 0,
-                max: 120,
-                divisions: 12,
-                label: '${_minutes.toInt()} minutes',
-                onChanged: (value) {
-                  _onTChanged(value);
-                },
-              )),
+                    value: _minutes,
+                    min: 0,
+                    max: 120,
+                    divisions: 12,
+                    label: '${_minutes.toInt()} minutes',
+                    onChanged: (value) {
+                      _onTChanged(value);
+                    },
+                  )),
             ]),
             Row(
               children: [
