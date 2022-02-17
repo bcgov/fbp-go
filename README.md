@@ -48,6 +48,7 @@ flutter pub get
 NOTE: also had to up flutterVersionCode  in android\app\build.gradle
 
 Make sure you have a way to sign it!
+You need to have your upload-keystore.jks configured in android/key.properties
 
 ```
 flutter build appbundle --release
