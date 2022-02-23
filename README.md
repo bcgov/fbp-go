@@ -91,6 +91,7 @@ similar.
   - Work towards a screen where you can see the impact of changing FFMC on fire.
 - Do lots of re-factoring (code was written as p.o.c. in a big rush).
 - Persist last settings? (Except for lat/long - since that's a log of the persons location and we don't want to persist anything personal)
+- Do you think we could incorporate the Beaufort Scale into FBP Go? Maybe either as an information thing they can hover over or directly into the slider?
 
 ## Log of changes & decisions.
 
