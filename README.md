@@ -1,7 +1,8 @@
-# fire_behaviour_app
-Fire behavior application
+# FBP Go (Fire Behaviour Prediction on the Go)
 
-[https://sybrand.github.io/](https://sybrand.github.io/)
+Fire behavior prediction application
+
+Preview latest PWA build on: [https://sybrand.github.io/](https://sybrand.github.io/)
 
 ## Build for web
 
@@ -10,6 +11,35 @@ flutter build web --base-href /MyBaseFolder/
 ```
 
 ## Build for Android
+Maybe you want to update first?
+
+I have my android studio install in `~/.local/android-studio` - with a symlink in `~/.local/bin/studio.sh`
+```bash
+studio.sh
+```
+
+then System Settings -> Updates -> Check now
+If it fails because it can't update java - exit - check for java processes and kill them
+
+```bash
+ps -A |grep jav
+kill -9 PID
+```
+
+```
+flutter upgrade
+```
+
+Update the build in:
+android/local.properties
+e.g.:
+```
+sdk.dir=/home/[username]]/Android/Sdk
+flutter.sdk=/home/[username]/snap/flutter/common/flutter
+flutter.buildMode=release
+flutter.versionName=1.0.1
+flutter.versionCode=2
+```
 
 Up the version in pubspec.yaml, then run
 ```
@@ -17,8 +47,11 @@ flutter pub get
 ```
 NOTE: also had to up flutterVersionCode  in android\app\build.gradle
 
+Make sure you have a way to sign it!
+You need to have your upload-keystore.jks configured in android/key.properties
+
 ```
-flutter build appbundle
+flutter build appbundle --release
 ```
 
 internal testing -> create new release -> upload
@@ -91,7 +124,9 @@ similar.
   - Work towards a screen where you can see the impact of changing FFMC on fire.
 - Do lots of re-factoring (code was written as p.o.c. in a big rush).
 - Persist last settings? (Except for lat/long - since that's a log of the persons location and we don't want to persist anything personal)
-- Do you think we could incorporate the Beaufort Scale into FBP Go? Maybe either as an information thing they can hover over or directly into the slider?
+- %curing slider should be disabled/greyed out for non-grass fuel types.
+- move curing row to the very bottom.
+- (pending p.o.) set the FFMC lower limit to 60?
 
 ## Log of changes & decisions.
 
