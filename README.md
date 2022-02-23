@@ -127,6 +127,7 @@ similar.
 - %curing slider should be disabled/greyed out for non-grass fuel types.
 - move curing row to the very bottom.
 - (pending p.o.) set the FFMC lower limit to 60?
+- E: "do you think we could incorporate the Beaufort Scale into FBP Go? Maybe either as an information thing they can hover over or directly into the slider?"?
 
 ## Log of changes & decisions.
 
