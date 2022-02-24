@@ -106,8 +106,7 @@ similar.
 - Invalid App Store Icon. The App Store Icon in the asset catalog in 'Runner.app' can't be transparent nor contain an alpha channel. With error code STATE_ERROR.VALIDATION_ERROR.90717 for id 1c0da6c4-80df-4e3d-935a-103da3192694
 - Coordinates - permission handler - implemeted and tested for Android, need to test on iOS
 - Add FWI.
-- Consider: reducing the lower range of FFMC to 60.
-- Grey out the curing slider for fuel types it doesn't apply to.
+- Grey out the curing slider for fuel types it doesn't apply to. (non-grass fuel types)
 - Add screenshots for iOS.
 - Localization - implement en-CA and fr-CA.
 - Coordinates - provide user feedback on location button. (e.g. fetching and failed state).
@@ -116,16 +115,13 @@ similar.
 - Advanced: Result columns - there are some "two line" columns. Would be nice if the result columns could size better.
 - FFMC scale at the bottom.
   - Possible, but nothing out of the box - so leaving it alone for now.
-- Finalise disclaimer.
-- Finalise popup.
+- Finalise disclaimer popup.
 - Diurnal FFMC screen.
   - Add a screen where you can input yesterday's FFMC the RH and the Wind, to get the daily FFMC - see: ffmcCalc.
   - Add a screen where you you can see the impact of the diurnal FFMC (maybe sliding time?) - see: hffmc.
   - Work towards a screen where you can see the impact of changing FFMC on fire.
 - Do lots of re-factoring (code was written as p.o.c. in a big rush).
 - Persist last settings? (Except for lat/long - since that's a log of the persons location and we don't want to persist anything personal)
-- %curing slider should be disabled/greyed out for non-grass fuel types.
-- move curing row to the very bottom.
 - (pending p.o.) set the FFMC lower limit to 60?
 - E: "do you think we could incorporate the Beaufort Scale into FBP Go? Maybe either as an information thing they can hover over or directly into the slider?"?
 

@@ -15,6 +15,7 @@ A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with 
 FBP Go. If not, see <https://www.gnu.org/licenses/>.
 */
+import 'package:fire_behaviour_app/beaufort.dart';
 import 'package:flutter/material.dart';
 
 import 'fire.dart';
@@ -112,6 +113,7 @@ class BasicInputState extends State<BasicInputWidget> {
   Widget build(BuildContext context) {
     const labelFlex = 1;
     const sliderFlex = 2;
+    final beaufortScale = getBeaufortScale(_input.ws);
     return Column(
       children: [
         // lat, long, elevation
@@ -130,7 +132,8 @@ class BasicInputState extends State<BasicInputWidget> {
                 min: 0,
                 max: 50,
                 divisions: 100,
-                label: '${_input.ws.toInt()} km/h',
+                label:
+                    '${_input.ws.toInt()} km/h\nBeaufort scale:\n${beaufortScale.range}\n${beaufortScale.description}\n${beaufortScale.effects}',
                 onChanged: (value) {
                   _onWSChanged(value);
                 },
