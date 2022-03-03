@@ -127,6 +127,7 @@ similar.
 
 ## Log of changes & decisions.
 
+- [x] Beaufort Scale now showing when selecting wind speed.
 - [x] Increased slider width, reduced label width and put line break between label and value.
 - [x] Added check for invalid latitude and longitude (was causing exception)
 - [x] Advanced+Basic: Moved curing from 2nd to last, to last.
