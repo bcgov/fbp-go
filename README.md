@@ -147,3 +147,6 @@ similar.
 - [x] Reduced length of preset fire type names.
 - [x] Added disclaimer popup with placeholder text.
 - [x] Added about placeholder text.
+
+
+[![Lifecycle:Maturing](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](<Redirect-URL>)
