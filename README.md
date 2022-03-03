@@ -4,6 +4,8 @@ Fire behavior prediction application
 
 Preview latest PWA build on: [https://sybrand.github.io/](https://sybrand.github.io/)
 
+[![Lifecycle:Maturing](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](<https://github.com/bcgov/fbp-go>)
+
 ## Build for web
 
 ```
@@ -103,6 +105,7 @@ similar.
 
 ## Todo
 
+- Beaufort scale text goes off the screen (on iOS).
 - Invalid App Store Icon. The App Store Icon in the asset catalog in 'Runner.app' can't be transparent nor contain an alpha channel. With error code STATE_ERROR.VALIDATION_ERROR.90717 for id 1c0da6c4-80df-4e3d-935a-103da3192694
 - Coordinates - permission handler - implemeted and tested for Android, need to test on iOS
 - Add FWI.
@@ -147,6 +150,3 @@ similar.
 - [x] Reduced length of preset fire type names.
 - [x] Added disclaimer popup with placeholder text.
 - [x] Added about placeholder text.
-
-
-[![Lifecycle:Maturing](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](<https://github.com/bcgov/fbp-go>)
