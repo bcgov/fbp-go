@@ -1,4 +1,4 @@
-package com.example.fire_behaviour_app
+package ca.bc.gov.FBPGo
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,0 +1,4 @@
+storePassword=somepassword
+keyPassword=somepassword
+keyAlias=upload
+storeFile=/home/jimmy/upload-keystore.jks
