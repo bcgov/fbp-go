@@ -138,7 +138,7 @@ similar.
 
 ### v1.0.2:
 - [x] Wind + BUI sliders modified - users find it difficult to make small adjustments, resulting in inconsistent results.
-- [x] Changed wind slider to increment in 2's.
+- [x] NOTE: or did i? 2's seem weird... changed it back. Changed wind slider to increment in 2's.
 - [x] Changed the BUI slider to increment in 5's.
 - [x] Added line break to Beaufort scale 1-5 description (text was going off screen on small phones).
 
