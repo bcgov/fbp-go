@@ -113,8 +113,6 @@ similar.
 ## Todo
 
 - Change input values to match display (rounding on display, but not on input, can result in what appears to be inconsistent results). Different users are seeing the same input values, but in the backround they are different - as rounded values are being displayed.
-- Invalid App Store Icon. The App Store Icon in the asset catalog in 'Runner.app' can't be transparent nor contain an alpha channel. With error code STATE_ERROR.VALIDATION_ERROR.90717 for id 1c0da6c4-80df-4e3d-935a-103da3192694
-- Coordinates - permission handler - implemeted and tested for Android, need to test on iOS
 - Add FWI.
 - Grey out the curing slider for fuel types it doesn't apply to. (non-grass fuel types)
 - Add screenshots for iOS.
@@ -137,6 +135,7 @@ similar.
 ## Log of changes & decisions.
 
 ### v1.0.2:
+- [x] Prompting for location permissions if not already granted on iOS. (Android should already be working)
 - [x] Wind + BUI sliders modified - users find it difficult to make small adjustments, resulting in inconsistent results.
 - [x] Changed wind slider to increment in 1's. (was in 1/2's!)
 - [x] Changed the BUI slider to increment in 5's. (was in 1's)
