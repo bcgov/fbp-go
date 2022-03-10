@@ -131,7 +131,7 @@ class BasicInputState extends State<BasicInputWidget> {
                 value: _input.ws,
                 min: 0,
                 max: 50,
-                divisions: 50,
+                divisions: 25,
                 label:
                     '${_input.ws.toInt()} km/h\nBeaufort scale:\n${beaufortScale.range}\n${beaufortScale.description}\n${beaufortScale.effects}',
                 onChanged: (value) {

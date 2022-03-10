@@ -81,6 +81,13 @@ gem update --system
 gem install cocoapods
 ```
 
+### https://github.com/rbenv/rbenv
+
+For rbenv you need to have the shim in your path.
+
+PATH="/{home}/.rbenv/shims:$PATH
+
+
 ## App store issues
 
 You may receive an email warning: "ITMS-90078: Missing Push Notification Entitlement" from the app store. FBP Go doesn't use push notifications,
@@ -105,7 +112,7 @@ similar.
 
 ## Todo
 
-- Beaufort scale text goes off the screen (on iOS).
+- Change input values to match display (rounding on display, but not on input, can result in what appears to be inconsistent results). Different users are seeing the same input values, but in the backround they are different - as rounded values are being displayed.
 - Invalid App Store Icon. The App Store Icon in the asset catalog in 'Runner.app' can't be transparent nor contain an alpha channel. With error code STATE_ERROR.VALIDATION_ERROR.90717 for id 1c0da6c4-80df-4e3d-935a-103da3192694
 - Coordinates - permission handler - implemeted and tested for Android, need to test on iOS
 - Add FWI.
@@ -129,6 +136,13 @@ similar.
 
 ## Log of changes & decisions.
 
+### v1.0.2:
+- [x] Wind + BUI sliders modified - users find it difficult to make small adjustments, resulting in inconsistent results.
+- [x] Changed wind slider to increment in 2's.
+- [x] Changed the BUI slider to increment in 5's.
+- [x] Added line break to Beaufort scale 1-5 description (text was going off screen on small phones).
+
+### v1.0.1:
 - [x] Beaufort Scale now showing when selecting wind speed.
 - [x] Increased slider width, reduced label width and put line break between label and value.
 - [x] Added check for invalid latitude and longitude (was causing exception)

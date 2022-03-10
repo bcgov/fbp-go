@@ -17,7 +17,7 @@ BeaufortScale getBeaufortScale(double windSpeed) {
   }
   if (windSpeed >= 1 && windSpeed < 6) {
     return BeaufortScale('1-5', 'Light air',
-        'Direction shown by smoke drift but not by wind vanes.');
+        'Direction shown by smoke drift\nbut not by wind vanes.');
   }
   if (windSpeed >= 6 && windSpeed < 12) {
     return BeaufortScale('6-11', 'Light breeze',
