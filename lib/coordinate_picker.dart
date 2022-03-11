@@ -98,7 +98,8 @@ class CoordinatePickerState extends State<CoordinatePicker> {
             child: TextField(
           controller: _latitudeController,
           decoration: const InputDecoration(labelText: "Latitude"),
-          keyboardType: TextInputType.number,
+          keyboardType: const TextInputType.numberWithOptions(
+              signed: true, decimal: true),
           onChanged: (value) {
             if (double.tryParse(value) != null) {
               double latitude = double.parse(value);
@@ -116,7 +117,8 @@ class CoordinatePickerState extends State<CoordinatePicker> {
             child: TextField(
           controller: _longitudeController,
           decoration: const InputDecoration(labelText: "Longitude"),
-          keyboardType: TextInputType.number,
+          keyboardType: const TextInputType.numberWithOptions(
+              signed: true, decimal: true),
           onChanged: (value) {
             if (double.tryParse(value) != null) {
               double longitude = double.parse(value);
