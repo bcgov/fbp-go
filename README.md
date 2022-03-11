@@ -12,7 +12,11 @@ Preview latest PWA build on: [https://sybrand.github.io/](https://sybrand.github
 flutter build web --base-href /MyBaseFolder/
 ```
 
-## Build for Android
+## Build
+
+Update `pubspec.yaml` with the the correct version number.
+
+### Build for Android
 Maybe you want to update first?
 
 I have my android studio install in `~/.local/android-studio` - with a symlink in `~/.local/bin/studio.sh`
@@ -56,11 +60,14 @@ You need to have your upload-keystore.jks configured in android/key.properties
 flutter build appbundle --release
 ```
 
+Head over to the play store - https://play.google.com/console/developers
+
+select app
 internal testing -> create new release -> upload
 relesases overview -> review it
 
 
-## Build for iOS - on M1 silicon
+### Build for iOS - on M1 silicon
 
 If you use the default ruby+gem setup that comes out of the box, you'll get errors about
 ffi not being x86_64 - you COULD fix that by running:
