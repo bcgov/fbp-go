@@ -44,7 +44,7 @@ sdk.dir=/home/[username]]/Android/Sdk
 flutter.sdk=/home/[username]/snap/flutter/common/flutter
 flutter.buildMode=release
 flutter.versionName=1.0.1
-flutter.versionCode=2
+flutter.versionCode=3
 ```
 
 Up the version in pubspec.yaml, then run
@@ -108,6 +108,8 @@ open ios/Runner.xcworkspace
 ```
 
 ## Deploy to app store
+
+Make sure you've got the build number correct! Build number must be unique!
 
 Product -> Archive (make sure you've seleted the correct target)
 
