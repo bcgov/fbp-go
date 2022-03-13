@@ -322,7 +322,7 @@ class AdvancedFireBehaviourPredictionFormState
                       divisions: 100,
                       label: '${(_pdf ?? 0).toStringAsFixed(0)}%',
                       onChanged: (value) {
-                        _onPDFChanged(value);
+                        _onPDFChanged(value.roundToDouble());
                       },
                     ))
               ],
@@ -340,7 +340,7 @@ class AdvancedFireBehaviourPredictionFormState
                     divisions: 100,
                     label: '${(_pc ?? 0).toStringAsFixed(0)}%',
                     onChanged: (value) {
-                      _onPCChanged(value);
+                      _onPCChanged(value.roundToDouble());
                     },
                   ))
             ]),
@@ -373,7 +373,7 @@ class AdvancedFireBehaviourPredictionFormState
                     divisions: 12,
                     label: '${_minutes.toInt()} minutes',
                     onChanged: (value) {
-                      _onTChanged(value);
+                      _onTChanged(value.roundToDouble());
                     },
                   )),
             ]),
