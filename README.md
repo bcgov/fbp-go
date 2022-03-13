@@ -151,7 +151,7 @@ similar.
 ## Log of changes & decisions.
 
 ### v1.0.3:
-- [x] Rounding values from sliders. (e.g. in the backround, wind speed would be 29.999999999, but display as 30. Comparing different devices, side by side, it appears as if the results for the same inputs differ.)
+- [x] Rounding values from sliders. (e.g. in the background, wind speed would be 29.999999999, but display as 30. Comparing different devices, side by side, it appears as if the results for the same inputs differ.)
 
 ### v1.0.2:
 - [x] Change keyboard type to all for negative numbers.
