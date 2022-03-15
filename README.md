@@ -121,7 +121,6 @@ similar.
 
 ## Todo
 
-- Change input values to match display (rounding on display, but not on input, can result in what appears to be inconsistent results). Different users are seeing the same input values, but in the backround they are different - as rounded values are being displayed.
 - Add FWI.
 - Grey out the curing slider for fuel types it doesn't apply to. (non-grass fuel types)
 - Add screenshots for iOS.
@@ -143,7 +142,6 @@ similar.
 - Add reference content to the Nav - e.g. pictures of the fuel types (trees) a la red book - would be great for newer folks; Easy to do, but needs images that we have licenes for.
 - Request: group the data differently, especially in the advanced tab Work with EK to refine, general idea is to group info by: Head of Fire - Flank of Fire - ROS - CFB - … Back of Fire - ROS - CFB - … So folks can isolate and easily scan the info. They also find it too jumbled and tight and are worried they’ll grab the wrong numbers - Tess can help with that part (layout, sizing, spacing)
 - User feedback/request: can we have pre-sets based on task? (Future idea) You open the app, say what you’re doing (prescribed burn, small fire, big fire/incident action plan, no fire just out and about - this is not the actual list) Prescribed burning: I don’t need all this info, reduce the list of data (maybe I can still personalize?) I wouldn’t care about the consumption of the flank in this case, and I better not be causing a crown fire
-- If I’m manually inputting lat/long how do I do -122? Am I dumb? Is lat/long factored into the calcs? I was following along with EK’s demo and I got slightly different numbers from him for CFB, HFI, ROS (many users also reported this) - I can sent you a screenshot of EK’s screen for cross reference
 - From testing session: users report difficulty with the sliders in terms of precision - hard to get the exact number they want. Sometimes this is ok, sometimes it’s very bad. Either way, it’s frustrating. Users pointed out that in the field their hands will be sweaty and dirty. Some folks realized they could turn their phone to landscape mode and it was a bit better. User-feature request: in addition to the sliders, can we have + and - buttons There may be other ways, UX can collaborate
 
 ## Log of changes & decisions.
