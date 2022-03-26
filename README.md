@@ -151,9 +151,7 @@ similar.
 
 ### v1.0.3
 
-- [x] Basic: Changed order of output.
-- [x] Basic: Flipped output values around.
-- [x] Basic: Changed styling of output.
+- [x] Basic: Changed order, styling & layout.
 - [x] Crowning was incorrectly reported in grass/slash. (Code was passing crown fuel load of 1.0 for grass and slash into CFFDRS, changed to 0)
 - [x] Rounding values from sliders. (e.g. in the background, wind speed would be 29.999999999, but display as 30. Comparing different devices, side by side, it appears as if the results for the same inputs differ.)
 
