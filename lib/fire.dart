@@ -134,15 +134,15 @@ List<FuelTypePreset> getFuelTypePresets() {
     // Taking some liberties here - O1A and O1B don't  have an average
     // BUI a.f.a.i.k.
     FuelTypePreset(FuelType.O1A, 'O-1a matted grass',
-        cfl: 1.0, gfl: 0.35, averageBUI: 50),
+        cfl: 0.0, gfl: 0.35, averageBUI: 50),
     FuelTypePreset(FuelType.O1B, 'O-1b standing grass',
-        cfl: 1.0, gfl: 0.35, averageBUI: 50),
+        cfl: 0.0, gfl: 0.35, averageBUI: 50),
     FuelTypePreset(FuelType.S1, 'S-1 jack or lodgepole pine slash',
-        cfl: 1.0, averageBUI: 35),
+        cfl: 0.0, averageBUI: 35),
     FuelTypePreset(FuelType.S2, 'S-2 white spruce/balsam slash',
-        cfl: 1.0, averageBUI: 70),
+        cfl: 0.0, averageBUI: 70),
     FuelTypePreset(FuelType.S3, 'S-3 coastal cedar/hemlock/Douglas-fir slash',
-        cfl: 1.0, averageBUI: 35),
+        cfl: 0.0, averageBUI: 35),
   ];
 }
 

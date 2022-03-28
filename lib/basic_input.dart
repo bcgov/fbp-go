@@ -135,7 +135,10 @@ class BasicInputState extends State<BasicInputWidget> {
                 label:
                     '${_input.ws.toInt()} km/h\nBeaufort scale:\n${beaufortScale.range}\n${beaufortScale.description}\n${beaufortScale.effects}',
                 onChanged: (value) {
-                  _onWSChanged(value);
+                  // We need to round the wind speed. The slider doesn't give
+                  // us nice clean whole numbers! This way we ensure we get
+                  // that.
+                  _onWSChanged(value.roundToDouble());
                 },
               ))
         ]),
@@ -163,7 +166,7 @@ class BasicInputState extends State<BasicInputWidget> {
         Row(children: [
           Expanded(
               flex: labelFlex,
-              child: Text('Ground Slope:\n${_input.gs.floor()}%')),
+              child: Text('Ground Slope:\n${_input.gs.toInt()}%')),
           Expanded(
               flex: sliderFlex,
               child: Slider(
@@ -171,9 +174,12 @@ class BasicInputState extends State<BasicInputWidget> {
                 min: 0,
                 max: 90,
                 divisions: 18,
-                label: '${_input.gs.floor()}%',
+                label: '${_input.gs.toInt()}%',
                 onChanged: (value) {
-                  _onGSChanged(value);
+                  // We need to round the ground slope. The slider doesn't give
+                  // us nice clean whole numbers! This way we ensure we get
+                  // that.
+                  _onGSChanged(value.roundToDouble());
                 },
               )),
         ]),
@@ -211,7 +217,10 @@ class BasicInputState extends State<BasicInputWidget> {
                 divisions: 40,
                 label: '${_input.bui.toInt()}',
                 onChanged: (value) {
-                  _onBUIChanged(value);
+                  // We need to round the buildup index. The slider doesn't give
+                  // us nice clean whole numbers! This way we ensure we get
+                  // that.
+                  _onBUIChanged(value.roundToDouble());
                 },
               )),
         ]),
@@ -228,7 +237,10 @@ class BasicInputState extends State<BasicInputWidget> {
                 divisions: 20,
                 label: '${_input.ffmc.toInt()}',
                 onChanged: (value) {
-                  _onFFMCChanged(value);
+                  // We need to round the FFMC. The slider doesn't give
+                  // us nice clean whole numbers! This way we ensure we get
+                  // that.
+                  _onFFMCChanged(value.roundToDouble());
                 },
               )),
         ]),
@@ -245,7 +257,10 @@ class BasicInputState extends State<BasicInputWidget> {
                 divisions: 20,
                 label: '${_input.cc.toInt()}%',
                 onChanged: (value) {
-                  _onCCChanged(value);
+                  // We need to round the curing. The slider doesn't give
+                  // us nice clean whole numbers! This way we ensure we get
+                  // that.
+                  _onCCChanged(value.roundToDouble());
                 },
               )),
         ]),

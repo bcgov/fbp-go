@@ -5,5 +5,5 @@ Ecological Processes, 6(1), 5.
 URL https://ecologicalprocesses.springeropen.com/articles/10.1186/s13717-017-0070-z) 
 and translated into Dart.
 
-- [CFFDRS github mirror](https://github.com/cran/cffdrs)
+- [CFFDRS github](https://github.com/nrcan-cfs-fire/cffdrs)
 - [CFFDRS home page](https://r-forge.r-project.org/projects/cffdrs/)

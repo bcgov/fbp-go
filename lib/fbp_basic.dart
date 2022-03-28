@@ -38,62 +38,50 @@ class BasicResults extends StatelessWidget {
       : intensityClass = getHeadFireIntensityClass(prediction.HFI),
         super(key: key);
 
+  Row buildRow(String value, String label, Color? color) {
+    const double fontSize = 13;
+    TextStyle valueStyle = TextStyle(
+        color: color, fontWeight: FontWeight.bold, fontSize: fontSize);
+    TextStyle labelStyle = TextStyle(color: color, fontSize: fontSize);
+    return Row(children: [
+      Expanded(
+          child: Padding(
+              padding: const EdgeInsets.only(right: 3.0),
+              child:
+                  Text(value, textAlign: TextAlign.right, style: valueStyle))),
+      Expanded(child: Text(label, style: labelStyle)),
+    ]);
+  }
+
   List<Widget> buildRows(TextStyle textStyle) {
     List<Widget> rows = [
-      Row(children: [
-        Expanded(child: Text('Initial Spread Index', style: textStyle)),
-        Expanded(
-          child: Text(
-            prediction.ISI.toStringAsFixed(0),
-            style: textStyle,
-          ),
-        )
-      ]),
-      Row(children: [
-        Expanded(child: Text('Crown fraction burned', style: textStyle)),
-        Expanded(
-            child: Text('${((prediction.CFB * 100).toStringAsFixed(0))} %',
-                style: textStyle))
-      ]),
-      Row(children: [
-        Expanded(child: Text('Rate of spread', style: textStyle)),
-        Expanded(
-            child: Text('${prediction.ROS.toStringAsFixed(0)} (m/min)',
-                style: textStyle)),
-      ]),
-      Row(children: [
-        Expanded(child: Text('Head fire intensity', style: textStyle)),
-        Expanded(
-            child: Text('${prediction.HFI.toStringAsFixed(0)} (kW/m)',
-                style: textStyle)),
-      ]),
-      Row(children: [
-        Expanded(child: Text('Intensity class', style: textStyle)),
-        Expanded(child: Text('$intensityClass', style: textStyle)),
-      ]),
-      Row(children: [
-        Expanded(child: Text('Type of fire', style: textStyle)),
-        Expanded(
-            child: Text(getFireDescription(prediction.FD), style: textStyle))
-      ]),
-      Row(children: [
-        Expanded(
-            child: Text('${minutes.toStringAsFixed(0)} minute fire size',
-                style: textStyle)),
-        Expanded(
-            child:
-                Text('${fireSize?.toStringAsFixed(0)} (ha)', style: textStyle))
-      ])
+      // Fire type
+      buildRow(getFireDescription(prediction.FD), 'Fire type', textStyle.color),
+      // Crown fraction burned
+      buildRow('${((prediction.CFB * 100).toStringAsFixed(0))}%',
+          'Crown fraction burned (CFB)', textStyle.color),
+      // Rate of spread
+      buildRow('${prediction.ROS.toStringAsFixed(0)} (m/min)',
+          'Rate of spread (ROS)', textStyle.color),
+      // ISI
+      buildRow(prediction.ISI.toStringAsFixed(0), 'Initial spread index (ISI)',
+          textStyle.color),
+      // Surface flame length (TBD!)
+      // Intensity class
+      buildRow('$intensityClass', 'Intensity class', textStyle.color),
+      // HFI
+      buildRow('${prediction.HFI.toStringAsFixed(0)} (kW/m)',
+          'Head fire intensity (HFI)', textStyle.color),
+      // 60 minute fire size
+      buildRow('${fireSize?.toStringAsFixed(0)} (ha)',
+          '${minutes.toStringAsFixed(0)} minute fire size', textStyle.color),
     ];
 
     if (prediction.WSV != 0) {
-      rows.add(Row(children: [
-        Expanded(child: Text('Direction of spread', style: textStyle)),
-        Expanded(
-            child: Text(
-                '${degreesToCompassPoint(prediction.RAZ)} ${prediction.RAZ.toStringAsFixed(1)}(\u00B0)',
-                style: textStyle))
-      ]));
+      rows.add(buildRow(
+          '${degreesToCompassPoint(prediction.RAZ)} ${prediction.RAZ.toStringAsFixed(1)}(\u00B0)',
+          'Direction of spread',
+          textStyle.color));
     }
 
     return rows;
