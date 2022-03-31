@@ -149,6 +149,10 @@ similar.
 
 ## Log of changes & decisions
 
+### v1.0.4
+
+- [x] Basic: Style sliders to match color of results.
+
 ### v1.0.3
 
 - [x] Basic: Changed order, styling & layout.
