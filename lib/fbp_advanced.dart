@@ -382,6 +382,7 @@ class AdvancedFireBehaviourPredictionFormState
                 Expanded(
                   child: BasicInputWidget(
                     value: _basicInput,
+                    prediction: prediction,
                     onChanged: (BasicInput basicInput) {
                       _onBasicInputChanged(basicInput);
                     },

@@ -18,8 +18,10 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 import 'package:fire_behaviour_app/beaufort.dart';
 import 'package:flutter/material.dart';
 
+import 'cffdrs/fbp_calc.dart';
 import 'fire.dart';
 import 'coordinate_picker.dart';
+import 'fire_widgets.dart';
 
 class BasicInput {
   double ws;
@@ -114,6 +116,8 @@ class BasicInputState extends State<BasicInputWidget> {
     const labelFlex = 1;
     const sliderFlex = 2;
     final beaufortScale = getBeaufortScale(_input.ws);
+    final intensityClass = getHeadFireIntensityClass(widget.prediction.HFI);
+    final activeColor = getIntensityClassColor(intensityClass);
     return Column(
       children: [
         // lat, long, elevation
@@ -132,6 +136,7 @@ class BasicInputState extends State<BasicInputWidget> {
                 min: 0,
                 max: 50,
                 divisions: 50,
+                activeColor: activeColor,
                 label:
                     '${_input.ws.toInt()} km/h\nBeaufort scale:\n${beaufortScale.range}\n${beaufortScale.description}\n${beaufortScale.effects}',
                 onChanged: (value) {
@@ -155,6 +160,7 @@ class BasicInputState extends State<BasicInputWidget> {
                 min: 0,
                 max: 360,
                 divisions: 16,
+                activeColor: activeColor,
                 label:
                     '${degreesToCompassPoint(_input.waz)} ${_input.waz}\u00B0',
                 onChanged: (value) {
@@ -174,6 +180,7 @@ class BasicInputState extends State<BasicInputWidget> {
                 min: 0,
                 max: 90,
                 divisions: 18,
+                activeColor: activeColor,
                 label: '${_input.gs.toInt()}%',
                 onChanged: (value) {
                   // We need to round the ground slope. The slider doesn't give
@@ -196,6 +203,7 @@ class BasicInputState extends State<BasicInputWidget> {
                 min: 0,
                 max: 360,
                 divisions: 16,
+                activeColor: activeColor,
                 label:
                     '${degreesToCompassPoint(_input.aspect)} ${_input.aspect.toString()}\u00B0',
                 onChanged: (value) {
@@ -215,6 +223,7 @@ class BasicInputState extends State<BasicInputWidget> {
                 min: 0,
                 max: 200,
                 divisions: 40,
+                activeColor: activeColor,
                 label: '${_input.bui.toInt()}',
                 onChanged: (value) {
                   // We need to round the buildup index. The slider doesn't give
@@ -235,6 +244,7 @@ class BasicInputState extends State<BasicInputWidget> {
                 min: 80,
                 max: 100,
                 divisions: 20,
+                activeColor: activeColor,
                 label: '${_input.ffmc.toInt()}',
                 onChanged: (value) {
                   // We need to round the FFMC. The slider doesn't give
@@ -256,6 +266,7 @@ class BasicInputState extends State<BasicInputWidget> {
                 max: 100,
                 divisions: 20,
                 label: '${_input.cc.toInt()}%',
+                activeColor: activeColor,
                 onChanged: (value) {
                   // We need to round the curing. The slider doesn't give
                   // us nice clean whole numbers! This way we ensure we get
@@ -272,9 +283,13 @@ class BasicInputState extends State<BasicInputWidget> {
 class BasicInputWidget extends StatefulWidget {
   final Function onChanged;
   final BasicInput value;
+  final FireBehaviourPredictionPrimary prediction;
 
   const BasicInputWidget(
-      {Key? key, required this.onChanged, required this.value})
+      {Key? key,
+      required this.onChanged,
+      required this.value,
+      required this.prediction})
       : super(key: key);
 
   @override

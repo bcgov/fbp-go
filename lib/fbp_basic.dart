@@ -164,6 +164,7 @@ class BasicFireBehaviourPredictionFormState
             prediction.CFB,
             prediction.secondary!.LB);
       }
+
       return Column(
         children: <Widget>[
           // Presets
@@ -181,6 +182,7 @@ class BasicFireBehaviourPredictionFormState
               Expanded(
                   child: BasicInputWidget(
                       value: _basicInput,
+                      prediction: prediction,
                       onChanged: (BasicInput basicInput) {
                         _onBasicInputChanged(basicInput);
                       }))
