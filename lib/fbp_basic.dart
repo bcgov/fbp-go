@@ -39,7 +39,8 @@ class BasicResults extends StatelessWidget {
         super(key: key);
 
   Row buildRow(String value, String label, Color? color) {
-    const double fontSize = 13;
+    // Let's try a nice fat font size - assuming people can't easily see things.
+    const double fontSize = 16;
     TextStyle valueStyle = TextStyle(
         color: color, fontWeight: FontWeight.bold, fontSize: fontSize);
     TextStyle labelStyle = TextStyle(color: color, fontSize: fontSize);
