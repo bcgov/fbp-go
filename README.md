@@ -152,6 +152,11 @@ similar.
 ### v1.0.4
 
 - [x] Basic: Style sliders to match color of results.
+- [ ] Basic: Adjust font size, shorten description & styling of result.
+- [ ] Advanced: Match styling applied to basic.
+- [ ] Advanced: Remove fuel type dropdown, remove Crown fuel load as input (show as output), remove crown base height (show as output)
+
+Chat with Shelly Han
 
 ### v1.0.3
 
