@@ -156,6 +156,7 @@ similar.
 - [x] Basic: Adjust font size, shorten description & styling of result.
 - [ ] Advanced: Match styling applied to basic.
 - [ ] Advanced: Remove fuel type dropdown, remove Crown fuel load as input (show as output), remove crown base height (show as output)
+- [ ] About: Add a link to our repository.
 
 ### v1.0.3
 
