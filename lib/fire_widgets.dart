@@ -15,6 +15,7 @@ A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with 
 FBP Go. If not, see <https://www.gnu.org/licenses/>.
 */
+import 'package:fire_behaviour_app/global.dart';
 import 'fire.dart';
 import 'package:flutter/material.dart';
 
@@ -39,16 +40,18 @@ Color getIntensityClassColor(int intensityClass) {
 
 // ignore: non_constant_identifier_names
 TextStyle getTextStyle(String FD) {
-  switch (FD) {
-    case ("I"): // I = Intermittent Crowning
-      return const TextStyle(color: Colors.black);
-    case ("S"): // S = Surface
-      return const TextStyle(color: Colors.black);
-    case ("C"): // C = Crowning
-      return const TextStyle(color: Colors.white);
-    default:
-      throw Exception('Invalid Fire Description');
-  }
+  return const TextStyle(color: Colors.black);
+  // if we want to match the red book, we'd be doing white on red
+  // switch (FD) {
+  //   case ("I"): // I = Intermittent Crowning
+  //     return const TextStyle(color: Colors.black);
+  //   case ("S"): // S = Surface
+  //     return const TextStyle(color: Colors.black);
+  //   case ("C"): // C = Crowning
+  //     return const TextStyle(color: Colors.white);
+  //   default:
+  //     throw Exception('Invalid Fire Description');
+  // }
 }
 
 class FuelTypePresetDropdownState extends State<FuelTypePresetDropdown> {
@@ -66,10 +69,14 @@ class FuelTypePresetDropdownState extends State<FuelTypePresetDropdown> {
     return DropdownButtonFormField(
       isExpanded: true,
       value: _presets[1],
-      decoration: const InputDecoration(labelText: "Pre-sets"),
+      decoration: const InputDecoration(
+          labelText: "Fuel type",
+          labelStyle: TextStyle(fontSize: labelFontSize)),
       items: _presets.map((FuelTypePreset value) {
         return DropdownMenuItem<FuelTypePreset>(
-            value: value, child: Text(value.description));
+            value: value,
+            child: Text(value.description,
+                style: const TextStyle(fontSize: fontSize)));
       }).toList(),
       onChanged: (FuelTypePreset? value) {
         setState(() {

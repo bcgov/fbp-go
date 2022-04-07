@@ -22,6 +22,7 @@ import 'cffdrs/fbp_calc.dart';
 import 'fire.dart';
 import 'coordinate_picker.dart';
 import 'fire_widgets.dart';
+import 'global.dart';
 
 class BasicInput {
   double ws;
@@ -111,13 +112,33 @@ class BasicInputState extends State<BasicInputWidget> {
     super.initState();
   }
 
+  Expanded makeLabel(String heading, String value, String unitOfMeasure,
+      TextStyle textStyle, TextStyle textStyleBold) {
+    const labelFlex = 4;
+    return Expanded(
+        flex: labelFlex,
+        child: Column(children: [
+          Row(children: [
+            Text(heading, style: textStyle),
+            Text(':', style: textStyle)
+          ]),
+          Row(children: [
+            Text(value, style: textStyleBold),
+            Text(unitOfMeasure, style: textStyle)
+          ])
+        ]));
+  }
+
   @override
   Widget build(BuildContext context) {
-    const labelFlex = 1;
-    const sliderFlex = 2;
+    const labelFlex = 4;
+    const sliderFlex = 10;
     final beaufortScale = getBeaufortScale(_input.ws);
     final intensityClass = getHeadFireIntensityClass(widget.prediction.HFI);
     final activeColor = getIntensityClassColor(intensityClass);
+    const TextStyle textStyle = TextStyle(fontSize: fontSize);
+    const TextStyle textStyleBold =
+        TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold);
     return Column(
       children: [
         // lat, long, elevation
@@ -126,9 +147,8 @@ class BasicInputState extends State<BasicInputWidget> {
         }),
         // Wind Speed
         Row(children: [
-          Expanded(
-              flex: labelFlex,
-              child: Text('Wind Speed:\n${_input.ws.toInt()} (km/h)')),
+          makeLabel('Wind Speed', '${_input.ws.toInt()}', ' (km/h)', textStyle,
+              textStyleBold),
           Expanded(
               flex: sliderFlex,
               child: Slider(
@@ -149,10 +169,12 @@ class BasicInputState extends State<BasicInputWidget> {
         ]),
         // Wind Azimuth
         Row(children: [
-          Expanded(
-              flex: labelFlex,
-              child: Text(
-                  'Wind Direction:\n${degreesToCompassPoint(_input.waz)} ${_input.waz.toString()}\u00B0')),
+          makeLabel(
+              'Wind Direction',
+              '${degreesToCompassPoint(_input.waz)} ${_input.waz.toString()}',
+              '\u00B0',
+              textStyle,
+              textStyleBold),
           Expanded(
               flex: sliderFlex,
               child: Slider(
@@ -170,9 +192,8 @@ class BasicInputState extends State<BasicInputWidget> {
         ]),
         // Ground Slope
         Row(children: [
-          Expanded(
-              flex: labelFlex,
-              child: Text('Ground Slope:\n${_input.gs.toInt()}%')),
+          makeLabel('Ground Slope', '${_input.gs.toInt()}', '%', textStyle,
+              textStyleBold),
           Expanded(
               flex: sliderFlex,
               child: Slider(
@@ -192,10 +213,12 @@ class BasicInputState extends State<BasicInputWidget> {
         ]),
         // Aspect
         Row(children: [
-          Expanded(
-              flex: labelFlex,
-              child: Text(
-                  'Aspect:\n${degreesToCompassPoint(_input.aspect)} ${_input.aspect.toString()}\u00B0')),
+          makeLabel(
+              'Aspect',
+              '${degreesToCompassPoint(_input.aspect)} ${_input.aspect.toString()}',
+              '\u00B0',
+              textStyle,
+              textStyleBold),
           Expanded(
               flex: sliderFlex,
               child: Slider(
@@ -213,9 +236,8 @@ class BasicInputState extends State<BasicInputWidget> {
         ]),
         // BUI
         Row(children: [
-          Expanded(
-              flex: labelFlex,
-              child: Text('Buildup Index:\n${_input.bui.toInt()}')),
+          makeLabel('Buildup Index', '${_input.bui.toInt()}', '', textStyle,
+              textStyleBold),
           Expanded(
               flex: sliderFlex,
               child: Slider(
@@ -235,8 +257,8 @@ class BasicInputState extends State<BasicInputWidget> {
         ]),
         // FFMC
         Row(children: [
-          Expanded(
-              flex: labelFlex, child: Text('FFMC:\n${_input.ffmc.toInt()}')),
+          makeLabel(
+              'FFMC', '${_input.ffmc.toInt()}', '', textStyle, textStyleBold),
           Expanded(
               flex: sliderFlex,
               child: Slider(
@@ -256,8 +278,8 @@ class BasicInputState extends State<BasicInputWidget> {
         ]),
         // Curing
         Row(children: [
-          Expanded(
-              flex: labelFlex, child: Text('Curing:\n${_input.cc.toInt()}%')),
+          makeLabel(
+              'Curing', '${_input.cc.toInt()}', '%', textStyle, textStyleBold),
           Expanded(
               flex: sliderFlex,
               child: Slider(

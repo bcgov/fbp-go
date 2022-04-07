@@ -20,6 +20,8 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'global.dart';
+
 class Coordinate {
   double latitude;
   double longitude;
@@ -91,13 +93,15 @@ class CoordinatePickerState extends State<CoordinatePicker> {
 
   @override
   Widget build(BuildContext context) {
+    const TextStyle textStyle = TextStyle(fontSize: labelFontSize);
     return Row(
       children: [
         // latitude Field
         Expanded(
             child: TextField(
           controller: _latitudeController,
-          decoration: const InputDecoration(labelText: "Latitude"),
+          decoration: const InputDecoration(
+              labelText: "Latitude", labelStyle: textStyle),
           keyboardType: const TextInputType.numberWithOptions(
               signed: true, decimal: true),
           onChanged: (value) {
@@ -116,7 +120,8 @@ class CoordinatePickerState extends State<CoordinatePicker> {
         Expanded(
             child: TextField(
           controller: _longitudeController,
-          decoration: const InputDecoration(labelText: "Longitude"),
+          decoration: const InputDecoration(
+              labelText: "Longitude", labelStyle: textStyle),
           keyboardType: const TextInputType.numberWithOptions(
               signed: true, decimal: true),
           onChanged: (value) {
@@ -132,7 +137,8 @@ class CoordinatePickerState extends State<CoordinatePicker> {
         Expanded(
             child: TextField(
           controller: _elevationController,
-          decoration: const InputDecoration(labelText: "Elevation"),
+          decoration: const InputDecoration(
+              labelText: "Elevation", labelStyle: textStyle),
           keyboardType: TextInputType.number,
           onChanged: (value) {
             if (double.tryParse(value) != null) {

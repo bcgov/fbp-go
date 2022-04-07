@@ -146,17 +146,16 @@ similar.
 - Request: group the data differently, especially in the advanced tab Work with EK to refine, general idea is to group info by: Head of Fire - Flank of Fire - ROS - CFB - … Back of Fire - ROS - CFB - … So folks can isolate and easily scan the info. They also find it too jumbled and tight and are worried they’ll grab the wrong numbers - Tess can help with that part (layout, sizing, spacing)
 - User feedback/request: can we have pre-sets based on task? (Future idea) You open the app, say what you’re doing (prescribed burn, small fire, big fire/incident action plan, no fire just out and about - this is not the actual list) Prescribed burning: I don’t need all this info, reduce the list of data (maybe I can still personalize?) I wouldn’t care about the consumption of the flank in this case, and I better not be causing a crown fire
 - From testing session: users report difficulty with the sliders in terms of precision - hard to get the exact number they want. Sometimes this is ok, sometimes it’s very bad. Either way, it’s frustrating. Users pointed out that in the field their hands will be sweaty and dirty. Some folks realized they could turn their phone to landscape mode and it was a bit better. User-feature request: in addition to the sliders, can we have + and - buttons There may be other ways, UX can collaborate
+- Dev task tech dept: passing font size around sucks. Apply themes.
 
 ## Log of changes & decisions
 
 ### v1.0.4
 
 - [x] Basic: Style sliders to match color of results.
-- [ ] Basic: Adjust font size, shorten description & styling of result.
+- [x] Basic: Adjust font size, shorten description & styling of result.
 - [ ] Advanced: Match styling applied to basic.
 - [ ] Advanced: Remove fuel type dropdown, remove Crown fuel load as input (show as output), remove crown base height (show as output)
-
-Chat with Shelly Han
 
 ### v1.0.3
 

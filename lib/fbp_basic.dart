@@ -24,6 +24,7 @@ import 'cffdrs/fbp_calc.dart';
 import 'fire_widgets.dart';
 import 'fire.dart';
 import 'basic_input.dart';
+import 'global.dart';
 
 class BasicResults extends StatelessWidget {
   final FireBehaviourPredictionPrimary prediction;
@@ -39,23 +40,27 @@ class BasicResults extends StatelessWidget {
         super(key: key);
 
   Row buildRow(String value, String label, Color? color) {
-    // Let's try a nice fat font size - assuming people can't easily see things.
-    const double fontSize = 16;
     TextStyle valueStyle = TextStyle(
         color: color, fontWeight: FontWeight.bold, fontSize: fontSize);
     TextStyle labelStyle = TextStyle(color: color, fontSize: fontSize);
     return Row(children: [
       Expanded(
+          flex: 5,
           child: Padding(
-              padding: const EdgeInsets.only(right: 3.0),
+              padding: const EdgeInsets.only(right: 5.0),
               child:
                   Text(value, textAlign: TextAlign.right, style: valueStyle))),
-      Expanded(child: Text(label, style: labelStyle)),
+      Expanded(flex: 6, child: Text(label, style: labelStyle)),
     ]);
   }
 
-  List<Widget> buildRows(TextStyle textStyle) {
+  List<Widget> buildRows(TextStyle textStyle, Color intensityClassColor) {
     List<Widget> rows = [
+      Container(
+          color: intensityClassColor,
+          child: Row(
+            children: const [Text('')],
+          )),
       // Fire type
       buildRow(getFireDescription(prediction.FD), 'Fire type', textStyle.color),
       // Crown fraction burned
@@ -90,9 +95,14 @@ class BasicResults extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color intensityClassColor = getIntensityClassColor(intensityClass);
     return Container(
-        color: getIntensityClassColor(intensityClass),
-        child: Column(children: buildRows(getTextStyle(prediction.FD))));
+        decoration: BoxDecoration(
+            border: Border.all(color: intensityClassColor),
+            borderRadius: const BorderRadius.all(Radius.circular(5))),
+        child: Column(
+            children:
+                buildRows(getTextStyle(prediction.FD), intensityClassColor)));
   }
 }
 
