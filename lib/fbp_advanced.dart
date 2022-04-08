@@ -36,6 +36,15 @@ class AdvancedFireBehaviourPredictionForm extends StatefulWidget {
 
 // Define a corresponding State class.
 // This class holds data related to the form.
+// Decisions: No fuel type drop down, crown base height or crown fuel load,
+// we rely soley on the presets:
+// There's good reason for this. Tinkering directly with fuel type can be a bad
+//  idea if you don't have all the knowledge. E.g. change the crown base
+//  height, you'd probably also need to change the crown fuel load. If you
+//  go playing around too much, you'll get unrealistic results. It's also
+//  difficuly balancing the input, if you choose a fuel type, it means we
+//  we need to de-select the pre-set, which in turn results in the fuel type
+//  changing. We can avoid that adventure by just getting rid of fuel type.
 class AdvancedFireBehaviourPredictionFormState
     extends State<AdvancedFireBehaviourPredictionForm> {
   // Create a global key that uniquely identifies the Form widget
@@ -88,12 +97,6 @@ class AdvancedFireBehaviourPredictionFormState
     });
   }
 
-  void _onFuelTypeChanged(FuelType fuelType) {
-    setState(() {
-      _fuelType = fuelType;
-    });
-  }
-
   void _onPCChanged(double pc) {
     setState(() {
       _pc = pc;
@@ -109,18 +112,6 @@ class AdvancedFireBehaviourPredictionFormState
       if ((_pdf ?? 0) + (_pc ?? 0) > 100.0) {
         _pc = 100.0 - _pdf!;
       }
-    });
-  }
-
-  void _onCBHChanged(double cbh) {
-    setState(() {
-      _cbh = cbh;
-    });
-  }
-
-  void _onCFLChanged(double cfl) {
-    setState(() {
-      _cfl = cfl;
     });
   }
 
@@ -233,43 +224,7 @@ class AdvancedFireBehaviourPredictionFormState
                 },
               ))
             ]),
-            Row(
-              children: [
-                Expanded(
-                    child: DropdownButtonFormField(
-                        key: _fuelTypeState,
-                        value: _fuelType,
-                        decoration:
-                            const InputDecoration(labelText: "Fuel Type"),
-                        items: FuelType.values.map((FuelType value) {
-                          return DropdownMenuItem(
-                              value: value,
-                              child: Row(
-                                children: [
-                                  // const Icon(Icons.park_outlined),
-                                  Text(value.name)
-                                ],
-                              ));
-                        }).toList(),
-                        onChanged: (FuelType? value) {
-                          _onFuelTypeChanged(value!);
-                        }))
-              ],
-            ),
             Row(children: [
-              // CFL field
-              Expanded(
-                  child: TextField(
-                controller: _cflController,
-                decoration: const InputDecoration(
-                    labelText: "Crown Fuel Load (kg/m^2)"),
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  if (double.tryParse(value) != null) {
-                    _onCFLChanged(double.parse(value));
-                  }
-                },
-              )),
               // GFL field
               Expanded(
                   child: TextField(
@@ -344,21 +299,6 @@ class AdvancedFireBehaviourPredictionFormState
                     },
                   ))
             ]),
-            Row(children: [
-              // CBH field
-              Expanded(
-                  child: TextField(
-                controller: cbhController,
-                decoration: const InputDecoration(
-                    labelText: "Crown to base height (m)"),
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  if (double.tryParse(value) != null) {
-                    _onCBHChanged(double.parse(value));
-                  }
-                },
-              ))
-            ]),
             // Elapsed time
             Row(children: [
               Expanded(
@@ -393,7 +333,11 @@ class AdvancedFireBehaviourPredictionFormState
           ],
         ),
       ),
-      Results(prediction: prediction, minutes: _minutes, fireSize: fireSize)
+      Results(
+          prediction: prediction,
+          minutes: _minutes,
+          fireSize: fireSize,
+          input: input)
     ]);
   }
 }

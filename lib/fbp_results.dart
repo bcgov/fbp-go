@@ -23,6 +23,8 @@ import 'fire_widgets.dart';
 
 class Results extends StatelessWidget {
   final FireBehaviourPredictionPrimary prediction;
+  final FireBehaviourPredictionInput input;
+
   final int intensityClass;
   final double minutes;
   final double? fireSize;
@@ -30,6 +32,7 @@ class Results extends StatelessWidget {
       {required this.prediction,
       required this.minutes,
       required this.fireSize,
+      required this.input,
       Key? key})
       : intensityClass = getHeadFireIntensityClass(prediction.HFI),
         super(key: key);
@@ -41,6 +44,14 @@ class Results extends StatelessWidget {
         color: getIntensityClassColor(intensityClass),
         child: Column(
           children: [
+            Row(children: [
+              Expanded(child: Text('Crown Fuel Load', style: textStyle)),
+              Expanded(child: Text('${input.CFL} (kg/m^2)'))
+            ]),
+            Row(children: [
+              Expanded(child: Text('Crown to base height', style: textStyle)),
+              Expanded(child: Text('${input.CBH} (m)'))
+            ]),
             ...getPrimaryTextRow(prediction, textStyle),
             Row(children: [
               Expanded(
