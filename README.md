@@ -1,4 +1,4 @@
-# FBP Go (Fire Behaviour Prediction on the Go)
+# 🔥 FBP Go (Fire Behaviour Prediction on the Go)
 
 Fire behavior prediction application
 
