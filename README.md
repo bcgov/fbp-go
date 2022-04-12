@@ -157,6 +157,7 @@ similar.
 - [ ] Advanced: Match styling applied to basic.
 - [x] Advanced: Remove fuel type dropdown, remove Crown fuel load as input (show as output), remove crown base height (show as output)
 - [ ] About: Add a link to our repository.
+- [x] Basic+Advanced: Change "Crowning" to "Continous Crowning".
 
 ### v1.0.3
 
