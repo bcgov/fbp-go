@@ -131,7 +131,6 @@ class BasicInputState extends State<BasicInputWidget> {
 
   @override
   Widget build(BuildContext context) {
-    const labelFlex = 4;
     const sliderFlex = 10;
     final beaufortScale = getBeaufortScale(_input.ws);
     final intensityClass = getHeadFireIntensityClass(widget.prediction.HFI);

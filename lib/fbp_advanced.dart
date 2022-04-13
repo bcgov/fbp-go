@@ -24,6 +24,7 @@ import 'fbp_results.dart';
 import 'fire.dart';
 import 'fire_widgets.dart';
 import 'basic_input.dart';
+import 'global.dart';
 
 class AdvancedFireBehaviourPredictionForm extends StatefulWidget {
   const AdvancedFireBehaviourPredictionForm({Key? key}) : super(key: key);
@@ -37,12 +38,12 @@ class AdvancedFireBehaviourPredictionForm extends StatefulWidget {
 // Define a corresponding State class.
 // This class holds data related to the form.
 // Decisions: No fuel type drop down, crown base height or crown fuel load,
-// we rely soley on the presets:
+// we rely solely on the presets:
 // There's good reason for this. Tinkering directly with fuel type can be a bad
 //  idea if you don't have all the knowledge. E.g. change the crown base
 //  height, you'd probably also need to change the crown fuel load. If you
 //  go playing around too much, you'll get unrealistic results. It's also
-//  difficuly balancing the input, if you choose a fuel type, it means we
+//  difficult balancing the input, if you choose a fuel type, it means we
 //  we need to de-select the pre-set, which in turn results in the fuel type
 //  changing. We can avoid that adventure by just getting rid of fuel type.
 class AdvancedFireBehaviourPredictionFormState
@@ -166,6 +167,40 @@ class AdvancedFireBehaviourPredictionFormState
     super.dispose();
   }
 
+  Expanded makeLabel(String heading, String value, String unitOfMeasure,
+      TextStyle textStyle, TextStyle textStyleBold) {
+    const labelFlex = 4;
+    return Expanded(
+        flex: labelFlex,
+        child: Column(children: [
+          Row(children: [
+            Text(heading, style: textStyle),
+            Text(':', style: textStyle)
+          ]),
+          Row(children: [
+            Text(value, style: textStyleBold),
+            Text(unitOfMeasure, style: textStyle)
+          ])
+        ]));
+  }
+
+  Expanded makeInputLabel(String heading, String value, String unitOfMeasure,
+      TextStyle textStyle, TextStyle textStyleBold) {
+    const labelFlex = 4;
+    return Expanded(
+        flex: labelFlex,
+        child: Column(children: [
+          Row(children: [
+            Text(heading, style: textStyle),
+            Text(':', style: textStyle)
+          ]),
+          Row(children: [
+            Text(value, style: textStyleBold),
+            Text(unitOfMeasure, style: textStyle)
+          ])
+        ]));
+  }
+
   @override
   Widget build(BuildContext context) {
     double? fireSize;
@@ -208,8 +243,12 @@ class AdvancedFireBehaviourPredictionFormState
           prediction.CFB,
           prediction.secondary!.LB);
     }
-    const labelFlex = 1;
-    const sliderFlex = 2;
+    const sliderFlex = 10;
+    final intensityClass = getHeadFireIntensityClass(prediction.HFI);
+    final intensityClassColour = getIntensityClassColor(intensityClass);
+    const TextStyle textStyle = TextStyle(fontSize: fontSize);
+    const TextStyle textStyleBold =
+        TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold);
     // Build a Form widget using the _formKey created above.
     return Column(children: [
       Form(
@@ -230,7 +269,8 @@ class AdvancedFireBehaviourPredictionFormState
                   child: TextField(
                 controller: _gflController,
                 decoration: const InputDecoration(
-                    labelText: "Grass Fuel Load (kg/m^2)"),
+                    labelText: "Grass Fuel Load (kg/m^2)",
+                    labelStyle: TextStyle(fontSize: labelFontSize)),
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
                   if (double.tryParse(value) != null) {
@@ -264,10 +304,8 @@ class AdvancedFireBehaviourPredictionFormState
             // PDF field
             Row(
               children: [
-                Expanded(
-                    flex: labelFlex,
-                    child: Text(
-                        'Dead Balsam Fir:\n${(_pdf ?? 0).toStringAsFixed(0)}%')),
+                makeInputLabel('Dead Balsam', (_pdf ?? 0).toStringAsFixed(0),
+                    '%', textStyle, textStyleBold),
                 Expanded(
                     flex: sliderFlex,
                     child: Slider(
@@ -275,6 +313,7 @@ class AdvancedFireBehaviourPredictionFormState
                       min: 0,
                       max: 100,
                       divisions: 100,
+                      activeColor: intensityClassColour,
                       label: '${(_pdf ?? 0).toStringAsFixed(0)}%',
                       onChanged: (value) {
                         _onPDFChanged(value.roundToDouble());
@@ -283,9 +322,8 @@ class AdvancedFireBehaviourPredictionFormState
               ],
             ),
             Row(children: [
-              Expanded(
-                  flex: labelFlex,
-                  child: Text('Conifer:\n${(_pc ?? 0).toStringAsFixed(0)}%')),
+              makeInputLabel('Conifer', (_pc ?? 0).toStringAsFixed(0), '%',
+                  textStyle, textStyleBold),
               Expanded(
                   flex: sliderFlex,
                   child: Slider(
@@ -293,6 +331,7 @@ class AdvancedFireBehaviourPredictionFormState
                     min: 0,
                     max: 100,
                     divisions: 100,
+                    activeColor: intensityClassColour,
                     label: '${(_pc ?? 0).toStringAsFixed(0)}%',
                     onChanged: (value) {
                       _onPCChanged(value.roundToDouble());
@@ -301,9 +340,8 @@ class AdvancedFireBehaviourPredictionFormState
             ]),
             // Elapsed time
             Row(children: [
-              Expanded(
-                  flex: labelFlex,
-                  child: Text('Time elapsed:\n${_minutes.toInt()} minutes')),
+              makeInputLabel('Time elapsed', '${_minutes.toInt()}', ' minutes',
+                  textStyle, textStyleBold),
               Expanded(
                   flex: sliderFlex,
                   child: Slider(
@@ -311,6 +349,7 @@ class AdvancedFireBehaviourPredictionFormState
                     min: 0,
                     max: 120,
                     divisions: 12,
+                    activeColor: intensityClassColour,
                     label: '${_minutes.toInt()} minutes',
                     onChanged: (value) {
                       _onTChanged(value.roundToDouble());
@@ -337,7 +376,9 @@ class AdvancedFireBehaviourPredictionFormState
           prediction: prediction,
           minutes: _minutes,
           fireSize: fireSize,
-          input: input)
+          input: input,
+          intensityClass: intensityClass,
+          intensityClassColour: intensityClassColour)
     ]);
   }
 }

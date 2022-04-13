@@ -18,59 +18,67 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 import 'package:flutter/material.dart';
 
 import 'cffdrs/fbp_calc.dart';
-import 'fire.dart';
 import 'fire_widgets.dart';
+import 'global.dart';
 
 class Results extends StatelessWidget {
   final FireBehaviourPredictionPrimary prediction;
   final FireBehaviourPredictionInput input;
 
   final int intensityClass;
+  final Color intensityClassColour;
   final double minutes;
   final double? fireSize;
-  Results(
+  const Results(
       {required this.prediction,
       required this.minutes,
       required this.fireSize,
       required this.input,
+      required this.intensityClass,
+      required this.intensityClassColour,
       Key? key})
-      : intensityClass = getHeadFireIntensityClass(prediction.HFI),
-        super(key: key);
+      : super(key: key);
+
+  Row buildRow(String value, String label, Color? color) {
+    TextStyle valueStyle = TextStyle(
+        color: color, fontWeight: FontWeight.bold, fontSize: fontSize);
+    TextStyle labelStyle = TextStyle(color: color, fontSize: fontSize);
+    return Row(children: [
+      Expanded(
+          flex: 5,
+          child: Padding(
+              padding: const EdgeInsets.only(right: 5.0),
+              child:
+                  Text(value, textAlign: TextAlign.right, style: valueStyle))),
+      Expanded(flex: 6, child: Text(label, style: labelStyle)),
+    ]);
+  }
 
   @override
   Widget build(BuildContext context) {
     TextStyle textStyle = getTextStyle(prediction.FD);
     return Container(
-        color: getIntensityClassColor(intensityClass),
+        // color: intensityClassColour,
+        decoration: BoxDecoration(
+            border: Border.all(color: intensityClassColour),
+            borderRadius: const BorderRadius.all(Radius.circular(5))),
         child: Column(
           children: [
-            Row(children: [
-              Expanded(child: Text('Crown Fuel Load', style: textStyle)),
-              Expanded(child: Text('${input.CFL} (kg/m^2)'))
-            ]),
-            Row(children: [
-              Expanded(child: Text('Crown to base height', style: textStyle)),
-              Expanded(child: Text('${input.CBH} (m)'))
-            ]),
+            Container(
+                color: intensityClassColour,
+                child: Row(
+                  children: const [Text('')],
+                )),
+            buildRow(
+                '${input.CFL} (kg/m^2)', 'Crown Fuel Load', textStyle.color),
+            buildRow(
+                '${input.CBH} (m)', 'Crown to base height', textStyle.color),
             ...getPrimaryTextRow(prediction, textStyle),
-            Row(children: [
-              Expanded(
-                  child: Text(
-                'Intensity class',
-                style: textStyle,
-              )),
-              Expanded(child: Text('$intensityClass', style: textStyle)),
-            ]),
-            Row(children: [
-              Expanded(
-                  child: Text('${minutes.toStringAsFixed(0)} minute fire size',
-                      style: textStyle)),
-              Expanded(
-                  child: Text(
+            buildRow('$intensityClass', 'Intensity class', textStyle.color),
+            buildRow(
                 '${fireSize?.toStringAsFixed(0)} (ha)',
-                style: textStyle,
-              ))
-            ]),
+                '${minutes.toStringAsFixed(0)} minute fire size',
+                textStyle.color),
             ...getSecondaryTextRow(prediction, textStyle),
           ],
         ));
@@ -82,10 +90,8 @@ class Results extends StatelessWidget {
     if (prediction != null) {
       for (var key in prediction.lookup.keys) {
         ValueDescriptionPair value = prediction.getProp(key);
-        rows.add(Row(children: [
-          Expanded(child: Text(value.description, style: textStyle)),
-          Expanded(child: Text(value.toString(), style: textStyle))
-        ]));
+        rows.add(
+            buildRow(value.toString(), value.description, textStyle.color));
       }
     }
     return rows;
@@ -99,14 +105,8 @@ class Results extends StatelessWidget {
       if (secondary != null) {
         for (var key in secondary.lookup.keys) {
           ValueDescriptionPair value = secondary.getProp(key);
-          rows.add(Row(children: [
-            Expanded(
-                child: Text(
-              value.description,
-              style: textStyle,
-            )),
-            Expanded(child: Text(value.toString(), style: textStyle))
-          ]));
+          rows.add(
+              buildRow(value.toString(), value.description, textStyle.color));
         }
       }
     }
