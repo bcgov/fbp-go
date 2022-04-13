@@ -114,7 +114,7 @@ open ios/Runner.xcworkspace
 
 Make sure you've got the build number correct! Build number must be unique!
 
-Product -> Archive (make sure you've seleted the correct target)
+Product -> Archive (make sure you've selected the correct target)
 
 ## Code Conventions
 
@@ -142,7 +142,7 @@ similar.
 - Do lots of re-factoring (code was written as p.o.c. in a big rush).
 - Persist last settings? (Except for lat/long - since that's a log of the persons location and we don't want to persist anything personal)
 - (pending p.o.) set the FFMC lower limit to 60?
-- Add reference content to the Nav - e.g. pictures of the fuel types (trees) a la red book - would be great for newer folks; Easy to do, but needs images that we have licenes for.
+- Add reference content to the Nav - e.g. pictures of the fuel types (trees) a la red book - would be great for newer folks; Easy to do, but needs images that we have licences for.
 - Request: group the data differently, especially in the advanced tab Work with EK to refine, general idea is to group info by: Head of Fire - Flank of Fire - ROS - CFB - … Back of Fire - ROS - CFB - … So folks can isolate and easily scan the info. They also find it too jumbled and tight and are worried they’ll grab the wrong numbers - Tess can help with that part (layout, sizing, spacing)
 - User feedback/request: can we have pre-sets based on task? (Future idea) You open the app, say what you’re doing (prescribed burn, small fire, big fire/incident action plan, no fire just out and about - this is not the actual list) Prescribed burning: I don’t need all this info, reduce the list of data (maybe I can still personalize?) I wouldn’t care about the consumption of the flank in this case, and I better not be causing a crown fire
 - From testing session: users report difficulty with the sliders in terms of precision - hard to get the exact number they want. Sometimes this is ok, sometimes it’s very bad. Either way, it’s frustrating. Users pointed out that in the field their hands will be sweaty and dirty. Some folks realized they could turn their phone to landscape mode and it was a bit better. User-feature request: in addition to the sliders, can we have + and - buttons There may be other ways, UX can collaborate
@@ -157,7 +157,8 @@ similar.
 - [ ] Advanced: Match styling applied to basic.
 - [x] Advanced: Remove fuel type dropdown, remove Crown fuel load as input (show as output), remove crown base height (show as output)
 - [ ] About: Add a link to our repository.
-- [x] Basic+Advanced: Change "Crowning" to "Continous Crowning".
+- [x] Basic+Advanced: Change "Crowning" to "Continuous Crowning".
+- [x] Basic+Advanced: Changed fire intensity colour palette.
 
 ### v1.0.3
 
