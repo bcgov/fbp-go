@@ -148,10 +148,14 @@ similar.
 - From testing session: users report difficulty with the sliders in terms of precision - hard to get the exact number they want. Sometimes this is ok, sometimes it’s very bad. Either way, it’s frustrating. Users pointed out that in the field their hands will be sweaty and dirty. Some folks realized they could turn their phone to landscape mode and it was a bit better. User-feature request: in addition to the sliders, can we have + and - buttons There may be other ways, UX can collaborate
 - Dev task tech dept: passing font size around sucks. Apply themes.
 
+- Let's talk about dead balsam fir and conifer and grass fuel load being affected by fuel type. (fuel load parameters)
+- Grass fuel should  be a slider.
+
 ## Log of changes & decisions
 
 ### v1.0.4
 
+"Fire Behaviour Outputs" in Basic heading.
 - [x] Basic: Style sliders to match color of results.
 - [x] Basic: Adjust font size, shorten description & styling of result.
 - [ ] Advanced: Match styling applied to basic.
