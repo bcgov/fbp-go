@@ -45,6 +45,18 @@ Color getIntensityClassColor(int intensityClass) {
   }
 }
 
+Color getIntensityClassTextColor(int intensityClass) {
+  switch (intensityClass) {
+    case 1:
+    case 2:
+      return Colors.white;
+    case 6:
+      return Colors.white;
+    default:
+      return Colors.black;
+  }
+}
+
 // ignore: non_constant_identifier_names
 TextStyle getTextStyle(String FD) {
   return const TextStyle(color: Colors.black);

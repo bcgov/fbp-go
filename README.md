@@ -149,13 +149,13 @@ similar.
 - Dev task tech dept: passing font size around sucks. Apply themes.
 
 - Let's talk about dead balsam fir and conifer and grass fuel load being affected by fuel type. (fuel load parameters)
-- Grass fuel should  be a slider.
+- Grass fuel should be a slider.
 
 ## Log of changes & decisions
 
 ### v1.0.4
 
-"Fire Behaviour Outputs" in Basic heading.
+- [ ] "Fire Behaviour Outputs" in Basic heading.
 - [x] Basic: Style sliders to match color of results.
 - [x] Basic: Adjust font size, shorten description & styling of result.
 - [ ] Advanced: Match styling applied to basic.

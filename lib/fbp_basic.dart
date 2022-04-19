@@ -54,12 +54,19 @@ class BasicResults extends StatelessWidget {
     ]);
   }
 
-  List<Widget> buildRows(TextStyle textStyle, Color intensityClassColor) {
+  List<Widget> buildRows(TextStyle textStyle, Color intensityClassColor,
+      Color intensityClassTextColor) {
+    TextStyle labelStyle = TextStyle(
+        fontSize: fontSize, color: Colors.black, fontWeight: FontWeight.bold);
     List<Widget> rows = [
       Container(
           color: intensityClassColor,
           child: Row(
-            children: const [Text('')],
+            children: [
+              const Spacer(),
+              Text('Fire Behaviour Outputs', style: labelStyle),
+              const Spacer()
+            ],
           )),
       // Fire type
       buildRow(getFireDescription(prediction.FD), 'Fire type', textStyle.color),
@@ -96,13 +103,14 @@ class BasicResults extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color intensityClassColor = getIntensityClassColor(intensityClass);
+    Color intensityTextColor = getIntensityClassTextColor(intensityClass);
     return Container(
         decoration: BoxDecoration(
             border: Border.all(color: intensityClassColor),
             borderRadius: const BorderRadius.all(Radius.circular(5))),
         child: Column(
-            children:
-                buildRows(getTextStyle(prediction.FD), intensityClassColor)));
+            children: buildRows(getTextStyle(prediction.FD),
+                intensityClassColor, intensityTextColor)));
   }
 }
 
