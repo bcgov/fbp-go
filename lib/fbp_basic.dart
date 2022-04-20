@@ -56,7 +56,7 @@ class BasicResults extends StatelessWidget {
 
   List<Widget> buildRows(TextStyle textStyle, Color intensityClassColor,
       Color intensityClassTextColor) {
-    TextStyle labelStyle = TextStyle(
+    TextStyle labelStyle = const TextStyle(
         fontSize: fontSize, color: Colors.black, fontWeight: FontWeight.bold);
     List<Widget> rows = [
       Container(

@@ -18,26 +18,81 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 import 'package:flutter/material.dart';
 
 import 'cffdrs/fbp_calc.dart';
+import 'fire.dart';
 import 'fire_widgets.dart';
 import 'global.dart';
 
-class Results extends StatelessWidget {
-  final FireBehaviourPredictionPrimary prediction;
-  final FireBehaviourPredictionInput input;
+abstract class Group {
+  Group({required this.heading, this.isExpanded = false});
+  String heading;
+  bool isExpanded;
 
-  final int intensityClass;
-  final Color intensityClassColour;
-  final double minutes;
-  final double? fireSize;
-  const Results(
-      {required this.prediction,
-      required this.minutes,
-      required this.fireSize,
-      required this.input,
-      required this.intensityClass,
-      required this.intensityClassColour,
-      Key? key})
-      : super(key: key);
+  Row _buildRow(String value, String label, Color? color) {
+    TextStyle valueStyle = TextStyle(
+        color: color, fontWeight: FontWeight.bold, fontSize: fontSize);
+    TextStyle labelStyle = TextStyle(color: color, fontSize: fontSize);
+    return Row(children: [
+      Expanded(
+          flex: 5,
+          child: Padding(
+              padding: const EdgeInsets.only(right: 5.0),
+              child:
+                  Text(value, textAlign: TextAlign.right, style: valueStyle))),
+      Expanded(flex: 6, child: Text(label, style: labelStyle)),
+    ]);
+  }
+
+  Widget buildBody(FireBehaviourPredictionInput input,
+      FireBehaviourPredictionPrimary prediction);
+}
+
+class FireBehaviourGroup extends Group {
+  FireBehaviourGroup({required String heading, isExpanded = false})
+      : super(heading: heading, isExpanded: isExpanded);
+
+  @override
+  Widget buildBody(FireBehaviourPredictionInput input,
+      FireBehaviourPredictionPrimary prediction) {
+    TextStyle textStyle = getTextStyle(prediction.FD);
+    return Column(
+      children: [
+        _buildRow(
+            getFireDescription(prediction.FD), 'Fire type', textStyle.color),
+        _buildRow('${((prediction.CFB * 100).toStringAsFixed(0))}%',
+            'Crown fraction burned - Head', textStyle.color),
+        _buildRow('${((prediction.secondary!.FCFB * 100).toStringAsFixed(0))}%',
+            'Crown fraction burned - Flank', textStyle.color),
+        _buildRow('${((prediction.secondary!.BCFB * 100).toStringAsFixed(0))}%',
+            'Crown fraction burned - Back', textStyle.color),
+      ],
+    );
+  }
+}
+
+class GenericGroup extends Group {
+  GenericGroup({required String heading, isExpanded = false})
+      : super(heading: heading, isExpanded: isExpanded);
+
+  @override
+  Widget buildBody(FireBehaviourPredictionInput input,
+      FireBehaviourPredictionPrimary prediction) {
+    return Container(
+      child: const Text('Moo'),
+    );
+  }
+}
+
+List<Group> generateGroups() {
+  List<Group> groups = [
+    FireBehaviourGroup(heading: 'Fire Behaviour Outputs', isExpanded: true),
+    GenericGroup(heading: 'Group 2', isExpanded: false),
+    GenericGroup(heading: 'Group 3', isExpanded: false)
+  ];
+  return groups;
+}
+
+class ResultsState extends State<ResultsStateWidget> {
+  final List<Group> _groups = generateGroups();
 
   Row buildRow(String value, String label, Color? color) {
     TextStyle valueStyle = TextStyle(
@@ -56,32 +111,83 @@ class Results extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle = getTextStyle(prediction.FD);
+    TextStyle textStyle = getTextStyle(widget.prediction.FD);
     // Need to have a bunch of panels:
     // https://api.flutter.dev/flutter/material/ExpansionPanelList-class.html
     return Container(
         // color: intensityClassColour,
         decoration: BoxDecoration(
-            border: Border.all(color: intensityClassColour),
+            border: Border.all(color: widget.intensityClassColour),
             borderRadius: const BorderRadius.all(Radius.circular(5))),
         child: Column(
           children: [
+            ExpansionPanelList(
+                expansionCallback: (int index, bool isExpanded) {
+                  setState(() {
+                    _groups[index].isExpanded = !isExpanded;
+                  });
+                },
+                children: _groups.map<ExpansionPanel>((Group group) {
+                  return ExpansionPanel(
+                      backgroundColor: widget.intensityClassColour,
+                      headerBuilder: (BuildContext context, bool isExpanded) {
+                        return Row(
+                          children: [
+                            const Spacer(),
+                            Text(group.heading),
+                            const Spacer()
+                          ],
+                        );
+                      },
+                      body: group.buildBody(widget.input, widget.prediction),
+                      isExpanded: group.isExpanded);
+                }).toList()
+                //  [
+                //   ExpansionPanel(
+                //       headerBuilder: (BuildContext context, bool isExpanded) {
+                //         return Row(
+                //           children: [
+                //             const Spacer(),
+                //             Text(_groups[0].heading),
+                //             const Spacer()
+                //           ],
+                //         );
+                //       },
+                //       body: buildRow('${widget.input.CFL} (kg/m^2)',
+                //           'Crown Fuel Load', textStyle.color),
+                //       isExpanded: _groups[0].isExpanded),
+                // ExpansionPanel(
+                //     headerBuilder: (BuildContext context, bool isExpanded) {
+                //       return Row(
+                //         children: [
+                //           const Spacer(),
+                //           Text(_groups[1].heading),
+                //           const Spacer()
+                //         ],
+                //       );
+                //     },
+                //     body: buildRow('${widget.input.CFL} (kg/m^2)',
+                //         'Crown Fuel Load', textStyle.color),
+                //     isExpanded: _groups[1].isExpanded)
+                // ],
+                ),
             Container(
-                color: intensityClassColour,
+                color: widget.intensityClassColour,
                 child: Row(
                   children: const [Text('')],
                 )),
-            buildRow(
-                '${input.CFL} (kg/m^2)', 'Crown Fuel Load', textStyle.color),
-            buildRow(
-                '${input.CBH} (m)', 'Crown to base height', textStyle.color),
-            ...getPrimaryTextRow(prediction, textStyle),
-            buildRow('$intensityClass', 'Intensity class', textStyle.color),
-            buildRow(
-                '${fireSize?.toStringAsFixed(0)} (ha)',
-                '${minutes.toStringAsFixed(0)} minute fire size',
+            buildRow('${widget.input.CFL} (kg/m^2)', 'Crown Fuel Load',
                 textStyle.color),
-            ...getSecondaryTextRow(prediction, textStyle),
+            buildRow('${widget.input.CBH} (m)', 'Crown to base height',
+                textStyle.color),
+            ...getPrimaryTextRow(widget.prediction, textStyle),
+            buildRow(
+                '$widget.intensityClass', 'Intensity class', textStyle.color),
+            buildRow(
+                '${widget.fireSize?.toStringAsFixed(0)} (ha)',
+                '${widget.minutes.toStringAsFixed(0)} minute fire size',
+                textStyle.color),
+            ...getSecondaryTextRow(widget.prediction, textStyle),
           ],
         ));
   }
@@ -114,4 +220,26 @@ class Results extends StatelessWidget {
     }
     return rows;
   }
+}
+
+class ResultsStateWidget extends StatefulWidget {
+  final FireBehaviourPredictionPrimary prediction;
+  final FireBehaviourPredictionInput input;
+  final int intensityClass;
+  final Color intensityClassColour;
+  final double minutes;
+  final double? fireSize;
+
+  const ResultsStateWidget(
+      {required this.prediction,
+      required this.minutes,
+      required this.fireSize,
+      required this.input,
+      required this.intensityClass,
+      required this.intensityClassColour,
+      Key? key})
+      : super(key: key);
+
+  @override
+  State<ResultsStateWidget> createState() => ResultsState();
 }

@@ -372,7 +372,7 @@ class AdvancedFireBehaviourPredictionFormState
           ],
         ),
       ),
-      Results(
+      ResultsStateWidget(
           prediction: prediction,
           minutes: _minutes,
           fireSize: fireSize,
