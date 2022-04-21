@@ -92,7 +92,7 @@ class BasicResults extends StatelessWidget {
 
     if (prediction.WSV != 0) {
       rows.add(buildRow(
-          '${degreesToCompassPoint(prediction.RAZ)} ${prediction.RAZ.toStringAsFixed(1)}(\u00B0)',
+          '${degreesToCompassPoint(prediction.RAZ)} ${prediction.RAZ.toStringAsFixed(1)}\u00B0',
           'Direction of spread',
           textStyle.color));
     }

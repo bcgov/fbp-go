@@ -43,7 +43,21 @@ abstract class Group {
   }
 
   Widget buildBody(FireBehaviourPredictionInput input,
-      FireBehaviourPredictionPrimary prediction);
+      FireBehaviourPredictionPrimary prediction, double minutes);
+
+  Container buildContainer(List<Widget> children) {
+    return Container(color: Colors.white, child: Column(children: children));
+  }
+}
+
+class PlannedIgnitionGroup extends Group {
+  PlannedIgnitionGroup({required String heading}) : super(heading: heading);
+
+  @override
+  Widget buildBody(FireBehaviourPredictionInput input,
+      FireBehaviourPredictionPrimary prediction, double minutes) {
+    return buildContainer([Text('TBD!')]);
+  }
 }
 
 class FireBehaviourGroup extends Group {
@@ -52,20 +66,52 @@ class FireBehaviourGroup extends Group {
 
   @override
   Widget buildBody(FireBehaviourPredictionInput input,
-      FireBehaviourPredictionPrimary prediction) {
+      FireBehaviourPredictionPrimary prediction, double minutes) {
+    double? fireSize;
+    if (prediction.secondary != null) {
+      fireSize = getFireSize(
+          input.FUELTYPE,
+          prediction.ROS,
+          prediction.secondary!.BROS,
+          minutes,
+          prediction.CFB,
+          prediction.secondary!.LB);
+    }
     TextStyle textStyle = getTextStyle(prediction.FD);
-    return Column(
-      children: [
-        _buildRow(
-            getFireDescription(prediction.FD), 'Fire type', textStyle.color),
-        _buildRow('${((prediction.CFB * 100).toStringAsFixed(0))}%',
-            'Crown fraction burned - Head', textStyle.color),
-        _buildRow('${((prediction.secondary!.FCFB * 100).toStringAsFixed(0))}%',
-            'Crown fraction burned - Flank', textStyle.color),
-        _buildRow('${((prediction.secondary!.BCFB * 100).toStringAsFixed(0))}%',
-            'Crown fraction burned - Back', textStyle.color),
-      ],
-    );
+    return buildContainer([
+      _buildRow(
+          getFireDescription(prediction.FD), 'Fire type', textStyle.color),
+      _buildRow('${((prediction.CFB * 100).toStringAsFixed(0))}%',
+          'Crown fraction burned - Head', textStyle.color),
+      _buildRow('${((prediction.secondary!.FCFB * 100).toStringAsFixed(0))}%',
+          'Crown fraction burned - Flank', textStyle.color),
+      _buildRow('${((prediction.secondary!.BCFB * 100).toStringAsFixed(0))}%',
+          'Crown fraction burned - Back', textStyle.color),
+      _buildRow('${((prediction.ROS).toStringAsFixed(0))} (m/min)',
+          'Rate of spread - Head', textStyle.color),
+      _buildRow('${((prediction.secondary!.FROS).toStringAsFixed(0))} (m/min)',
+          'Rate of spread - Flank', textStyle.color),
+      _buildRow('${((prediction.secondary!.BROS).toStringAsFixed(0))} (m/min)',
+          'Rate of spread - Back', textStyle.color),
+      _buildRow(((prediction.ISI).toStringAsFixed(0)),
+          'Initial Spread Index (ISI)', textStyle.color),
+      _buildRow(
+          ((getHeadFireIntensityClass(prediction.HFI)).toStringAsFixed(0)),
+          'Intensity class',
+          textStyle.color),
+      _buildRow('${((prediction.HFI).toStringAsFixed(0))} (kW/m)',
+          'Head fire intensity', textStyle.color),
+      _buildRow('${((prediction.secondary!.FFI).toStringAsFixed(0))} (kW/m)',
+          'Flank fire intensity', textStyle.color),
+      _buildRow('${((prediction.secondary!.BFI).toStringAsFixed(0))} (kW/m)',
+          'Back fire intensity', textStyle.color),
+      _buildRow('${fireSize?.toStringAsFixed(1)} (ha)',
+          '$minutes minute fire size', textStyle.color),
+      _buildRow(
+          '${degreesToCompassPoint(prediction.RAZ)} ${prediction.RAZ.toStringAsFixed(1)}\u00B0',
+          'Direction of spread',
+          textStyle.color),
+    ]);
   }
 }
 
@@ -75,17 +121,15 @@ class GenericGroup extends Group {
 
   @override
   Widget buildBody(FireBehaviourPredictionInput input,
-      FireBehaviourPredictionPrimary prediction) {
-    return Container(
-      child: const Text('TBD'),
-    );
+      FireBehaviourPredictionPrimary prediction, double minutes) {
+    return buildContainer([const Text('TBD')]);
   }
 }
 
 List<Group> generateGroups() {
   List<Group> groups = [
     FireBehaviourGroup(heading: 'Fire Behaviour Outputs', isExpanded: true),
-    GenericGroup(heading: 'Group 2', isExpanded: false),
+    PlannedIgnitionGroup(heading: 'Planned ignition'),
     GenericGroup(heading: 'Group 3', isExpanded: false)
   ];
   return groups;
@@ -134,12 +178,16 @@ class ResultsState extends State<ResultsStateWidget> {
                         return Row(
                           children: [
                             const Spacer(),
-                            Text(group.heading),
+                            Text(group.heading,
+                                style: const TextStyle(
+                                    fontSize: fontSize,
+                                    fontWeight: FontWeight.bold)),
                             const Spacer()
                           ],
                         );
                       },
-                      body: group.buildBody(widget.input, widget.prediction),
+                      body: group.buildBody(
+                          widget.input, widget.prediction, widget.minutes),
                       isExpanded: group.isExpanded);
                 }).toList()
                 //  [
