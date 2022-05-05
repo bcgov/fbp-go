@@ -1,6 +1,6 @@
 # 🔥 FBP Go (Fire Behaviour Prediction on the Go)
 
-Fire behavior prediction application
+Fire behaviour prediction application
 
 Preview latest PWA build on: [https://sybrand.github.io/](https://sybrand.github.io/)
 
@@ -130,7 +130,6 @@ similar.
 - Localization - implement en-CA and fr-CA.
 - Coordinates - provide user feedback on location button. (e.g. fetching and failed state).
 - Add FMC option in advanced.
-- Advanced: Problem: pre-set can conflict with entered values. The moment. anything is changed, the pre-set should become un-set OR You need a "load preset" button - maybe that's better?
 - Advanced: Result columns - there are some "two line" columns. Would be nice if the result columns could size better.
 - FFMC scale at the bottom.
   - Possible, but nothing out of the box - so leaving it alone for now.
@@ -161,10 +160,11 @@ similar.
 - [x] Basic: Style sliders to match color of results.
 - [x] Basic: Adjust font size, shorten description & styling of result.
 - [ ] Advanced: Match styling applied to basic.
-- [x] Advanced: Remove fuel type dropdown, remove Crown fuel load as input (show as output), remove crown base height (show as output)
+- [x] Advanced: Remove fuel type dropdown (was problematic when combined with preset selection), remove Crown fuel load as input (show as output), remove crown base height (show as output)
 - [ ] About: Add a link to our repository.
 - [x] Basic+Advanced: Change "Crowning" to "Continuous Crowning".
 - [x] Basic+Advanced: Changed fire intensity colour palette.
+- [ ] Started putting in place github workflows.
 
 ### v1.0.3
 

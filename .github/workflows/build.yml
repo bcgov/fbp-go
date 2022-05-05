@@ -1,0 +1,32 @@
+name: Builds
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    name: Build ${{ matrix.target }}
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ["apk", "appbundle", "ios --release --no-codesign", macos, web]
+    steps:
+      # Set up Flutter.
+      - name: Get latest stable version of Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+          cache-key: flutter # optional, change this to force refresh cache
+          cache-path: ${{ runner.tool_cache }}/flutter # optional, change this to specify the cache path
+      - run: flutter --version
+      - run: flutter config --enable-macos-desktop
+      - run: flutter doctor -v
+      # Checkout gallery code and get packages.
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - run: flutter pub get -v
+      - run: flutter build ${{ matrix.target }}
