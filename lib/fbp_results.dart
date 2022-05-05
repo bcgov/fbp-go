@@ -50,18 +50,23 @@ abstract class Group {
   }
 }
 
-class PlannedIgnitionGroup extends Group {
-  PlannedIgnitionGroup({required String heading}) : super(heading: heading);
+class SecondaryFireBehaviourGroup extends Group {
+  SecondaryFireBehaviourGroup({required String heading})
+      : super(heading: heading);
 
   @override
   Widget buildBody(FireBehaviourPredictionInput input,
       FireBehaviourPredictionPrimary prediction, double minutes) {
-    return buildContainer([Text('TBD!')]);
+    TextStyle textStyle = getTextStyle(prediction.FD);
+    return buildContainer([
+      _buildRow('${(prediction.SFC).toStringAsFixed(0)} (kg/\u33A1)',
+          'Surface Fuel Consumption', textStyle.color),
+    ]);
   }
 }
 
-class FireBehaviourGroup extends Group {
-  FireBehaviourGroup({required String heading, isExpanded = false})
+class PrimaryFireBehaviourGroup extends Group {
+  PrimaryFireBehaviourGroup({required String heading, isExpanded = false})
       : super(heading: heading, isExpanded: isExpanded);
 
   @override
@@ -115,22 +120,11 @@ class FireBehaviourGroup extends Group {
   }
 }
 
-class GenericGroup extends Group {
-  GenericGroup({required String heading, isExpanded = false})
-      : super(heading: heading, isExpanded: isExpanded);
-
-  @override
-  Widget buildBody(FireBehaviourPredictionInput input,
-      FireBehaviourPredictionPrimary prediction, double minutes) {
-    return buildContainer([const Text('TBD')]);
-  }
-}
-
 List<Group> generateGroups() {
   List<Group> groups = [
-    FireBehaviourGroup(heading: 'Fire Behaviour Outputs', isExpanded: true),
-    PlannedIgnitionGroup(heading: 'Planned ignition'),
-    GenericGroup(heading: 'Group 3', isExpanded: false)
+    PrimaryFireBehaviourGroup(
+        heading: 'Primary Fire Behaviour Outputs', isExpanded: true),
+    SecondaryFireBehaviourGroup(heading: 'Secondary Fire Behaviour Outputs'),
   ];
   return groups;
 }

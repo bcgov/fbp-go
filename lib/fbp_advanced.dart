@@ -269,7 +269,7 @@ class AdvancedFireBehaviourPredictionFormState
                   child: TextField(
                 controller: _gflController,
                 decoration: const InputDecoration(
-                    labelText: "Grass Fuel Load (kg/m^2)",
+                    labelText: "Grass Fuel Load (kg/\u33A1)",
                     labelStyle: TextStyle(fontSize: labelFontSize)),
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
