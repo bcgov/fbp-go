@@ -59,8 +59,46 @@ class SecondaryFireBehaviourGroup extends Group {
       FireBehaviourPredictionPrimary prediction, double minutes) {
     TextStyle textStyle = getTextStyle(prediction.FD);
     return buildContainer([
+      // Planned ignition
       _buildRow('${(prediction.SFC).toStringAsFixed(0)} (kg/\u33A1)',
-          'Surface Fuel Consumption', textStyle.color),
+          'Surface fuel consumption', textStyle.color),
+      _buildRow('${(prediction.CFC).toStringAsFixed(0)} (kg/\u33A1)',
+          'Crown fuel consumption', textStyle.color),
+      _buildRow('${(prediction.TFC).toStringAsFixed(0)} (kg/\u33A1)',
+          'Total fuel consumption', textStyle.color),
+      _buildRow(
+          '${(prediction.secondary?.FTFC)?.toStringAsFixed(0)} (kg/\u33A1)',
+          'Total fuel consumption - flank',
+          textStyle.color),
+      _buildRow(
+          '${(prediction.secondary?.BTFC)?.toStringAsFixed(0)} (kg/\u33A1)',
+          'Total fuel consumption - back',
+          textStyle.color),
+      // Fire growth potential
+      _buildRow('${prediction.WSV.toStringAsFixed(0)} (km/h)',
+          'Net effective wind speed', textStyle.color),
+      _buildRow(
+          '${degreesToCompassPoint(prediction.RAZ)} ${prediction.RAZ.toStringAsFixed(1)}\u00B0',
+          'Net effective wind direction',
+          textStyle.color),
+      // Spread distance
+      _buildRow('${prediction.secondary?.RSO.toStringAsFixed(0)} m/min',
+          'Surface fire rate of spread', textStyle.color),
+      _buildRow('${prediction.secondary?.LB.toStringAsFixed(0)}',
+          'Length to breadth ratio', textStyle.color),
+      _buildRow('${prediction.secondary?.DH.toStringAsFixed(0)}',
+          'Fire spread distance - head', textStyle.color),
+      _buildRow('${prediction.secondary?.DB.toStringAsFixed(0)}',
+          'Fire spread distance - flank', textStyle.color),
+      _buildRow('${prediction.secondary?.DF.toStringAsFixed(0)}',
+          'Fire spread distance - back', textStyle.color),
+
+      //     _buildRow('${((prediction.ROS).toStringAsFixed(0))} (m/min)',
+      //     'Rate of spread', textStyle.color),
+      // _buildRow('${((prediction.secondary!.FROS).toStringAsFixed(0))} (m/min)',
+      //     'Rate of spread - Flank', textStyle.color),
+      // _buildRow('${((prediction.secondary!.BROS).toStringAsFixed(0))} (m/min)',
+      //     'Rate of spread - Back', textStyle.color),
     ]);
   }
 }
@@ -87,13 +125,13 @@ class PrimaryFireBehaviourGroup extends Group {
       _buildRow(
           getFireDescription(prediction.FD), 'Fire type', textStyle.color),
       _buildRow('${((prediction.CFB * 100).toStringAsFixed(0))}%',
-          'Crown fraction burned - Head', textStyle.color),
+          'Crown fraction burned', textStyle.color),
       _buildRow('${((prediction.secondary!.FCFB * 100).toStringAsFixed(0))}%',
           'Crown fraction burned - Flank', textStyle.color),
       _buildRow('${((prediction.secondary!.BCFB * 100).toStringAsFixed(0))}%',
           'Crown fraction burned - Back', textStyle.color),
       _buildRow('${((prediction.ROS).toStringAsFixed(0))} (m/min)',
-          'Rate of spread - Head', textStyle.color),
+          'Rate of spread', textStyle.color),
       _buildRow('${((prediction.secondary!.FROS).toStringAsFixed(0))} (m/min)',
           'Rate of spread - Flank', textStyle.color),
       _buildRow('${((prediction.secondary!.BROS).toStringAsFixed(0))} (m/min)',

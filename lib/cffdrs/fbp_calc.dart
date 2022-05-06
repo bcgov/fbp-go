@@ -245,10 +245,10 @@ class FireBehaviourPredictionSecondary {
     lookup = <String, ValueDescriptionPair>{
       // 'SF': ValueDescriptionPair(() => SF, 'Spread Factor'),
       'CSI': ValueDescriptionPair(() => CSI, 'Critical Surface Interval'),
-      'RSO': ValueDescriptionPair(() => RSO, 'Surface Fire Rate of Spread',
-          unit: 'm/min'),
+      // 'RSO': ValueDescriptionPair(() => RSO, 'Surface Fire Rate of Spread',
+      // unit: 'm/min'),
       'BE': ValueDescriptionPair(() => BE, 'Buildup Effect'),
-      'LB': ValueDescriptionPair(() => LB, 'Length to Breadth Ratio'),
+      // 'LB': ValueDescriptionPair(() => LB, 'Length to Breadth Ratio'),
       // 'LBt': ValueDescriptionPair(() => LBt, 'Length to Breadth Ratio Time'),
       'BROS': ValueDescriptionPair(() => BROS, 'Back Fire Rate of Spread',
           unit: 'm/min'),
@@ -267,10 +267,10 @@ class FireBehaviourPredictionSecondary {
           ValueDescriptionPair(() => BCFB, 'Crown Fraction Burned For Back'),
       // 'TCFB': ValueDescriptionPair(
       //     () => TCFB, 'Crown Fraction Burned At Angle Theta'),
-      'FTFC': ValueDescriptionPair(
-          () => FTFC, 'Total Fuel Consumption For The Flank'),
-      'BTFC': ValueDescriptionPair(
-          () => BTFC, 'Total Fuel Consumption For The Back'),
+      // 'FTFC': ValueDescriptionPair(
+      // () => FTFC, 'Total Fuel Consumption For The Flank'),
+      // 'BTFC': ValueDescriptionPair(
+      // () => BTFC, 'Total Fuel Consumption For The Back'),
       // 'TTFC': ValueDescriptionPair(
       //     () => TTFC, 'Total Fuel Consumption At Angle Theta'),
       'FFI': ValueDescriptionPair(() => FFI, 'Fire Intensity At The Flank'),
@@ -286,9 +286,9 @@ class FireBehaviourPredictionSecondary {
           () => BTI, 'Elapsed Time to Crown Fire Initiation for Back'),
       // 'TTI': ValueDescriptionPair(
       //     () => TTI, 'Elapsed Time to Crown Fire Initiation for theta'),
-      'DH': ValueDescriptionPair(() => DH, 'Fire Spread Distance Head'),
-      'DB': ValueDescriptionPair(() => DB, 'Fire Spread Distance Back'),
-      'DF': ValueDescriptionPair(() => DF, 'Fire Spread Distance Flank'),
+      // 'DH': ValueDescriptionPair(() => DH, 'Fire Spread Distance Head'),
+      // 'DB': ValueDescriptionPair(() => DB, 'Fire Spread Distance Back'),
+      // 'DF': ValueDescriptionPair(() => DF, 'Fire Spread Distance Flank'),
     };
 
     // @override
@@ -351,23 +351,23 @@ class FireBehaviourPredictionPrimary {
       this.lookup = const <String, ValueDescriptionPair>{}}) {
     lookup = <String, ValueDescriptionPair>{
       'FMC': ValueDescriptionPair(() => FMC, 'Foliar Moisture Content'),
-      'SFC': ValueDescriptionPair(() => SFC, 'Surface Fuel Consumption',
-          unit: 'kg/m^2'),
-      'WSV': ValueDescriptionPair(() => WSV, 'Net effective windspeed',
-          unit: 'km/h'),
-      'RAZ': CompassValueDescriptionPair(
-          () => RAZ, 'Net effective wind direction'),
+      // 'SFC': ValueDescriptionPair(() => SFC, 'Surface Fuel Consumption',
+      // unit: 'kg/m^2'),
+      // 'WSV': ValueDescriptionPair(() => WSV, 'Net effective wind speed',
+      // unit: 'km/h'),
+      // 'RAZ': CompassValueDescriptionPair(
+      //     () => RAZ, 'Net effective wind direction'),
       'ISI': ValueDescriptionPair(() => ISI, 'Initial Spread Index'),
       'ROS': ValueDescriptionPair(() => ROS, 'Rate of Spread', unit: 'm/min'),
       'CFB': PercentageValueDescriptionPair(() => CFB, 'Crown Fraction Burned',
           unit: '%'),
-      'TFC': ValueDescriptionPair(() => TFC, 'Total Fuel Consumption',
-          unit: 'kg/m^2'),
+      // 'TFC': ValueDescriptionPair(() => TFC, 'Total Fuel Consumption',
+      // unit: 'kg/m^2'),
       'HFI':
           ValueDescriptionPair(() => HFI, 'Head Fire Intensity', unit: 'kW/m'),
       'FD': FireDescriptionValuePair(() => FD, 'Fire Type'),
-      'CFC': ValueDescriptionPair(() => CFC, 'Crown Fuel Consumption',
-          unit: 'kg/m^2'),
+      // 'CFC': ValueDescriptionPair(() => CFC, 'Crown Fuel Consumption',
+      // unit: 'kg/m^2'),
     };
   }
 
