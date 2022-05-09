@@ -246,6 +246,7 @@ class AdvancedFireBehaviourPredictionFormState
     const sliderFlex = 10;
     final intensityClass = getHeadFireIntensityClass(prediction.HFI);
     final intensityClassColour = getIntensityClassColor(intensityClass);
+    final intensityClassTextColour = getIntensityClassTextColor(intensityClass);
     const TextStyle textStyle = TextStyle(fontSize: fontSize);
     const TextStyle textStyleBold =
         TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold);
@@ -378,7 +379,8 @@ class AdvancedFireBehaviourPredictionFormState
           fireSize: fireSize,
           input: input,
           intensityClass: intensityClass,
-          intensityClassColour: intensityClassColour)
+          intensityClassColour: intensityClassColour,
+          intensityClassTextColor: intensityClassTextColour)
     ]);
   }
 }

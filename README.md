@@ -155,8 +155,8 @@ similar.
 ### v1.0.4
 
 - [ ] Flame length
-- [ ] White text on dark and red
-- [ ] "Fire Behaviour Outputs" in Basic heading.
+- [x] White text on dark and red
+- [x] "Fire Behaviour Outputs" in Basic heading.
 - [x] Basic: Style sliders to match color of results.
 - [x] Basic: Adjust font size, shorten description & styling of result.
 - [ ] Advanced: Match styling applied to basic.

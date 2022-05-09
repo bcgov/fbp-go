@@ -45,16 +45,22 @@ Color getIntensityClassColor(int intensityClass) {
   }
 }
 
-Color getTextColor(String FD) {
-  switch (FD) {
-    case ("C"):
+Color getIntensityClassTextColor(int intensityClass) {
+  switch (intensityClass) {
+    case 1:
+    case 2:
       return Colors.white;
+    case 6:
+      return Colors.white;
+    default:
+      return Colors.black;
   }
-  return Colors.black;
 }
 
 class FuelTypePresetDropdownState extends State<FuelTypePresetDropdown> {
   final _presets = getFuelTypePresets();
+
+  // FuelTypePresetDropdown({Key? key, required this.onChanged}) : super(key: key);
 
   @override
   void initState() {

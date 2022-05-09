@@ -105,7 +105,7 @@ class BasicResults extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color intensityClassColor = getIntensityClassColor(intensityClass);
-    Color intensityTextColor = getTextColor(prediction.FD);
+    Color intensityTextColor = getIntensityClassTextColor(intensityClass);
     return Container(
         decoration: BoxDecoration(
             border: Border.all(color: intensityClassColor),

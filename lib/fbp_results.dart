@@ -187,7 +187,6 @@ class ResultsState extends State<ResultsStateWidget> {
 
   @override
   Widget build(BuildContext context) {
-    Color intensityTextColor = getTextColor(widget.prediction.FD);
     // Need to have a bunch of panels:
     // https://api.flutter.dev/flutter/material/ExpansionPanelList-class.html
     return Container(
@@ -213,7 +212,7 @@ class ResultsState extends State<ResultsStateWidget> {
                             Text(group.heading,
                                 style: TextStyle(
                                     fontSize: fontSize,
-                                    color: intensityTextColor,
+                                    color: widget.intensityClassTextColor,
                                     fontWeight: FontWeight.bold)),
                             const Spacer()
                           ],
@@ -242,6 +241,7 @@ class ResultsStateWidget extends StatefulWidget {
   final FireBehaviourPredictionInput input;
   final int intensityClass;
   final Color intensityClassColour;
+  final Color intensityClassTextColor;
   final double minutes;
   final double? fireSize;
 
@@ -252,6 +252,7 @@ class ResultsStateWidget extends StatefulWidget {
       required this.input,
       required this.intensityClass,
       required this.intensityClassColour,
+      required this.intensityClassTextColor,
       Key? key})
       : super(key: key);
 
