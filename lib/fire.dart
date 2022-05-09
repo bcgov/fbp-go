@@ -200,12 +200,22 @@ String getFireDescription(String FD) {
     case ("I"):
       return "Intermittent Crowning";
     case ("C"):
-      return "Continous Crowning";
+      return "Continuous Crowning";
     case ("S"):
       return "Surface";
     default:
       throw Exception("Invalid Fire Description $FD");
   }
+}
+
+double calculateApproxFlameLength(double headFireIntensity) {
+  /*
+    Returns an approximation of flame length (in meters).
+    Formula used is a field-use approximation of
+    L = (I / 300)^(1/2), where L is flame length in m and I is Fire Intensity
+    in kW/m
+    */
+  return sqrt(headFireIntensity / 300.0);
 }
 
 String getFireType(String fuelType, double crownFractionBurned) {

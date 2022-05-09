@@ -19,7 +19,6 @@ import 'package:flutter/material.dart';
 
 import 'cffdrs/fbp_calc.dart';
 import 'fire.dart';
-import 'fire_widgets.dart';
 import 'global.dart';
 
 String formatNumber(double? number, {int digits = 2}) {
@@ -49,8 +48,11 @@ abstract class Group {
     ]);
   }
 
-  Widget buildBody(FireBehaviourPredictionInput input,
-      FireBehaviourPredictionPrimary prediction, double minutes);
+  Widget buildBody(
+      FireBehaviourPredictionInput input,
+      FireBehaviourPredictionPrimary prediction,
+      double minutes,
+      double surfaceFlameLength);
 
   Container buildContainer(List<Widget> children) {
     return Container(color: Colors.white, child: Column(children: children));
@@ -62,8 +64,11 @@ class SecondaryFireBehaviourGroup extends Group {
       : super(heading: heading);
 
   @override
-  Widget buildBody(FireBehaviourPredictionInput input,
-      FireBehaviourPredictionPrimary prediction, double minutes) {
+  Widget buildBody(
+      FireBehaviourPredictionInput input,
+      FireBehaviourPredictionPrimary prediction,
+      double minutes,
+      double surfaceFlameLength) {
     TextStyle textStyle = const TextStyle(color: Colors.black);
     return buildContainer([
       // Planned ignition
@@ -108,8 +113,11 @@ class PrimaryFireBehaviourGroup extends Group {
       : super(heading: heading, isExpanded: isExpanded);
 
   @override
-  Widget buildBody(FireBehaviourPredictionInput input,
-      FireBehaviourPredictionPrimary prediction, double minutes) {
+  Widget buildBody(
+      FireBehaviourPredictionInput input,
+      FireBehaviourPredictionPrimary prediction,
+      double minutes,
+      double surfaceFlameLength) {
     double? fireSize;
     if (prediction.secondary != null) {
       fireSize = getFireSize(
@@ -136,6 +144,8 @@ class PrimaryFireBehaviourGroup extends Group {
           'Rate of spread - Flank', textStyle.color),
       _buildRow('${((prediction.secondary!.BROS).toStringAsFixed(0))} (m/min)',
           'Rate of spread - Back', textStyle.color),
+      _buildRow('${surfaceFlameLength.toStringAsFixed(2)} (m)',
+          'Surface flame length', textStyle.color),
       _buildRow(((prediction.ISI).toStringAsFixed(0)),
           'Initial Spread Index (ISI)', textStyle.color),
       _buildRow(
@@ -218,8 +228,8 @@ class ResultsState extends State<ResultsStateWidget> {
                           ],
                         );
                       },
-                      body: group.buildBody(
-                          widget.input, widget.prediction, widget.minutes),
+                      body: group.buildBody(widget.input, widget.prediction,
+                          widget.minutes, widget.surfaceFlameLength),
                       isExpanded: group.isExpanded);
                 }).toList()),
             Container(
@@ -244,6 +254,7 @@ class ResultsStateWidget extends StatefulWidget {
   final Color intensityClassTextColor;
   final double minutes;
   final double? fireSize;
+  final double surfaceFlameLength;
 
   const ResultsStateWidget(
       {required this.prediction,
@@ -253,6 +264,7 @@ class ResultsStateWidget extends StatefulWidget {
       required this.intensityClass,
       required this.intensityClassColour,
       required this.intensityClassTextColor,
+      required this.surfaceFlameLength,
       Key? key})
       : super(key: key);
 

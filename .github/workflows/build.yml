@@ -9,19 +9,17 @@ on:
 
 jobs:
   build:
-    name: Build ${{ matrix.target }}
+    name: Build macos-latest
     runs-on: macos-latest
     strategy:
       fail-fast: false
-      matrix:
-        target: ["apk", "appbundle", "ios --release --no-codesign", web]
     steps:
       # Set up Flutter.      
-      - name: Install OpenJDK
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'zulu'
-          java-version: '11'
+      # - name: Install OpenJDK
+      #   uses: actions/setup-java@v3
+      #   with:
+      #     distribution: 'zulu'
+      #     java-version: '11'
       - name: Get latest stable version of Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -32,8 +30,11 @@ jobs:
       - run: flutter --version
       - run: flutter config --enable-macos-desktop
       - run: flutter doctor -v
-      # Checkout gallery code and get packages.
       - name: Checkout code
         uses: actions/checkout@v3
       - run: flutter pub get -v
-      - run: flutter build ${{ matrix.target }}
+      - run: flutter test
+      - run: flutter build web
+      - run: flutter build ios --release --no-codesign
+      # - run: flutter build apk
+      # - run: flutter build appbundle      

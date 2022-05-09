@@ -31,10 +31,12 @@ class BasicResults extends StatelessWidget {
   final int intensityClass;
   final double minutes;
   final double? fireSize;
+  final double surfaceFlameLength;
   BasicResults(
       {required this.prediction,
       required this.minutes,
       required this.fireSize,
+      required this.surfaceFlameLength,
       Key? key})
       : intensityClass = getHeadFireIntensityClass(prediction.HFI),
         super(key: key);
@@ -81,14 +83,16 @@ class BasicResults extends StatelessWidget {
       // ISI
       buildRow(prediction.ISI.toStringAsFixed(0), 'Initial spread index (ISI)',
           textStyle.color),
-      // Surface flame length (TBD!)
+      // Surface flame length
+      buildRow('${surfaceFlameLength.toStringAsFixed(2)} (m)',
+          'Surface flame length', textStyle.color),
       // Intensity class
       buildRow('$intensityClass', 'Intensity class', textStyle.color),
       // HFI
       buildRow('${prediction.HFI.toStringAsFixed(0)} (kW/m)',
           'Head fire intensity (HFI)', textStyle.color),
       // 60 minute fire size
-      buildRow('${fireSize?.toStringAsFixed(0)} (ha)',
+      buildRow('${fireSize?.toStringAsFixed(1)} (ha)',
           '${minutes.toStringAsFixed(0)} minute fire size', textStyle.color),
     ];
 
@@ -185,6 +189,7 @@ class BasicFireBehaviourPredictionFormState
             prediction.CFB,
             prediction.secondary!.LB);
       }
+      double surfaceFlameLength = calculateApproxFlameLength(prediction.HFI);
 
       return Column(
         children: <Widget>[
@@ -210,7 +215,10 @@ class BasicFireBehaviourPredictionFormState
             ],
           ),
           BasicResults(
-              prediction: prediction, minutes: minutes, fireSize: fireSize)
+              prediction: prediction,
+              minutes: minutes,
+              fireSize: fireSize,
+              surfaceFlameLength: surfaceFlameLength)
         ],
       );
     } catch (e) {

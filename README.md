@@ -154,7 +154,7 @@ similar.
 
 ### v1.0.4
 
-- [ ] Flame length
+- [x] Flame length
 - [x] White text on dark and red
 - [x] "Fire Behaviour Outputs" in Basic heading.
 - [x] Basic: Style sliders to match color of results.
@@ -165,6 +165,7 @@ similar.
 - [x] Basic+Advanced: Change "Crowning" to "Continuous Crowning".
 - [x] Basic+Advanced: Changed fire intensity colour palette.
 - [ ] Started putting in place github workflows.
+- [x] 60 minute fire size change from 0 to 1 decimal places.
 
 ### v1.0.3
 
