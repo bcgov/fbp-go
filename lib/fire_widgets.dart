@@ -45,38 +45,16 @@ Color getIntensityClassColor(int intensityClass) {
   }
 }
 
-Color getIntensityClassTextColor(int intensityClass) {
-  switch (intensityClass) {
-    case 1:
-    case 2:
+Color getTextColor(String FD) {
+  switch (FD) {
+    case ("C"):
       return Colors.white;
-    case 6:
-      return Colors.white;
-    default:
-      return Colors.black;
   }
-}
-
-// ignore: non_constant_identifier_names
-TextStyle getTextStyle(String FD) {
-  return const TextStyle(color: Colors.black);
-  // if we want to match the red book, we'd be doing white on red
-  // switch (FD) {
-  //   case ("I"): // I = Intermittent Crowning
-  //     return const TextStyle(color: Colors.black);
-  //   case ("S"): // S = Surface
-  //     return const TextStyle(color: Colors.black);
-  //   case ("C"): // C = Crowning
-  //     return const TextStyle(color: Colors.white);
-  //   default:
-  //     throw Exception('Invalid Fire Description');
-  // }
+  return Colors.black;
 }
 
 class FuelTypePresetDropdownState extends State<FuelTypePresetDropdown> {
   final _presets = getFuelTypePresets();
-
-  // FuelTypePresetDropdown({Key? key, required this.onChanged}) : super(key: key);
 
   @override
   void initState() {

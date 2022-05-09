@@ -56,8 +56,10 @@ class BasicResults extends StatelessWidget {
 
   List<Widget> buildRows(TextStyle textStyle, Color intensityClassColor,
       Color intensityClassTextColor) {
-    TextStyle labelStyle = const TextStyle(
-        fontSize: fontSize, color: Colors.black, fontWeight: FontWeight.bold);
+    TextStyle labelStyle = TextStyle(
+        fontSize: fontSize,
+        color: intensityClassTextColor,
+        fontWeight: FontWeight.bold);
     List<Widget> rows = [
       Container(
           color: intensityClassColor,
@@ -103,13 +105,13 @@ class BasicResults extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color intensityClassColor = getIntensityClassColor(intensityClass);
-    Color intensityTextColor = getIntensityClassTextColor(intensityClass);
+    Color intensityTextColor = getTextColor(prediction.FD);
     return Container(
         decoration: BoxDecoration(
             border: Border.all(color: intensityClassColor),
             borderRadius: const BorderRadius.all(Radius.circular(5))),
         child: Column(
-            children: buildRows(getTextStyle(prediction.FD),
+            children: buildRows(const TextStyle(color: Colors.black),
                 intensityClassColor, intensityTextColor)));
   }
 }

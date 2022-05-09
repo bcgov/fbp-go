@@ -64,7 +64,7 @@ class SecondaryFireBehaviourGroup extends Group {
   @override
   Widget buildBody(FireBehaviourPredictionInput input,
       FireBehaviourPredictionPrimary prediction, double minutes) {
-    TextStyle textStyle = getTextStyle(prediction.FD);
+    TextStyle textStyle = const TextStyle(color: Colors.black);
     return buildContainer([
       // Planned ignition
       _buildRow('${(prediction.SFC).toStringAsFixed(0)} (kg/\u33A1)',
@@ -120,7 +120,7 @@ class PrimaryFireBehaviourGroup extends Group {
           prediction.CFB,
           prediction.secondary!.LB);
     }
-    TextStyle textStyle = getTextStyle(prediction.FD);
+    TextStyle textStyle = const TextStyle(color: Colors.black);
     return buildContainer([
       _buildRow(
           getFireDescription(prediction.FD), 'Fire type', textStyle.color),
@@ -187,7 +187,7 @@ class ResultsState extends State<ResultsStateWidget> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle = getTextStyle(widget.prediction.FD);
+    Color intensityTextColor = getTextColor(widget.prediction.FD);
     // Need to have a bunch of panels:
     // https://api.flutter.dev/flutter/material/ExpansionPanelList-class.html
     return Container(
@@ -211,8 +211,9 @@ class ResultsState extends State<ResultsStateWidget> {
                           children: [
                             const Spacer(),
                             Text(group.heading,
-                                style: const TextStyle(
+                                style: TextStyle(
                                     fontSize: fontSize,
+                                    color: intensityTextColor,
                                     fontWeight: FontWeight.bold)),
                             const Spacer()
                           ],
