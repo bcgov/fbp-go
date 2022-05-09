@@ -22,6 +22,13 @@ import 'fire.dart';
 import 'fire_widgets.dart';
 import 'global.dart';
 
+String formatNumber(double? number, {int digits = 2}) {
+  if (number == null) {
+    return '';
+  }
+  return number.toStringAsFixed(digits);
+}
+
 abstract class Group {
   Group({required this.heading, this.isExpanded = false});
   String heading;
@@ -82,23 +89,16 @@ class SecondaryFireBehaviourGroup extends Group {
           'Net effective wind direction',
           textStyle.color),
       // Spread distance
-      _buildRow('${prediction.secondary?.RSO.toStringAsFixed(0)} m/min',
+      _buildRow('${formatNumber(prediction.secondary?.RSO)} m/min',
           'Surface fire rate of spread', textStyle.color),
-      _buildRow('${prediction.secondary?.LB.toStringAsFixed(0)}',
+      _buildRow(formatNumber(prediction.secondary?.LB),
           'Length to breadth ratio', textStyle.color),
-      _buildRow('${prediction.secondary?.DH.toStringAsFixed(0)}',
+      _buildRow(formatNumber(prediction.secondary?.DH),
           'Fire spread distance - head', textStyle.color),
-      _buildRow('${prediction.secondary?.DB.toStringAsFixed(0)}',
+      _buildRow(formatNumber(prediction.secondary?.DB),
           'Fire spread distance - flank', textStyle.color),
-      _buildRow('${prediction.secondary?.DF.toStringAsFixed(0)}',
+      _buildRow(formatNumber(prediction.secondary?.DF),
           'Fire spread distance - back', textStyle.color),
-
-      //     _buildRow('${((prediction.ROS).toStringAsFixed(0))} (m/min)',
-      //     'Rate of spread', textStyle.color),
-      // _buildRow('${((prediction.secondary!.FROS).toStringAsFixed(0))} (m/min)',
-      //     'Rate of spread - Flank', textStyle.color),
-      // _buildRow('${((prediction.secondary!.BROS).toStringAsFixed(0))} (m/min)',
-      //     'Rate of spread - Back', textStyle.color),
     ]);
   }
 }
@@ -221,84 +221,18 @@ class ResultsState extends State<ResultsStateWidget> {
                       body: group.buildBody(
                           widget.input, widget.prediction, widget.minutes),
                       isExpanded: group.isExpanded);
-                }).toList()
-                //  [
-                //   ExpansionPanel(
-                //       headerBuilder: (BuildContext context, bool isExpanded) {
-                //         return Row(
-                //           children: [
-                //             const Spacer(),
-                //             Text(_groups[0].heading),
-                //             const Spacer()
-                //           ],
-                //         );
-                //       },
-                //       body: buildRow('${widget.input.CFL} (kg/m^2)',
-                //           'Crown Fuel Load', textStyle.color),
-                //       isExpanded: _groups[0].isExpanded),
-                // ExpansionPanel(
-                //     headerBuilder: (BuildContext context, bool isExpanded) {
-                //       return Row(
-                //         children: [
-                //           const Spacer(),
-                //           Text(_groups[1].heading),
-                //           const Spacer()
-                //         ],
-                //       );
-                //     },
-                //     body: buildRow('${widget.input.CFL} (kg/m^2)',
-                //         'Crown Fuel Load', textStyle.color),
-                //     isExpanded: _groups[1].isExpanded)
-                // ],
-                ),
+                }).toList()),
             Container(
                 color: widget.intensityClassColour,
                 child: Row(
                   children: const [Text('')],
                 )),
-            buildRow('${widget.input.CFL} (kg/m^2)', 'Crown Fuel Load',
-                textStyle.color),
-            buildRow('${widget.input.CBH} (m)', 'Crown to base height',
-                textStyle.color),
-            ...getPrimaryTextRow(widget.prediction, textStyle),
-            buildRow(
-                '$widget.intensityClass', 'Intensity class', textStyle.color),
-            buildRow(
-                '${widget.fireSize?.toStringAsFixed(0)} (ha)',
-                '${widget.minutes.toStringAsFixed(0)} minute fire size',
-                textStyle.color),
-            ...getSecondaryTextRow(widget.prediction, textStyle),
+            // buildRow('${widget.input.CFL} (kg/m^2)', 'Crown Fuel Load',
+            //     textStyle.color),
+            // buildRow('${widget.input.CBH} (m)', 'Crown to base height',
+            //     textStyle.color)
           ],
         ));
-  }
-
-  List<Row> getPrimaryTextRow(
-      FireBehaviourPredictionPrimary? prediction, TextStyle textStyle) {
-    List<Row> rows = <Row>[];
-    if (prediction != null) {
-      for (var key in prediction.lookup.keys) {
-        ValueDescriptionPair value = prediction.getProp(key);
-        rows.add(
-            buildRow(value.toString(), value.description, textStyle.color));
-      }
-    }
-    return rows;
-  }
-
-  List<Row> getSecondaryTextRow(
-      FireBehaviourPredictionPrimary? prediction, TextStyle textStyle) {
-    List<Row> rows = <Row>[];
-    if (prediction != null) {
-      var secondary = prediction.secondary;
-      if (secondary != null) {
-        for (var key in secondary.lookup.keys) {
-          ValueDescriptionPair value = secondary.getProp(key);
-          rows.add(
-              buildRow(value.toString(), value.description, textStyle.color));
-        }
-      }
-    }
-    return rows;
   }
 }
 
