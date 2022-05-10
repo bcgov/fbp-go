@@ -19,7 +19,9 @@
         "TCFB",
         "TROS",
         "TTFC",
-        "monospace"
+        "monospace",
+        "colors",
+        "color"
     ],
     "cSpell.language": "en-GB"
 }
