@@ -19,12 +19,21 @@ import 'package:fire_behaviour_app/global.dart';
 import 'fire.dart';
 import 'package:flutter/material.dart';
 
-const Color intensityClass1 = Color(0xFF707070);
-const Color intensityClass2 = Color(0xFF8C8C8C);
-const Color intensityClass3 = Color(0xFFBFBFBF);
-const Color intensityClass4 = Color(0xFFE5C5C2);
-const Color intensityClass5 = Color(0xFFE5A099);
-const Color intensityClass6 = Color(0xFFFA0000);
+// RED BOOK - I think:
+// const Color intensityClass1 = Color(0xFF707070);
+// const Color intensityClass2 = Color(0xFF8C8C8C);
+// const Color intensityClass3 = Color(0xFFBFBFBF);
+// const Color intensityClass4 = Color(0xFFE5C5C2);
+// const Color intensityClass5 = Color(0xFFE5A099);
+// const Color intensityClass6 = Color(0xFFFA0000);
+
+// Proposal:
+const Color intensityClass6 = Color(0xFFBE0000);
+const Color intensityClass5 = Color(0xFFFA0000);
+const Color intensityClass4 = Color(0xFFFF5935);
+const Color intensityClass3 = Color(0xFFFF7A5C);
+const Color intensityClass2 = Color(0xFFFFAB8A);
+const Color intensityClass1 = Color(0xFFBFBFBF);
 
 Color getIntensityClassColor(int intensityClass) {
   switch (intensityClass) {
@@ -47,9 +56,6 @@ Color getIntensityClassColor(int intensityClass) {
 
 Color getIntensityClassTextColor(int intensityClass) {
   switch (intensityClass) {
-    case 1:
-    case 2:
-      return Colors.white;
     case 6:
       return Colors.white;
     default:
