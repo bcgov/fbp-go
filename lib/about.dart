@@ -15,6 +15,7 @@ A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with 
 FBP Go. If not, see <https://www.gnu.org/licenses/>.
 */
+import 'dart:io' show Platform;
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -64,10 +65,14 @@ class AboutPageState extends State<AboutPage> {
           style: TextStyle(fontWeight: FontWeight.bold)),
       TextSpan(
           text: licenseText,
-          style: const TextStyle(
-              fontFamily: "monospace",
-              fontSize: 11,
-              fontFeatures: [FontFeature.tabularFigures()])),
+          style: TextStyle(
+              // On iOS "Courier" gives us a mono spaced font.
+              fontFamily: Platform.isIOS ? "Courier" : "monospace",
+              // Not the best idea, but I think iOS phones have slightly
+              // smaller screens? Really need a better way to handle the
+              // license.
+              fontSize: Platform.isIOS ? 9 : 11,
+              fontFeatures: const [FontFeature.tabularFigures()])),
     ]));
     // return Text('about');
   }
