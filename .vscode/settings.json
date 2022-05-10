@@ -8,6 +8,8 @@
         "BTFC",
         "BUIEFF",
         "Buildup",
+        "color",
+        "colors",
         "CRAN",
         "DISTtcalc",
         "FCFB",
@@ -15,13 +17,12 @@
         "FTFC",
         "FUELTYPE",
         "LBtcalc",
+        "monospace",
         "Parisien",
+        "subosito",
         "TCFB",
         "TROS",
-        "TTFC",
-        "monospace",
-        "colors",
-        "color"
+        "TTFC"
     ],
     "cSpell.language": "en-GB"
 }
