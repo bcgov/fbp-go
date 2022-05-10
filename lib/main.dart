@@ -113,6 +113,13 @@ class HomePageState extends State<HomePage> {
                 child: Column(
                   children: const [BasicFireBehaviourPredictionForm()],
                 )));
+      // child: Theme(
+      //     data: Theme.of(context).copyWith(
+      //         textTheme: TextTheme(
+      //             bodyText1: TextStyle(color: Colors.green))),
+      //     child: Column(
+      //       children: [BasicFireBehaviourPredictionForm()],
+      //     ))));
       case (Section.advanced):
         return Center(
             child: SingleChildScrollView(

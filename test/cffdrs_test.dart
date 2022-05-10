@@ -85,14 +85,14 @@ FireBehaviourPredictionPrimary loadOutput(dynamic outputJson) {
 
 double roundDouble(double value) {
   /*Hypothesis A: R has a slightly different way of doing floating point
-  calculations resulting in minor differences in the output. We're unlinkely
+  calculations resulting in minor differences in the output. We're unlikely
   to care about anything beyond 2 decimal places.
   Hypothesis B: There's a mistake in the translation, some detail in operation
   order or some such which is causing slightly different results.
   */
   const int places = 5; // 5 decimal places isn't too bad.
   var mod = pow(10.0, places);
-  return ((value * mod).round().toDouble() / mod);
+  return (value * mod).round().toDouble() / mod;
 }
 
 void main() {
@@ -269,7 +269,8 @@ void main() {
               reason: 'FCFB $i');
           expect(resultSecondary.BCFB, expectedSecondary.BCFB,
               reason: 'BCFB $i');
-          expect(resultSecondary.TCFB, expectedSecondary.TCFB,
+          expect(roundDouble(resultSecondary.TCFB),
+              roundDouble(expectedSecondary.TCFB),
               reason: 'TCFB $i');
           expect(roundDouble(resultSecondary.FTFC),
               roundDouble(expectedSecondary.FTFC),

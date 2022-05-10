@@ -19,86 +19,276 @@ import 'package:flutter/material.dart';
 
 import 'cffdrs/fbp_calc.dart';
 import 'fire.dart';
-import 'fire_widgets.dart';
+import 'global.dart';
 
-class Results extends StatelessWidget {
-  final FireBehaviourPredictionPrimary prediction;
-  final int intensityClass;
-  final double minutes;
-  final double? fireSize;
-  Results(
-      {required this.prediction,
-      required this.minutes,
-      required this.fireSize,
-      Key? key})
-      : intensityClass = getHeadFireIntensityClass(prediction.HFI),
-        super(key: key);
+String formatNumber(double? number, {int digits = 2}) {
+  if (number == null) {
+    return '';
+  }
+  return number.toStringAsFixed(digits);
+}
+
+abstract class Group {
+  Group({required this.heading, this.isExpanded = false});
+  String heading;
+  bool isExpanded;
+
+  Row _buildRow(String value, String label, Color? color,
+      {int valueFlex = 5, int labelFlex = 6}) {
+    TextStyle valueStyle = TextStyle(
+        color: color, fontWeight: FontWeight.bold, fontSize: fontSize);
+    TextStyle labelStyle = TextStyle(color: color, fontSize: fontSize);
+    return Row(children: [
+      Expanded(
+          flex: valueFlex,
+          child: Padding(
+              padding: const EdgeInsets.only(right: 5.0),
+              child:
+                  Text(value, textAlign: TextAlign.right, style: valueStyle))),
+      Expanded(flex: labelFlex, child: Text(label, style: labelStyle)),
+    ]);
+  }
+
+  Widget buildBody(
+      FireBehaviourPredictionInput input,
+      FireBehaviourPredictionPrimary prediction,
+      double minutes,
+      num surfaceFlameLength);
+
+  Container buildContainer(List<Widget> children) {
+    return Container(color: Colors.white, child: Column(children: children));
+  }
+}
+
+class SecondaryFireBehaviourGroup extends Group {
+  SecondaryFireBehaviourGroup({required String heading})
+      : super(heading: heading);
+
+  @override
+  Widget buildBody(
+      FireBehaviourPredictionInput input,
+      FireBehaviourPredictionPrimary prediction,
+      double minutes,
+      num surfaceFlameLength) {
+    TextStyle textStyle = const TextStyle(color: Colors.black);
+    const valueFlex = 4;
+    return buildContainer([
+      // Planned ignition
+      _buildRow('${(prediction.SFC).toStringAsFixed(0)} (kg/\u33A1)',
+          'Surface fuel consumption', textStyle.color,
+          valueFlex: valueFlex),
+      _buildRow('${(prediction.CFC).toStringAsFixed(0)} (kg/\u33A1)',
+          'Crown fuel consumption', textStyle.color,
+          valueFlex: valueFlex),
+      _buildRow('${(prediction.TFC).toStringAsFixed(0)} (kg/\u33A1)',
+          'Total fuel consumption', textStyle.color,
+          valueFlex: valueFlex),
+      _buildRow(
+          '${(prediction.secondary?.FTFC)?.toStringAsFixed(0)} (kg/\u33A1)',
+          'Total fuel consumption - flank',
+          textStyle.color,
+          valueFlex: valueFlex),
+      _buildRow(
+          '${(prediction.secondary?.BTFC)?.toStringAsFixed(0)} (kg/\u33A1)',
+          'Total fuel consumption - back',
+          textStyle.color,
+          valueFlex: valueFlex),
+      // Fire growth potential
+      _buildRow('${prediction.WSV.toStringAsFixed(0)} (km/h)',
+          'Net effective wind speed', textStyle.color,
+          valueFlex: valueFlex),
+      _buildRow(
+          '${degreesToCompassPoint(prediction.RAZ)} ${prediction.RAZ.toStringAsFixed(1)}\u00B0',
+          'Net effective wind direction',
+          textStyle.color,
+          valueFlex: valueFlex),
+      // Spread distance
+      _buildRow('${formatNumber(prediction.secondary?.RSO)} m/min',
+          'Surface fire rate of spread', textStyle.color,
+          valueFlex: valueFlex),
+      _buildRow(formatNumber(prediction.secondary?.LB),
+          'Length to breadth ratio', textStyle.color,
+          valueFlex: valueFlex),
+      _buildRow(formatNumber(prediction.secondary?.DH),
+          'Fire spread distance - head', textStyle.color,
+          valueFlex: valueFlex),
+      _buildRow(formatNumber(prediction.secondary?.DB),
+          'Fire spread distance - flank', textStyle.color,
+          valueFlex: valueFlex),
+      _buildRow(formatNumber(prediction.secondary?.DF),
+          'Fire spread distance - back', textStyle.color,
+          valueFlex: valueFlex),
+    ]);
+  }
+}
+
+class PrimaryFireBehaviourGroup extends Group {
+  PrimaryFireBehaviourGroup({required String heading, isExpanded = false})
+      : super(heading: heading, isExpanded: isExpanded);
+
+  @override
+  Widget buildBody(
+      FireBehaviourPredictionInput input,
+      FireBehaviourPredictionPrimary prediction,
+      double minutes,
+      num surfaceFlameLength) {
+    double? fireSize;
+    if (prediction.secondary != null) {
+      fireSize = getFireSize(
+          input.FUELTYPE,
+          prediction.ROS,
+          prediction.secondary!.BROS,
+          minutes,
+          prediction.CFB,
+          prediction.secondary!.LB);
+    }
+    TextStyle textStyle = const TextStyle(color: Colors.black);
+    return buildContainer([
+      _buildRow(
+          getFireDescription(prediction.FD), 'Fire type', textStyle.color),
+      _buildRow('${((prediction.CFB * 100).toStringAsFixed(0))}%',
+          'Crown fraction burned', textStyle.color),
+      _buildRow('${((prediction.secondary!.FCFB * 100).toStringAsFixed(0))}%',
+          'Crown fraction burned - Flank', textStyle.color),
+      _buildRow('${((prediction.secondary!.BCFB * 100).toStringAsFixed(0))}%',
+          'Crown fraction burned - Back', textStyle.color),
+      _buildRow('${((prediction.ROS).toStringAsFixed(0))} (m/min)',
+          'Rate of spread', textStyle.color),
+      _buildRow('${((prediction.secondary!.FROS).toStringAsFixed(0))} (m/min)',
+          'Rate of spread - Flank', textStyle.color),
+      _buildRow('${((prediction.secondary!.BROS).toStringAsFixed(0))} (m/min)',
+          'Rate of spread - Back', textStyle.color),
+      _buildRow('${surfaceFlameLength.toStringAsFixed(2)} (m)',
+          'Surface flame length', textStyle.color),
+      _buildRow(((prediction.ISI).toStringAsFixed(0)),
+          'Initial Spread Index (ISI)', textStyle.color),
+      _buildRow(
+          ((getHeadFireIntensityClass(prediction.HFI)).toStringAsFixed(0)),
+          'Intensity class',
+          textStyle.color),
+      _buildRow('${((prediction.HFI).toStringAsFixed(0))} (kW/m)',
+          'Head fire intensity', textStyle.color),
+      _buildRow('${((prediction.secondary!.FFI).toStringAsFixed(0))} (kW/m)',
+          'Flank fire intensity', textStyle.color),
+      _buildRow('${((prediction.secondary!.BFI).toStringAsFixed(0))} (kW/m)',
+          'Back fire intensity', textStyle.color),
+      _buildRow('${fireSize?.toStringAsFixed(1)} (ha)',
+          '$minutes minute fire size', textStyle.color),
+      _buildRow(
+          '${degreesToCompassPoint(prediction.RAZ)} ${prediction.RAZ.toStringAsFixed(1)}\u00B0',
+          'Direction of spread',
+          textStyle.color),
+    ]);
+  }
+}
+
+List<Group> generateGroups() {
+  List<Group> groups = [
+    PrimaryFireBehaviourGroup(
+        heading: 'Primary Fire Behaviour Outputs', isExpanded: true),
+    SecondaryFireBehaviourGroup(heading: 'Secondary Fire Behaviour Outputs'),
+  ];
+  return groups;
+}
+
+class ResultsState extends State<ResultsStateWidget> {
+  final List<Group> _groups = generateGroups();
+
+  Row buildRow(String value, String label, Color? color) {
+    TextStyle valueStyle = TextStyle(
+        color: color, fontWeight: FontWeight.bold, fontSize: fontSize);
+    TextStyle labelStyle = TextStyle(color: color, fontSize: fontSize);
+    return Row(children: [
+      Expanded(
+          flex: 5,
+          child: Padding(
+              padding: const EdgeInsets.only(right: 5.0),
+              child:
+                  Text(value, textAlign: TextAlign.right, style: valueStyle))),
+      Expanded(flex: 6, child: Text(label, style: labelStyle)),
+    ]);
+  }
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle = getTextStyle(prediction.FD);
+    // Need to have a bunch of panels:
+    // https://api.flutter.dev/flutter/material/ExpansionPanelList-class.html
     return Container(
-        color: getIntensityClassColor(intensityClass),
+        // color: intensityClassColour,
+        decoration: BoxDecoration(
+            border: Border.all(color: widget.intensityClassColour),
+            borderRadius: const BorderRadius.all(Radius.circular(5))),
         child: Column(
           children: [
-            ...getPrimaryTextRow(prediction, textStyle),
-            Row(children: [
-              Expanded(
-                  child: Text(
-                'Intensity class',
-                style: textStyle,
-              )),
-              Expanded(child: Text('$intensityClass', style: textStyle)),
-            ]),
-            Row(children: [
-              Expanded(
-                  child: Text('${minutes.toStringAsFixed(0)} minute fire size',
-                      style: textStyle)),
-              Expanded(
-                  child: Text(
-                '${fireSize?.toStringAsFixed(0)} (ha)',
-                style: textStyle,
-              ))
-            ]),
-            ...getSecondaryTextRow(prediction, textStyle),
+            ExpansionPanelList(
+                expandedHeaderPadding: const EdgeInsets.all(0),
+                expansionCallback: (int index, bool isExpanded) {
+                  setState(() {
+                    _groups[index].isExpanded = !isExpanded;
+                  });
+                  if (!isExpanded) {
+                    // this doesn't seem perfect - we're waiting delaying
+                    // by "kThemeAnimationDuration" (that's what
+                    // ExpansionPanelList is using) - and then trying
+                    // to make everything visible.
+                    Future.delayed(kThemeAnimationDuration).then((value) => {
+                          Scrollable.ensureVisible(context,
+                              duration: const Duration(milliseconds: 200))
+                        });
+                  }
+                },
+                children: _groups.map<ExpansionPanel>((Group group) {
+                  return ExpansionPanel(
+                      backgroundColor: widget.intensityClassColour,
+                      headerBuilder: (BuildContext context, bool isExpanded) {
+                        return Row(
+                          children: [
+                            // using spacers to centre text horizontally
+                            // const Spacer(),
+                            Padding(
+                              child: Text(group.heading,
+                                  style: TextStyle(
+                                      fontSize: fontSize,
+                                      color: widget.intensityClassTextColor,
+                                      fontWeight: FontWeight.bold)),
+                              padding: const EdgeInsets.only(left: 10),
+                            ),
+                            // const Spacer()
+                          ],
+                        );
+                      },
+                      body: group.buildBody(widget.input, widget.prediction,
+                          widget.minutes, widget.surfaceFlameLength),
+                      isExpanded: group.isExpanded,
+                      canTapOnHeader: true);
+                }).toList()),
           ],
         ));
   }
+}
 
-  List<Row> getPrimaryTextRow(
-      FireBehaviourPredictionPrimary? prediction, TextStyle textStyle) {
-    List<Row> rows = <Row>[];
-    if (prediction != null) {
-      for (var key in prediction.lookup.keys) {
-        ValueDescriptionPair value = prediction.getProp(key);
-        rows.add(Row(children: [
-          Expanded(child: Text(value.description, style: textStyle)),
-          Expanded(child: Text(value.toString(), style: textStyle))
-        ]));
-      }
-    }
-    return rows;
-  }
+class ResultsStateWidget extends StatefulWidget {
+  final FireBehaviourPredictionPrimary prediction;
+  final FireBehaviourPredictionInput input;
+  final int intensityClass;
+  final Color intensityClassColour;
+  final Color intensityClassTextColor;
+  final double minutes;
+  final double? fireSize;
+  final num surfaceFlameLength;
 
-  List<Row> getSecondaryTextRow(
-      FireBehaviourPredictionPrimary? prediction, TextStyle textStyle) {
-    List<Row> rows = <Row>[];
-    if (prediction != null) {
-      var secondary = prediction.secondary;
-      if (secondary != null) {
-        for (var key in secondary.lookup.keys) {
-          ValueDescriptionPair value = secondary.getProp(key);
-          rows.add(Row(children: [
-            Expanded(
-                child: Text(
-              value.description,
-              style: textStyle,
-            )),
-            Expanded(child: Text(value.toString(), style: textStyle))
-          ]));
-        }
-      }
-    }
-    return rows;
-  }
+  const ResultsStateWidget(
+      {required this.prediction,
+      required this.minutes,
+      required this.fireSize,
+      required this.input,
+      required this.intensityClass,
+      required this.intensityClassColour,
+      required this.intensityClassTextColor,
+      required this.surfaceFlameLength,
+      Key? key})
+      : super(key: key);
+
+  @override
+  State<ResultsStateWidget> createState() => ResultsState();
 }

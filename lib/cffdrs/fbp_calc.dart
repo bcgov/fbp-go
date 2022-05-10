@@ -124,7 +124,7 @@ class FireBehaviourPredictionInput {
   double LAT; // Latitude
   double LONG; // Longitude
   double ELV; // Elevation
-  int DJ; // Day of year (offeren referred to as julian date)
+  int DJ; // Day of year (often referred to as julian date)
   double? D0; // Date of minimum foliar moisture content.
   double? FMC; // Foliar moisture content will be calculated if not provided.
   double FFMC; // Fine Fuel Moisture Code
@@ -206,124 +206,43 @@ class FireBehaviourPredictionSecondary {
   double DH; // Fire spread distance head
   double DB; // Fire spread distance back
   double DF; // Fire spread distance flank
-  Map<String, ValueDescriptionPair> lookup;
 
   FireBehaviourPredictionSecondary(
-      {required this.SF,
-      required this.CSI,
+      {required this.SF, // not being displayed right now
+      required this.CSI, // not being displayed right now
       required this.RSO,
-      required this.BE,
+      required this.BE, // not being displayed right now
       required this.LB,
-      required this.LBt,
+      required this.LBt, // not being displayed right now
       required this.BROS,
       required this.FROS,
-      required this.TROS,
-      required this.BROSt,
-      required this.FROSt,
-      required this.TROSt,
+      required this.TROS, // not being displayed right now
+      required this.BROSt, // not being displayed right now
+      required this.FROSt, // not being displayed right now
+      required this.TROSt, // not being displayed right now
       required this.FCFB,
       required this.BCFB,
-      required this.TCFB,
+      required this.TCFB, // not being displayed right now
       required this.FTFC,
       required this.BTFC,
-      required this.TTFC,
-      required this.FFI,
+      required this.TTFC, // not being displayed right now
+      required this.FFI, // not being displayed right now
       required this.BFI,
       required this.TFI,
-      required this.HROSt,
-      required this.TI,
-      required this.FTI,
-      required this.BTI,
-      required this.TTI,
+      required this.HROSt, // not being displayed right now
+      required this.TI, // not being displayed right now
+      required this.FTI, // not being displayed right now
+      required this.BTI, // not being displayed right now
+      required this.TTI, // not being displayed right now
       required this.DH,
       required this.DB,
-      required this.DF,
-      this.lookup = const <String, ValueDescriptionPair>{}}) {
-    // We don't have reflection in dart (at least, not without serious
-    // consequence, so we have to painfully construct this lookup - which is
-    // fine, because we need the descriptions in somewhere anyway.
-    lookup = <String, ValueDescriptionPair>{
-      // 'SF': ValueDescriptionPair(() => SF, 'Spread Factor'),
-      'CSI': ValueDescriptionPair(() => CSI, 'Critical Surface Interval'),
-      'RSO': ValueDescriptionPair(() => RSO, 'Surface Fire Rate of Spread',
-          unit: 'm/min'),
-      'BE': ValueDescriptionPair(() => BE, 'Buildup Effect'),
-      'LB': ValueDescriptionPair(() => LB, 'Length to Breadth Ratio'),
-      // 'LBt': ValueDescriptionPair(() => LBt, 'Length to Breadth Ratio Time'),
-      'BROS': ValueDescriptionPair(() => BROS, 'Back Fire Rate of Spread',
-          unit: 'm/min'),
-      'FROS': ValueDescriptionPair(() => FROS, 'Flank Fire Rate of Spread'),
-      // 'TROS': ValueDescriptionPair(
-      //     () => TROS, 'Rate of Spread Towards Angle Theta'),
-      // 'BROSt': ValueDescriptionPair(
-      //     () => BROSt, 'Rate of Spread At Time T For Back'),
-      // 'FROSt': ValueDescriptionPair(
-      //     () => FROSt, 'Rate of Spread At Time T For Flank'),
-      // 'TROSt': ValueDescriptionPair(
-      //     () => TROSt, 'Rate of Spread Towards Angle Theta At Time T'),
-      'FCFB':
-          ValueDescriptionPair(() => FCFB, 'Crown Fraction Burned For Flank'),
-      'BCFB':
-          ValueDescriptionPair(() => BCFB, 'Crown Fraction Burned For Back'),
-      // 'TCFB': ValueDescriptionPair(
-      //     () => TCFB, 'Crown Fraction Burned At Angle Theta'),
-      'FTFC': ValueDescriptionPair(
-          () => FTFC, 'Total Fuel Consumption For The Flank'),
-      'BTFC': ValueDescriptionPair(
-          () => BTFC, 'Total Fuel Consumption For The Back'),
-      // 'TTFC': ValueDescriptionPair(
-      //     () => TTFC, 'Total Fuel Consumption At Angle Theta'),
-      'FFI': ValueDescriptionPair(() => FFI, 'Fire Intensity At The Flank'),
-      'BFI': ValueDescriptionPair(() => BFI, 'Fire Intensity At The Back'),
-      // 'TFI': ValueDescriptionPair(() => TFI, 'Fire Intensity At Angle Theta'),
-      // 'HROSt': ValueDescriptionPair(
-      //     () => HROSt, 'Rate of Spread At Time T For Head'),
-      'TI': ValueDescriptionPair(
-          () => TI, 'Elapsed Time to Crown Fire Initiation for Head'),
-      'FTI': ValueDescriptionPair(
-          () => FTI, 'Elapsed Time to Crown Fire Initiation for Flank'),
-      'BTI': ValueDescriptionPair(
-          () => BTI, 'Elapsed Time to Crown Fire Initiation for Back'),
-      // 'TTI': ValueDescriptionPair(
-      //     () => TTI, 'Elapsed Time to Crown Fire Initiation for theta'),
-      'DH': ValueDescriptionPair(() => DH, 'Fire Spread Distance Head'),
-      'DB': ValueDescriptionPair(() => DB, 'Fire Spread Distance Back'),
-      'DF': ValueDescriptionPair(() => DF, 'Fire Spread Distance Flank'),
-    };
-
-    // @override
-    // String toString() {
-    //   return 'SF: $SF, CSI: $CSI, RSO: $RSO, BE: $BE, LB: $LB, LBt: $LBt, '
-    //       'BROS: $BROS, FROS: $FROS, TROS: $TROS, BROSt: $BROSt, '
-    //       'FROSt: $FROSt, TROSt: $TROSt, FCFB: $FCFB, BCFB: $BCFB, '
-    //       'TCFB: $TCFB, FTFC: $FTFC, BTFC: $BTFC, TTFC: $TTFC, FFI: $FFI, '
-    //       'BFI: $BFI, TFI: $TFI, HROSt: $HROSt, TI: $TI, FTI: $FTI, '
-    //       'BTI: $BTI, TTI: $TTI, DH: $DH, DB: $DB, DF: $DF';
-    // }
-  }
-
-  ValueDescriptionPair getProp(String key) {
-    var result = lookup[key];
-    if (result == null) {
-      throw ArgumentError('Unknown key: $key');
-    }
-    return result;
-  }
-
-  @override
-  String toString() {
-    String result = 'Secondary Outputs:\n';
-    lookup.forEach((String key, ValueDescriptionPair pair) {
-      result += '${pair.description}: ${pair.toString()}\n';
-    });
-    return result;
-  }
+      required this.DF});
 }
 
 class FireBehaviourPredictionPrimary {
   double FMC; // Foliar Moisture Content
   double SFC; // Surface Fuel Consumption (kg/m^2)
-  double WSV; // net effective windspeed
+  double WSV; // net effective wind speed
   double RAZ; // net effective wind direction (RAZ)
   double ISI; // Initial Spread Index
   double ROS; // Rate of Spread
@@ -332,11 +251,10 @@ class FireBehaviourPredictionPrimary {
   double HFI; // Head Fire Intensity
   String FD; // Fire Type
   double CFC; // Crown Fuel Consumption
-  Map<String, ValueDescriptionPair> lookup;
 
   FireBehaviourPredictionSecondary? secondary;
   FireBehaviourPredictionPrimary(
-      {required this.FMC,
+      {required this.FMC, // not being displayed right now
       required this.SFC,
       required this.WSV,
       required this.RAZ,
@@ -347,53 +265,7 @@ class FireBehaviourPredictionPrimary {
       required this.HFI,
       required this.FD,
       required this.CFC,
-      this.secondary,
-      this.lookup = const <String, ValueDescriptionPair>{}}) {
-    lookup = <String, ValueDescriptionPair>{
-      'FMC': ValueDescriptionPair(() => FMC, 'Foliar Moisture Content'),
-      'SFC': ValueDescriptionPair(() => SFC, 'Surface Fuel Consumption',
-          unit: 'kg/m^2'),
-      'WSV': ValueDescriptionPair(() => WSV, 'Net effective windspeed',
-          unit: 'km/h'),
-      'RAZ': CompassValueDescriptionPair(
-          () => RAZ, 'Net effective wind direction'),
-      'ISI': ValueDescriptionPair(() => ISI, 'Initial Spread Index'),
-      'ROS': ValueDescriptionPair(() => ROS, 'Rate of Spread', unit: 'm/min'),
-      'CFB': PercentageValueDescriptionPair(() => CFB, 'Crown Fraction Burned',
-          unit: '%'),
-      'TFC': ValueDescriptionPair(() => TFC, 'Total Fuel Consumption',
-          unit: 'kg/m^2'),
-      'HFI':
-          ValueDescriptionPair(() => HFI, 'Head Fire Intensity', unit: 'kW/m'),
-      'FD': FireDescriptionValuePair(() => FD, 'Fire Type'),
-      'CFC': ValueDescriptionPair(() => CFC, 'Crown Fuel Consumption',
-          unit: 'kg/m^2'),
-    };
-  }
-
-  ValueDescriptionPair getProp(String key) {
-    var result = lookup[key];
-    if (result == null) {
-      throw ArgumentError('Unknown key: $key');
-    }
-    return result;
-  }
-
-  // @override
-  // String toString() {
-  //   return 'FMC: $FMC\n'
-  //       'SFC: $SFC\n'
-  //       'WSV: $WSV\n'
-  //       'RAZ: $RAZ\n'
-  //       'ISI: $ISI\n'
-  //       'ROS: $ROS\n'
-  //       'CFB: $CFB\n'
-  //       'TFC: $TFC\n'
-  //       'HFI: $HFI\n'
-  //       'FD: $FD\n'
-  //       'CFC: $CFC\n'
-  //       'Secondary: $secondary';
-  // }
+      this.secondary});
 }
 
 FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,

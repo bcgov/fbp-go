@@ -15,6 +15,8 @@ A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with 
 FBP Go. If not, see <https://www.gnu.org/licenses/>.
 */
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -33,7 +35,12 @@ class AboutPageState extends State<AboutPage> {
   void getLicenseText() {
     rootBundle.loadString('LICENSE').then((value) => {
           setState(() {
-            licenseText = value;
+            // licenseText = value;
+            licenseText = value
+                .replaceAll('\n\n', '\r')
+                .replaceAll('\n', ' ')
+                .replaceAll('\r', '\n\n')
+                .replaceAll('</br>', '\n');
           })
         });
   }
@@ -55,7 +62,12 @@ class AboutPageState extends State<AboutPage> {
       const TextSpan(
           text: '\n\nLicense\n\n',
           style: TextStyle(fontWeight: FontWeight.bold)),
-      TextSpan(text: licenseText),
+      TextSpan(
+          text: licenseText,
+          style: const TextStyle(
+              fontFamily: "monospace",
+              fontSize: 11,
+              fontFeatures: [FontFeature.tabularFigures()])),
     ]));
     // return Text('about');
   }
