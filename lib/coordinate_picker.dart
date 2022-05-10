@@ -155,7 +155,7 @@ class CoordinatePickerState extends State<CoordinatePicker> {
           decoration: const InputDecoration(
               labelText: "Elevation", labelStyle: textStyle),
           keyboardType: const TextInputType.numberWithOptions(
-              signed: false, decimal: false),
+              signed: true, decimal: true),
           onChanged: (value) {
             if (double.tryParse(value) != null) {
               var altitude = double.parse(value);

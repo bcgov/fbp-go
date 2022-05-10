@@ -244,7 +244,7 @@ class AdvancedFireBehaviourPredictionFormState
           prediction.secondary!.LB);
     }
     final surfaceFlameLength = calculateApproxFlameLength(prediction.HFI);
-    const sliderFlex = 10;
+    const sliderFlex = 9;
     final intensityClass = getHeadFireIntensityClass(prediction.HFI);
     final intensityClassColour = getIntensityClassColor(intensityClass);
     final intensityClassTextColour = getIntensityClassTextColor(intensityClass);

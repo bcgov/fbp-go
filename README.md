@@ -69,7 +69,7 @@ Head over to the play store - <https://play.google.com/console/developers>
 
 select app
 internal testing -> create new release -> upload
-relesases overview -> review it
+releases overview -> review it
 
 ### Build for iOS - on M1 silicon
 
@@ -177,7 +177,7 @@ similar.
 - [x] Tech: Automated testing in github workflow.
 - [x] Tech: Automated build (web + iOS) in github workflow.
 - [x] Basic+Advanced: 60 minute fire size change from 0 to 1 decimal places.
-- [x] Basic+Advanced: Modified elevation input keyboard type to match Lat/Long (except no decimal, no sign).
+- [x] Basic+Advanced: Modified elevation input keyboard type to match Lat/Long (we don't need decimal or sign, but that's the only way to get the apple keyboard to behave).
 - [x] Basic+Advanced: Rounding more inputs to 2 decimal places (or 0) for more consistent results.
 - [x] Basic+Advanced: Fix bug where negative elevation value could be entered and cause a crash.
 - [x] Disclaimer: Fixed spelling.

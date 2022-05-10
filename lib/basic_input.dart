@@ -114,7 +114,7 @@ class BasicInputState extends State<BasicInputWidget> {
 
   Expanded makeLabel(String heading, String value, String unitOfMeasure,
       TextStyle textStyle, TextStyle textStyleBold) {
-    const labelFlex = 4;
+    const labelFlex = 5;
     return Expanded(
         flex: labelFlex,
         child: Column(children: [

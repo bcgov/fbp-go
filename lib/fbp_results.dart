@@ -33,8 +33,9 @@ abstract class Group {
   String heading;
   bool isExpanded;
 
-  Row _buildRow(String value, String label, Color? color,
-      {int valueFlex = 5, int labelFlex = 6}) {
+  Row _buildRow(String value, String label, Color? color) {
+    const int valueFlex = 3;
+    const int labelFlex = 6;
     TextStyle valueStyle = TextStyle(
         color: color, fontWeight: FontWeight.bold, fontSize: fontSize);
     TextStyle labelStyle = TextStyle(color: color, fontSize: fontSize);
@@ -71,53 +72,41 @@ class SecondaryFireBehaviourGroup extends Group {
       double minutes,
       num surfaceFlameLength) {
     TextStyle textStyle = const TextStyle(color: Colors.black);
-    const valueFlex = 4;
+    const valueFlex = 3;
     return buildContainer([
       // Planned ignition
       _buildRow('${(prediction.SFC).toStringAsFixed(0)} (kg/\u33A1)',
-          'Surface fuel consumption', textStyle.color,
-          valueFlex: valueFlex),
+          'Surface fuel consumption', textStyle.color),
       _buildRow('${(prediction.CFC).toStringAsFixed(0)} (kg/\u33A1)',
-          'Crown fuel consumption', textStyle.color,
-          valueFlex: valueFlex),
+          'Crown fuel consumption', textStyle.color),
       _buildRow('${(prediction.TFC).toStringAsFixed(0)} (kg/\u33A1)',
-          'Total fuel consumption', textStyle.color,
-          valueFlex: valueFlex),
+          'Total fuel consumption', textStyle.color),
       _buildRow(
           '${(prediction.secondary?.FTFC)?.toStringAsFixed(0)} (kg/\u33A1)',
           'Total fuel consumption - flank',
-          textStyle.color,
-          valueFlex: valueFlex),
+          textStyle.color),
       _buildRow(
           '${(prediction.secondary?.BTFC)?.toStringAsFixed(0)} (kg/\u33A1)',
           'Total fuel consumption - back',
-          textStyle.color,
-          valueFlex: valueFlex),
+          textStyle.color),
       // Fire growth potential
       _buildRow('${prediction.WSV.toStringAsFixed(0)} (km/h)',
-          'Net effective wind speed', textStyle.color,
-          valueFlex: valueFlex),
+          'Net effective wind speed', textStyle.color),
       _buildRow(
           '${degreesToCompassPoint(prediction.RAZ)} ${prediction.RAZ.toStringAsFixed(1)}\u00B0',
           'Net effective wind direction',
-          textStyle.color,
-          valueFlex: valueFlex),
+          textStyle.color),
       // Spread distance
       _buildRow('${formatNumber(prediction.secondary?.RSO)} m/min',
-          'Surface fire rate of spread', textStyle.color,
-          valueFlex: valueFlex),
+          'Surface fire rate of spread', textStyle.color),
       _buildRow(formatNumber(prediction.secondary?.LB),
-          'Length to breadth ratio', textStyle.color,
-          valueFlex: valueFlex),
+          'Length to breadth ratio', textStyle.color),
       _buildRow(formatNumber(prediction.secondary?.DH),
-          'Fire spread distance - head', textStyle.color,
-          valueFlex: valueFlex),
+          'Fire spread distance - head', textStyle.color),
       _buildRow(formatNumber(prediction.secondary?.DB),
-          'Fire spread distance - flank', textStyle.color,
-          valueFlex: valueFlex),
+          'Fire spread distance - flank', textStyle.color),
       _buildRow(formatNumber(prediction.secondary?.DF),
-          'Fire spread distance - back', textStyle.color,
-          valueFlex: valueFlex),
+          'Fire spread distance - back', textStyle.color),
     ]);
   }
 }
