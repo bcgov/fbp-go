@@ -164,7 +164,7 @@ similar.
 - [ ] More spacing between each result, and space between heading and 1st result.
 - [ ] A bit more space between the last input item and the results. (e.g. space between curing and primary heading is different.)
 - [ ] What is the unit of measure for the fire spread.
-- [ ] Modal bug.
+- [ ] Modal bug. You can click anywhere on the screen, and that closes the modal.
 
 ### v1.0.4 (current)
 
