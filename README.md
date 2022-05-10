@@ -146,13 +146,20 @@ similar.
 - User feedback/request: can we have pre-sets based on task? (Future idea) You open the app, say what you’re doing (prescribed burn, small fire, big fire/incident action plan, no fire just out and about - this is not the actual list) Prescribed burning: I don’t need all this info, reduce the list of data (maybe I can still personalize?) I wouldn’t care about the consumption of the flank in this case, and I better not be causing a crown fire
 - From testing session: users report difficulty with the sliders in terms of precision - hard to get the exact number they want. Sometimes this is ok, sometimes it’s very bad. Either way, it’s frustrating. Users pointed out that in the field their hands will be sweaty and dirty. Some folks realized they could turn their phone to landscape mode and it was a bit better. User-feature request: in addition to the sliders, can we have + and - buttons There may be other ways, UX can collaborate
 - Dev task tech dept: passing font size around sucks. Apply themes.
-
 - Let's talk about dead balsam fir and conifer and grass fuel load being affected by fuel type. (fuel load parameters)
 - Grass fuel should be a slider.
+- " It would also be nice if the values I enter in the basic tab would transfer over to the advanced tab, right now it seems to default to C2 for fuel type."
+- " Would be nice to decrease the sensitivity of some of the sliders. Hot dog fingers make it hard to hone in"
+- "If it’s possible to connect the “my location” button to the wildfire one portal to automatically input the local indicies from the closest weather station/stations that would be a cool feature"
+- "It would be sweet is you could input numbers manually"
+- "And if there was a map so you could click on the location and it would input the coordinates instead of having to do that yourself."
 
 ## Log of changes & decisions
 
-### v1.0.4
+### v1.0.5 (future)
+- [ ] Automated build (apk + appbundle) in github workflow.
+
+### v1.0.4 (current)
 
 - [x] Flame length
 - [x] White text on dark and red
@@ -164,8 +171,12 @@ similar.
 - [ ] About: Add a link to our repository.
 - [x] Basic+Advanced: Change "Crowning" to "Continuous Crowning".
 - [x] Basic+Advanced: Changed fire intensity colour palette.
-- [ ] Started putting in place github workflows.
+- [x] Automated testing in github workflow.
+- [x] Automated build (web + iOS) in github workflow.
 - [x] 60 minute fire size change from 0 to 1 decimal places.
+- [ ] Why is elevation input different from Lat/Long on IOS?
+- [ ] ROS, C3 Lat:50.67, Long:-120.37, Elevation:509.18, WS: 5, Wind Direction: 0, GS: 0, Aspect: 0, BUI: 150, FFMC 90, Curing 55% ; gives CFB of 14 in screenshot, 15 when I try to reproduce it.
+- [ ] There's a question re. ROS being wrong - but I need to data to reproduce.
 
 ### v1.0.3
 

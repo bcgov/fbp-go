@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    name: Build macos-latest
+    name: Build web + macos-latest
     runs-on: macos-latest
     strategy:
       fail-fast: false

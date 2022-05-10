@@ -52,7 +52,7 @@ abstract class Group {
       FireBehaviourPredictionInput input,
       FireBehaviourPredictionPrimary prediction,
       double minutes,
-      double surfaceFlameLength);
+      num surfaceFlameLength);
 
   Container buildContainer(List<Widget> children) {
     return Container(color: Colors.white, child: Column(children: children));
@@ -68,7 +68,7 @@ class SecondaryFireBehaviourGroup extends Group {
       FireBehaviourPredictionInput input,
       FireBehaviourPredictionPrimary prediction,
       double minutes,
-      double surfaceFlameLength) {
+      num surfaceFlameLength) {
     TextStyle textStyle = const TextStyle(color: Colors.black);
     return buildContainer([
       // Planned ignition
@@ -117,7 +117,7 @@ class PrimaryFireBehaviourGroup extends Group {
       FireBehaviourPredictionInput input,
       FireBehaviourPredictionPrimary prediction,
       double minutes,
-      double surfaceFlameLength) {
+      num surfaceFlameLength) {
     double? fireSize;
     if (prediction.secondary != null) {
       fireSize = getFireSize(
@@ -254,7 +254,7 @@ class ResultsStateWidget extends StatefulWidget {
   final Color intensityClassTextColor;
   final double minutes;
   final double? fireSize;
-  final double surfaceFlameLength;
+  final num surfaceFlameLength;
 
   const ResultsStateWidget(
       {required this.prediction,

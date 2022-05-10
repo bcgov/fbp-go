@@ -31,7 +31,7 @@ class BasicResults extends StatelessWidget {
   final int intensityClass;
   final double minutes;
   final double? fireSize;
-  final double surfaceFlameLength;
+  final num surfaceFlameLength;
   BasicResults(
       {required this.prediction,
       required this.minutes,
@@ -78,7 +78,7 @@ class BasicResults extends StatelessWidget {
       buildRow('${((prediction.CFB * 100).toStringAsFixed(0))}%',
           'Crown fraction burned (CFB)', textStyle.color),
       // Rate of spread
-      buildRow('${prediction.ROS.toStringAsFixed(0)} (m/min)',
+      buildRow('${prediction.ROS.toStringAsFixed(1)} (m/min)',
           'Rate of spread (ROS)', textStyle.color),
       // ISI
       buildRow(prediction.ISI.toStringAsFixed(0), 'Initial spread index (ISI)',
@@ -189,7 +189,7 @@ class BasicFireBehaviourPredictionFormState
             prediction.CFB,
             prediction.secondary!.LB);
       }
-      double surfaceFlameLength = calculateApproxFlameLength(prediction.HFI);
+      final surfaceFlameLength = calculateApproxFlameLength(prediction.HFI);
 
       return Column(
         children: <Widget>[

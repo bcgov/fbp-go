@@ -208,14 +208,18 @@ String getFireDescription(String FD) {
   }
 }
 
-double calculateApproxFlameLength(double headFireIntensity) {
+num calculateApproxFlameLength(double headFireIntensity) {
   /*
     Returns an approximation of flame length (in meters).
     Formula used is a field-use approximation of
     L = (I / 300)^(1/2), where L is flame length in m and I is Fire Intensity
     in kW/m
+
+    Source: Alexander M (1982) Calculating and interpreting forest fire
+    intensities. Canadian Journal of Botany 60: 349-357.
     */
-  return sqrt(headFireIntensity / 300.0);
+  // return sqrt(headFireIntensity / 300.0);
+  return pow(headFireIntensity / 259.833, 1 / 2.174);
 }
 
 String getFireType(String fuelType, double crownFractionBurned) {
