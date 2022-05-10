@@ -67,6 +67,7 @@ class BasicResults extends StatelessWidget {
           color: intensityClassColor,
           child: Row(
             children: [
+              // using spacers to centre text horizontally
               // const Spacer(),
               Padding(
                 child: Text('Fire Behaviour Outputs', style: labelStyle),
