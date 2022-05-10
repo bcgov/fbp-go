@@ -221,10 +221,21 @@ class ResultsState extends State<ResultsStateWidget> {
         child: Column(
           children: [
             ExpansionPanelList(
+                expandedHeaderPadding: const EdgeInsets.all(0),
                 expansionCallback: (int index, bool isExpanded) {
                   setState(() {
                     _groups[index].isExpanded = !isExpanded;
                   });
+                  if (!isExpanded) {
+                    // this doesn't seem perfect - we're waiting delaying
+                    // by "kThemeAnimationDuration" (that's what
+                    // ExpansionPanelList is using) - and then trying
+                    // to make everything visible.
+                    Future.delayed(kThemeAnimationDuration).then((value) => {
+                          Scrollable.ensureVisible(context,
+                              duration: const Duration(milliseconds: 200))
+                        });
+                  }
                 },
                 children: _groups.map<ExpansionPanel>((Group group) {
                   return ExpansionPanel(
@@ -232,6 +243,7 @@ class ResultsState extends State<ResultsStateWidget> {
                       headerBuilder: (BuildContext context, bool isExpanded) {
                         return Row(
                           children: [
+                            // using spacers to centre text horizontally
                             const Spacer(),
                             Text(group.heading,
                                 style: TextStyle(
@@ -244,17 +256,9 @@ class ResultsState extends State<ResultsStateWidget> {
                       },
                       body: group.buildBody(widget.input, widget.prediction,
                           widget.minutes, widget.surfaceFlameLength),
-                      isExpanded: group.isExpanded);
+                      isExpanded: group.isExpanded,
+                      canTapOnHeader: true);
                 }).toList()),
-            Container(
-                color: widget.intensityClassColour,
-                child: Row(
-                  children: const [Text('')],
-                )),
-            // buildRow('${widget.input.CFL} (kg/m^2)', 'Crown Fuel Load',
-            //     textStyle.color),
-            // buildRow('${widget.input.CBH} (m)', 'Crown to base height',
-            //     textStyle.color)
           ],
         ));
   }
