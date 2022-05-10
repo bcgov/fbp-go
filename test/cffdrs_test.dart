@@ -92,7 +92,7 @@ double roundDouble(double value) {
   */
   const int places = 5; // 5 decimal places isn't too bad.
   var mod = pow(10.0, places);
-  return ((value * mod).round().toDouble() / mod);
+  return (value * mod).round().toDouble() / mod;
 }
 
 void main() {

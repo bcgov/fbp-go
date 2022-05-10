@@ -185,6 +185,7 @@ class BasicInputState extends State<BasicInputWidget> {
                 label:
                     '${degreesToCompassPoint(_input.waz)} ${_input.waz}\u00B0',
                 onChanged: (value) {
+                  print('_onWAZChanged: ${value}');
                   _onWAZChanged(value);
                 },
               )),
@@ -229,7 +230,7 @@ class BasicInputState extends State<BasicInputWidget> {
                 label:
                     '${degreesToCompassPoint(_input.aspect)} ${_input.aspect.toString()}\u00B0',
                 onChanged: (value) {
-                  _onAspectChanged(value);
+                  _onAspectChanged(roundDouble(value, 2));
                 },
               )),
         ]),

@@ -276,7 +276,7 @@ class AdvancedFireBehaviourPredictionFormState
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
                   if (double.tryParse(value) != null) {
-                    _onGFLChanged(double.parse(value));
+                    _onGFLChanged(roundDouble(double.parse(value), 2));
                   }
                 },
               )),

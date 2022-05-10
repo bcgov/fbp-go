@@ -283,3 +283,8 @@ int getDayOfYear() {
   final diff = now.difference(DateTime(now.year, 1, 1, 0, 0));
   return diff.inDays;
 }
+
+double roundDouble(double value, int places) {
+  final multiplier = pow(10, places);
+  return (value * multiplier).round() / multiplier;
+}

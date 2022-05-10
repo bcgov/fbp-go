@@ -174,7 +174,9 @@ similar.
 - [x] Automated testing in github workflow.
 - [x] Automated build (web + iOS) in github workflow.
 - [x] 60 minute fire size change from 0 to 1 decimal places.
-- [ ] Why is elevation input different from Lat/Long on IOS?
+- [x] Modified elevation input keyboard type to match Lat/Long (except no decimal, no sign).
+- [x] Rounding more inputs to 2 decimal places (or 0) for more consistent results.
+- [x] Fix bug where negative elevation value could be entered and cause a crash.
 - [ ] ROS, C3 Lat:50.67, Long:-120.37, Elevation:509.18, WS: 5, Wind Direction: 0, GS: 0, Aspect: 0, BUI: 150, FFMC 90, Curing 55% ; gives CFB of 14 in screenshot, 15 when I try to reproduce it.
 - [ ] There's a question re. ROS being wrong - but I need to data to reproduce.
 
