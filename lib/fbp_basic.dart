@@ -67,9 +67,12 @@ class BasicResults extends StatelessWidget {
           color: intensityClassColor,
           child: Row(
             children: [
-              const Spacer(),
-              Text('Fire Behaviour Outputs', style: labelStyle),
-              const Spacer()
+              // const Spacer(),
+              Padding(
+                child: Text('Fire Behaviour Outputs', style: labelStyle),
+                padding: const EdgeInsets.only(left: 10),
+              ),
+              // const Spacer()
             ],
           )),
       // Fire type

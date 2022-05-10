@@ -244,13 +244,16 @@ class ResultsState extends State<ResultsStateWidget> {
                         return Row(
                           children: [
                             // using spacers to centre text horizontally
-                            const Spacer(),
-                            Text(group.heading,
-                                style: TextStyle(
-                                    fontSize: fontSize,
-                                    color: widget.intensityClassTextColor,
-                                    fontWeight: FontWeight.bold)),
-                            const Spacer()
+                            // const Spacer(),
+                            Padding(
+                              child: Text(group.heading,
+                                  style: TextStyle(
+                                      fontSize: fontSize,
+                                      color: widget.intensityClassTextColor,
+                                      fontWeight: FontWeight.bold)),
+                              padding: const EdgeInsets.only(left: 10),
+                            ),
+                            // const Spacer()
                           ],
                         );
                       },

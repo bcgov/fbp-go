@@ -162,14 +162,15 @@ similar.
 
 ### v1.0.4 (current)
 
-- [x] Basic+Advanced: Flame length
-- [x] Basic+Advanced: White text over red
+- [x] Basic+Advanced: Left align headings.
+- [x] Basic+Advanced: Added flame length.
+- [x] Basic+Advanced: White text over red.
 - [x] Basic+Advanced: Switched to new proposed colour scheme.
 - [x] Basic: "Fire Behaviour Outputs" in Basic heading.
 - [x] Basic: Style sliders to match color of results.
 - [x] Basic: Adjust font size, shorten description & styling of result.
 - [x] Advanced: Match styling applied to basic.
-- [x] Advanced: Remove fuel type dropdown (was problematic when combined with preset selection), remove Crown fuel load as input (show as output), remove crown base height (show as output)
+- [x] Advanced: Remove fuel type dropdown (was problematic when combined with preset selection), remove Crown fuel load as input (show as output), remove crown base height (show as output).
 - [x] About: Add a link to our repository, switch license to small monospace font, fix version mentioned.
 - [x] Basic+Advanced: Change "Crowning" to "Continuous Crowning".
 - [x] Basic+Advanced: Changed fire intensity colour palette.
@@ -179,6 +180,7 @@ similar.
 - [x] Basic+Advanced: Modified elevation input keyboard type to match Lat/Long (except no decimal, no sign).
 - [x] Basic+Advanced: Rounding more inputs to 2 decimal places (or 0) for more consistent results.
 - [x] Basic+Advanced: Fix bug where negative elevation value could be entered and cause a crash.
+- [x] Disclaimer: Fixed spelling.
 
 ### v1.0.3
 
