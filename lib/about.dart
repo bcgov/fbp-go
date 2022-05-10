@@ -35,7 +35,12 @@ class AboutPageState extends State<AboutPage> {
   void getLicenseText() {
     rootBundle.loadString('LICENSE').then((value) => {
           setState(() {
-            licenseText = value;
+            // licenseText = value;
+            licenseText = value
+                .replaceAll('\n\n', '\r')
+                .replaceAll('\n', ' ')
+                .replaceAll('\r', '\n\n')
+                .replaceAll('</br>', '\n');
           })
         });
   }
@@ -61,7 +66,7 @@ class AboutPageState extends State<AboutPage> {
           text: licenseText,
           style: const TextStyle(
               fontFamily: "monospace",
-              fontSize: 8,
+              fontSize: 11,
               fontFeatures: [FontFeature.tabularFigures()])),
     ]));
     // return Text('about');

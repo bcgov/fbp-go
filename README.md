@@ -162,9 +162,10 @@ similar.
 
 ### v1.0.4 (current)
 
-- [x] Flame length
-- [x] White text on dark and red
-- [x] "Fire Behaviour Outputs" in Basic heading.
+- [x] Basic+Advanced: Flame length
+- [x] Basic+Advanced: White text over red
+- [x] Basic+Advanced: Switched to new proposed colour scheme.
+- [x] Basic: "Fire Behaviour Outputs" in Basic heading.
 - [x] Basic: Style sliders to match color of results.
 - [x] Basic: Adjust font size, shorten description & styling of result.
 - [x] Advanced: Match styling applied to basic.
@@ -172,12 +173,12 @@ similar.
 - [x] About: Add a link to our repository, switch license to small monospace font, fix version mentioned.
 - [x] Basic+Advanced: Change "Crowning" to "Continuous Crowning".
 - [x] Basic+Advanced: Changed fire intensity colour palette.
-- [x] Automated testing in github workflow.
-- [x] Automated build (web + iOS) in github workflow.
-- [x] 60 minute fire size change from 0 to 1 decimal places.
-- [x] Modified elevation input keyboard type to match Lat/Long (except no decimal, no sign).
-- [x] Rounding more inputs to 2 decimal places (or 0) for more consistent results.
-- [x] Fix bug where negative elevation value could be entered and cause a crash.
+- [x] Tech: Automated testing in github workflow.
+- [x] Tech: Automated build (web + iOS) in github workflow.
+- [x] Basic+Advanced: 60 minute fire size change from 0 to 1 decimal places.
+- [x] Basic+Advanced: Modified elevation input keyboard type to match Lat/Long (except no decimal, no sign).
+- [x] Basic+Advanced: Rounding more inputs to 2 decimal places (or 0) for more consistent results.
+- [x] Basic+Advanced: Fix bug where negative elevation value could be entered and cause a crash.
 
 ### v1.0.3
 
