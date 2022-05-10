@@ -1,3 +1,27 @@
 {
-    "files.eol": "\n"
+    "files.eol": "\n",
+    "cmake.configureOnOpen": false,
+    "cSpell.words": [
+        "ACCEL",
+        "appbundle",
+        "BCFB",
+        "BTFC",
+        "BUIEFF",
+        "Buildup",
+        "CRAN",
+        "DISTtcalc",
+        "FCFB",
+        "Flannigan",
+        "FTFC",
+        "FUELTYPE",
+        "LBtcalc",
+        "Parisien",
+        "TCFB",
+        "TROS",
+        "TTFC",
+        "monospace",
+        "colors",
+        "color"
+    ],
+    "cSpell.language": "en-GB"
 }

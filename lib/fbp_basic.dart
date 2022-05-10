@@ -24,62 +24,85 @@ import 'cffdrs/fbp_calc.dart';
 import 'fire_widgets.dart';
 import 'fire.dart';
 import 'basic_input.dart';
+import 'global.dart';
 
 class BasicResults extends StatelessWidget {
   final FireBehaviourPredictionPrimary prediction;
   final int intensityClass;
   final double minutes;
   final double? fireSize;
+  final num surfaceFlameLength;
   BasicResults(
       {required this.prediction,
       required this.minutes,
       required this.fireSize,
+      required this.surfaceFlameLength,
       Key? key})
       : intensityClass = getHeadFireIntensityClass(prediction.HFI),
         super(key: key);
 
   Row buildRow(String value, String label, Color? color) {
-    const double fontSize = 13;
     TextStyle valueStyle = TextStyle(
         color: color, fontWeight: FontWeight.bold, fontSize: fontSize);
     TextStyle labelStyle = TextStyle(color: color, fontSize: fontSize);
     return Row(children: [
       Expanded(
+          flex: 5,
           child: Padding(
-              padding: const EdgeInsets.only(right: 3.0),
+              padding: const EdgeInsets.only(right: 5.0),
               child:
                   Text(value, textAlign: TextAlign.right, style: valueStyle))),
-      Expanded(child: Text(label, style: labelStyle)),
+      Expanded(flex: 6, child: Text(label, style: labelStyle)),
     ]);
   }
 
-  List<Widget> buildRows(TextStyle textStyle) {
+  List<Widget> buildRows(TextStyle textStyle, Color intensityClassColor,
+      Color intensityClassTextColor) {
+    TextStyle labelStyle = TextStyle(
+        fontSize: fontSize,
+        color: intensityClassTextColor,
+        fontWeight: FontWeight.bold);
     List<Widget> rows = [
+      Container(
+          color: intensityClassColor,
+          child: Row(
+            children: [
+              // using spacers to centre text horizontally
+              // const Spacer(),
+              Padding(
+                child: Text('Fire Behaviour Outputs', style: labelStyle),
+                padding: const EdgeInsets.only(left: 10),
+              ),
+              // const Spacer()
+            ],
+          )),
       // Fire type
       buildRow(getFireDescription(prediction.FD), 'Fire type', textStyle.color),
       // Crown fraction burned
       buildRow('${((prediction.CFB * 100).toStringAsFixed(0))}%',
           'Crown fraction burned (CFB)', textStyle.color),
       // Rate of spread
-      buildRow('${prediction.ROS.toStringAsFixed(0)} (m/min)',
+      buildRow('${prediction.ROS.toStringAsFixed(1)} (m/min)',
           'Rate of spread (ROS)', textStyle.color),
       // ISI
       buildRow(prediction.ISI.toStringAsFixed(0), 'Initial spread index (ISI)',
           textStyle.color),
-      // Surface flame length (TBD!)
+      // Surface flame length
+      buildRow('${surfaceFlameLength.toStringAsFixed(2)} (m)',
+          'Surface flame length', textStyle.color),
       // Intensity class
       buildRow('$intensityClass', 'Intensity class', textStyle.color),
       // HFI
       buildRow('${prediction.HFI.toStringAsFixed(0)} (kW/m)',
           'Head fire intensity (HFI)', textStyle.color),
       // 60 minute fire size
-      buildRow('${fireSize?.toStringAsFixed(0)} (ha)',
+      buildRow('${fireSize?.toStringAsFixed(1)} (ha)',
           '${minutes.toStringAsFixed(0)} minute fire size', textStyle.color),
     ];
 
     if (prediction.WSV != 0) {
       rows.add(buildRow(
-          '${degreesToCompassPoint(prediction.RAZ)} ${prediction.RAZ.toStringAsFixed(1)}(\u00B0)',
+          '${degreesToCompassPoint(prediction.RAZ)} ${prediction.RAZ.toStringAsFixed(1)}\u00B0',
           'Direction of spread',
           textStyle.color));
     }
@@ -89,9 +112,15 @@ class BasicResults extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color intensityClassColor = getIntensityClassColor(intensityClass);
+    Color intensityTextColor = getIntensityClassTextColor(intensityClass);
     return Container(
-        color: getIntensityClassColor(intensityClass),
-        child: Column(children: buildRows(getTextStyle(prediction.FD))));
+        decoration: BoxDecoration(
+            border: Border.all(color: intensityClassColor),
+            borderRadius: const BorderRadius.all(Radius.circular(5))),
+        child: Column(
+            children: buildRows(const TextStyle(color: Colors.black),
+                intensityClassColor, intensityTextColor)));
   }
 }
 
@@ -164,6 +193,8 @@ class BasicFireBehaviourPredictionFormState
             prediction.CFB,
             prediction.secondary!.LB);
       }
+      final surfaceFlameLength = calculateApproxFlameLength(prediction.HFI);
+
       return Column(
         children: <Widget>[
           // Presets
@@ -181,13 +212,17 @@ class BasicFireBehaviourPredictionFormState
               Expanded(
                   child: BasicInputWidget(
                       value: _basicInput,
+                      prediction: prediction,
                       onChanged: (BasicInput basicInput) {
                         _onBasicInputChanged(basicInput);
                       }))
             ],
           ),
           BasicResults(
-              prediction: prediction, minutes: minutes, fireSize: fireSize)
+              prediction: prediction,
+              minutes: minutes,
+              fireSize: fireSize,
+              surfaceFlameLength: surfaceFlameLength)
         ],
       );
     } catch (e) {

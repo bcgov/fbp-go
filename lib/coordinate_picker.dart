@@ -20,6 +20,9 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'fire.dart';
+import 'global.dart';
+
 class Coordinate {
   double latitude;
   double longitude;
@@ -56,6 +59,21 @@ class CoordinatePickerState extends State<CoordinatePicker> {
     }
   }
 
+  void _setLatitude(latitude) {
+    // Limit to 2 decimal places for consistent input.
+    _coordinate.latitude = roundDouble(latitude, 2);
+  }
+
+  void _setLongitude(longitude) {
+    // Limit to 2 decimal places for consistent input.
+    _coordinate.longitude = roundDouble(longitude, 2);
+  }
+
+  void _setAltitude(altitude) {
+    // Only need integer level accuracy.
+    _coordinate.altitude = altitude.roundToDouble();
+  }
+
   void _updatePosition() {
     Permission.location.request().then((request) => {
           if (request.isGranted)
@@ -63,10 +81,9 @@ class CoordinatePickerState extends State<CoordinatePicker> {
               _getPosition().then((position) {
                 if (mounted) {
                   setState(() {
-                    _coordinate.latitude = position.latitude;
-                    _coordinate.longitude = position.longitude;
-                    _coordinate.altitude =
-                        position.altitude > 0 ? position.altitude : 0;
+                    _setLatitude(position.latitude);
+                    _setLongitude(position.longitude);
+                    _setAltitude(position.altitude > 0 ? position.altitude : 0);
                     widget.onChanged(_coordinate);
                     _updateCoordinateControllers();
                   });
@@ -86,18 +103,20 @@ class CoordinatePickerState extends State<CoordinatePicker> {
   void _updateCoordinateControllers() {
     _latitudeController.text = _coordinate.latitude.toStringAsFixed(2);
     _longitudeController.text = _coordinate.longitude.toStringAsFixed(2);
-    _elevationController.text = _coordinate.altitude.toStringAsFixed(2);
+    _elevationController.text = _coordinate.altitude.toStringAsFixed(0);
   }
 
   @override
   Widget build(BuildContext context) {
+    const TextStyle textStyle = TextStyle(fontSize: labelFontSize);
     return Row(
       children: [
         // latitude Field
         Expanded(
             child: TextField(
           controller: _latitudeController,
-          decoration: const InputDecoration(labelText: "Latitude"),
+          decoration: const InputDecoration(
+              labelText: "Latitude", labelStyle: textStyle),
           keyboardType: const TextInputType.numberWithOptions(
               signed: true, decimal: true),
           onChanged: (value) {
@@ -105,7 +124,7 @@ class CoordinatePickerState extends State<CoordinatePicker> {
               double latitude = double.parse(value);
               if (latitude >= -90 && latitude <= 90) {
                 setState(() {
-                  _coordinate.latitude = latitude;
+                  _setLatitude(latitude);
                   widget.onChanged(_coordinate);
                 });
               }
@@ -116,14 +135,15 @@ class CoordinatePickerState extends State<CoordinatePicker> {
         Expanded(
             child: TextField(
           controller: _longitudeController,
-          decoration: const InputDecoration(labelText: "Longitude"),
+          decoration: const InputDecoration(
+              labelText: "Longitude", labelStyle: textStyle),
           keyboardType: const TextInputType.numberWithOptions(
               signed: true, decimal: true),
           onChanged: (value) {
             if (double.tryParse(value) != null) {
               double longitude = double.parse(value);
               if (longitude >= -180 && longitude.abs() <= 180) {
-                _coordinate.longitude = longitude;
+                _setLongitude(longitude);
                 widget.onChanged(_coordinate);
               }
             }
@@ -132,12 +152,17 @@ class CoordinatePickerState extends State<CoordinatePicker> {
         Expanded(
             child: TextField(
           controller: _elevationController,
-          decoration: const InputDecoration(labelText: "Elevation"),
-          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(
+              labelText: "Elevation", labelStyle: textStyle),
+          keyboardType: const TextInputType.numberWithOptions(
+              signed: true, decimal: true),
           onChanged: (value) {
             if (double.tryParse(value) != null) {
-              _coordinate.altitude = double.parse(value);
-              widget.onChanged(_coordinate);
+              var altitude = double.parse(value);
+              if (altitude >= 0) {
+                _setAltitude(altitude);
+                widget.onChanged(_coordinate);
+              }
             }
           },
         )),

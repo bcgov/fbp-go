@@ -18,8 +18,11 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 import 'package:fire_behaviour_app/beaufort.dart';
 import 'package:flutter/material.dart';
 
+import 'cffdrs/fbp_calc.dart';
 import 'fire.dart';
 import 'coordinate_picker.dart';
+import 'fire_widgets.dart';
+import 'global.dart';
 
 class BasicInput {
   double ws;
@@ -40,7 +43,7 @@ class BasicInput {
 
   @override
   String toString() {
-    return 'BasicInputStruct{ws: $ws, waz: $waz, gs: $gs, aspect: $aspect, bui: $bui, cc: $cc, ffmc: $ffmc, coordinate: $coordinate}';
+    return 'BasicInput{ws: $ws, waz: $waz, gs: $gs, aspect: $aspect, bui: $bui, cc: $cc, ffmc: $ffmc, coordinate: $coordinate}';
   }
 }
 
@@ -109,11 +112,32 @@ class BasicInputState extends State<BasicInputWidget> {
     super.initState();
   }
 
+  Expanded makeLabel(String heading, String value, String unitOfMeasure,
+      TextStyle textStyle, TextStyle textStyleBold) {
+    const labelFlex = 5;
+    return Expanded(
+        flex: labelFlex,
+        child: Column(children: [
+          Row(children: [
+            Text(heading, style: textStyle),
+            Text(':', style: textStyle)
+          ]),
+          Row(children: [
+            Text(value, style: textStyleBold),
+            Text(unitOfMeasure, style: textStyle)
+          ])
+        ]));
+  }
+
   @override
   Widget build(BuildContext context) {
-    const labelFlex = 1;
-    const sliderFlex = 2;
+    const sliderFlex = 10;
     final beaufortScale = getBeaufortScale(_input.ws);
+    final intensityClass = getHeadFireIntensityClass(widget.prediction.HFI);
+    final activeColor = getIntensityClassColor(intensityClass);
+    const TextStyle textStyle = TextStyle(fontSize: fontSize);
+    const TextStyle textStyleBold =
+        TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold);
     return Column(
       children: [
         // lat, long, elevation
@@ -122,9 +146,8 @@ class BasicInputState extends State<BasicInputWidget> {
         }),
         // Wind Speed
         Row(children: [
-          Expanded(
-              flex: labelFlex,
-              child: Text('Wind Speed:\n${_input.ws.toInt()} (km/h)')),
+          makeLabel('Wind Speed', '${_input.ws.toInt()}', ' (km/h)', textStyle,
+              textStyleBold),
           Expanded(
               flex: sliderFlex,
               child: Slider(
@@ -132,6 +155,7 @@ class BasicInputState extends State<BasicInputWidget> {
                 min: 0,
                 max: 50,
                 divisions: 50,
+                activeColor: activeColor,
                 label:
                     '${_input.ws.toInt()} km/h\nBeaufort scale:\n${beaufortScale.range}\n${beaufortScale.description}\n${beaufortScale.effects}',
                 onChanged: (value) {
@@ -144,10 +168,12 @@ class BasicInputState extends State<BasicInputWidget> {
         ]),
         // Wind Azimuth
         Row(children: [
-          Expanded(
-              flex: labelFlex,
-              child: Text(
-                  'Wind Direction:\n${degreesToCompassPoint(_input.waz)} ${_input.waz.toString()}\u00B0')),
+          makeLabel(
+              'Wind Direction',
+              '${degreesToCompassPoint(_input.waz)} ${_input.waz.toString()}',
+              '\u00B0',
+              textStyle,
+              textStyleBold),
           Expanded(
               flex: sliderFlex,
               child: Slider(
@@ -155,18 +181,19 @@ class BasicInputState extends State<BasicInputWidget> {
                 min: 0,
                 max: 360,
                 divisions: 16,
+                activeColor: activeColor,
                 label:
                     '${degreesToCompassPoint(_input.waz)} ${_input.waz}\u00B0',
                 onChanged: (value) {
+                  print('_onWAZChanged: ${value}');
                   _onWAZChanged(value);
                 },
               )),
         ]),
         // Ground Slope
         Row(children: [
-          Expanded(
-              flex: labelFlex,
-              child: Text('Ground Slope:\n${_input.gs.toInt()}%')),
+          makeLabel('Ground Slope', '${_input.gs.toInt()}', '%', textStyle,
+              textStyleBold),
           Expanded(
               flex: sliderFlex,
               child: Slider(
@@ -174,6 +201,7 @@ class BasicInputState extends State<BasicInputWidget> {
                 min: 0,
                 max: 90,
                 divisions: 18,
+                activeColor: activeColor,
                 label: '${_input.gs.toInt()}%',
                 onChanged: (value) {
                   // We need to round the ground slope. The slider doesn't give
@@ -185,10 +213,12 @@ class BasicInputState extends State<BasicInputWidget> {
         ]),
         // Aspect
         Row(children: [
-          Expanded(
-              flex: labelFlex,
-              child: Text(
-                  'Aspect:\n${degreesToCompassPoint(_input.aspect)} ${_input.aspect.toString()}\u00B0')),
+          makeLabel(
+              'Aspect',
+              '${degreesToCompassPoint(_input.aspect)} ${_input.aspect.toString()}',
+              '\u00B0',
+              textStyle,
+              textStyleBold),
           Expanded(
               flex: sliderFlex,
               child: Slider(
@@ -196,18 +226,18 @@ class BasicInputState extends State<BasicInputWidget> {
                 min: 0,
                 max: 360,
                 divisions: 16,
+                activeColor: activeColor,
                 label:
                     '${degreesToCompassPoint(_input.aspect)} ${_input.aspect.toString()}\u00B0',
                 onChanged: (value) {
-                  _onAspectChanged(value);
+                  _onAspectChanged(roundDouble(value, 2));
                 },
               )),
         ]),
         // BUI
         Row(children: [
-          Expanded(
-              flex: labelFlex,
-              child: Text('Buildup Index:\n${_input.bui.toInt()}')),
+          makeLabel('Buildup Index', '${_input.bui.toInt()}', '', textStyle,
+              textStyleBold),
           Expanded(
               flex: sliderFlex,
               child: Slider(
@@ -215,6 +245,7 @@ class BasicInputState extends State<BasicInputWidget> {
                 min: 0,
                 max: 200,
                 divisions: 40,
+                activeColor: activeColor,
                 label: '${_input.bui.toInt()}',
                 onChanged: (value) {
                   // We need to round the buildup index. The slider doesn't give
@@ -226,8 +257,8 @@ class BasicInputState extends State<BasicInputWidget> {
         ]),
         // FFMC
         Row(children: [
-          Expanded(
-              flex: labelFlex, child: Text('FFMC:\n${_input.ffmc.toInt()}')),
+          makeLabel(
+              'FFMC', '${_input.ffmc.toInt()}', '', textStyle, textStyleBold),
           Expanded(
               flex: sliderFlex,
               child: Slider(
@@ -235,6 +266,7 @@ class BasicInputState extends State<BasicInputWidget> {
                 min: 80,
                 max: 100,
                 divisions: 20,
+                activeColor: activeColor,
                 label: '${_input.ffmc.toInt()}',
                 onChanged: (value) {
                   // We need to round the FFMC. The slider doesn't give
@@ -246,8 +278,8 @@ class BasicInputState extends State<BasicInputWidget> {
         ]),
         // Curing
         Row(children: [
-          Expanded(
-              flex: labelFlex, child: Text('Curing:\n${_input.cc.toInt()}%')),
+          makeLabel(
+              'Curing', '${_input.cc.toInt()}', '%', textStyle, textStyleBold),
           Expanded(
               flex: sliderFlex,
               child: Slider(
@@ -256,6 +288,7 @@ class BasicInputState extends State<BasicInputWidget> {
                 max: 100,
                 divisions: 20,
                 label: '${_input.cc.toInt()}%',
+                activeColor: activeColor,
                 onChanged: (value) {
                   // We need to round the curing. The slider doesn't give
                   // us nice clean whole numbers! This way we ensure we get
@@ -272,9 +305,13 @@ class BasicInputState extends State<BasicInputWidget> {
 class BasicInputWidget extends StatefulWidget {
   final Function onChanged;
   final BasicInput value;
+  final FireBehaviourPredictionPrimary prediction;
 
   const BasicInputWidget(
-      {Key? key, required this.onChanged, required this.value})
+      {Key? key,
+      required this.onChanged,
+      required this.value,
+      required this.prediction})
       : super(key: key);
 
   @override

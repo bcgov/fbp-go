@@ -200,12 +200,24 @@ String getFireDescription(String FD) {
     case ("I"):
       return "Intermittent Crowning";
     case ("C"):
-      return "Crowning";
+      return "Continuous Crowning";
     case ("S"):
       return "Surface";
     default:
       throw Exception("Invalid Fire Description $FD");
   }
+}
+
+num calculateApproxFlameLength(double headFireIntensity) {
+  /*
+    Returns an approximation of flame length (in meters).
+
+    Source: Alexander M (1982) Calculating and interpreting forest fire
+    intensities. Canadian Journal of Botany 60: 349-357.
+
+    eq. [9] I = 259.833(L)^2.174
+    */
+  return pow(headFireIntensity / 259.833, 1 / 2.174);
 }
 
 String getFireType(String fuelType, double crownFractionBurned) {
@@ -268,4 +280,9 @@ int getDayOfYear() {
   final now = DateTime.now();
   final diff = now.difference(DateTime(now.year, 1, 1, 0, 0));
   return diff.inDays;
+}
+
+double roundDouble(double value, int places) {
+  final multiplier = pow(10, places);
+  return (value * multiplier).round() / multiplier;
 }
