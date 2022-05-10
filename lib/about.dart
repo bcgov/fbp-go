@@ -36,7 +36,7 @@ class AboutPageState extends State<AboutPage> {
   void getLicenseText() {
     rootBundle.loadString('LICENSE').then((value) => {
           setState(() {
-            // licenseText = value;
+            // short term hack to get license to display a little better.
             licenseText = value
                 .replaceAll('\n\n', '\r')
                 .replaceAll('\n', ' ')
@@ -74,7 +74,6 @@ class AboutPageState extends State<AboutPage> {
               fontSize: Platform.isIOS ? 9 : 11,
               fontFeatures: const [FontFeature.tabularFigures()])),
     ]));
-    // return Text('about');
   }
 }
 

@@ -19,6 +19,14 @@ import 'package:fire_behaviour_app/global.dart';
 import 'fire.dart';
 import 'package:flutter/material.dart';
 
+// 1st attempt
+// Colors.blueGrey.shade500;
+// Colors.blueGrey.shade400;
+// Colors.blueGrey.shade300;
+// Colors.deepOrange.shade200;
+// Colors.deepOrange.shade400;
+// Colors.red.shade500;
+
 // RED BOOK - I think:
 // const Color intensityClass1 = Color(0xFF707070);
 // const Color intensityClass2 = Color(0xFF8C8C8C);

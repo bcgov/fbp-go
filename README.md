@@ -159,6 +159,12 @@ similar.
 ### v1.0.5 (future)
 - [ ] Automated build (apk + appbundle) in github workflow.
 - [ ] Consider swapping out ExpansionPanel (it uses up a lot of space).?
+- [ ] Consider dropping acronyms.
+- [ ] Make heading height in advanced and basic look the same.
+- [ ] More spacing between each result, and space between heading and 1st result.
+- [ ] A bit more space between the last input item and the results. (e.g. space between curing and primary heading is different.)
+- [ ] What is the unit of measure for the fire spread.
+- [ ] Modal bug.
 
 ### v1.0.4 (current)
 
