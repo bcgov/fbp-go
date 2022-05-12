@@ -103,15 +103,15 @@ class SecondaryFireBehaviourGroup extends Group {
           'Net effective wind direction',
           textStyle.color),
       // Spread distance
-      _buildRow('${formatNumber(prediction.secondary?.RSO)} m/min',
+      _buildRow('${formatNumber(prediction.secondary?.RSO)} (m/min)',
           'Surface fire rate of spread', textStyle.color),
       _buildRow(formatNumber(prediction.secondary?.LB),
           'Length to breadth ratio', textStyle.color),
-      _buildRow(formatNumber(prediction.secondary?.DH),
+      _buildRow('${formatNumber(prediction.secondary?.DH)} (m)',
           'Fire spread distance - head', textStyle.color),
-      _buildRow(formatNumber(prediction.secondary?.DB),
+      _buildRow('${formatNumber(prediction.secondary?.DB)} (m)',
           'Fire spread distance - flank', textStyle.color),
-      _buildRow(formatNumber(prediction.secondary?.DF),
+      _buildRow('${formatNumber(prediction.secondary?.DF)} (m)',
           'Fire spread distance - back', textStyle.color),
     ]);
   }

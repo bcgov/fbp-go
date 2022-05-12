@@ -162,11 +162,11 @@ similar.
 - [x] Basic+Advanced: More spacing between each result, and space between heading and 1st result.
 - [x] Basic+Advanced: A bit more space between the last input item and the results. (e.g. space between curing and primary heading is different.)
 - [x] Advanced: Only showing PDF and PC sliders for M1, M2, M3 and M4.
+- [x] Advanced: Added unit of measure (m) to fire spread distance.
 - [x] Basic: Make heading height in advanced and basic look the same.
 - [x] Drop acronyms, except where there is limited space.
 - [ ] Plus/minus buttons.
 - [ ] Automated build (apk + appbundle) in github workflow.
-- [ ] What is the unit of measure for the fire spread.
 - [ ] Finalise disclaimer popup.
 
 ### v1.0.4 (current)
