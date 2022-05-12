@@ -17,9 +17,9 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 */
 import 'dart:developer';
 
+import 'package:fire_behaviour_app/persist.dart';
 import 'package:flutter/material.dart';
 
-import 'coordinate_picker.dart';
 import 'cffdrs/fbp_calc.dart';
 import 'fire_widgets.dart';
 import 'fire.dart';
@@ -127,13 +127,17 @@ class BasicResults extends StatelessWidget {
 class BasicFireBehaviourPredictionFormState
     extends State<BasicFireBehaviourPredictionForm> {
   FuelTypePreset _fuelTypePreset = getC2BorealSpruce();
-  late BasicInput _basicInput;
+  BasicInput? _basicInput;
 
   void _onPresetChanged(FuelTypePreset fuelTypePreset) {
     setState(() {
       log('preset changed to $fuelTypePreset');
-      _fuelTypePreset = fuelTypePreset;
-      _basicInput.bui = _fuelTypePreset.averageBUI;
+      if (_basicInput != null) {
+        _fuelTypePreset = fuelTypePreset;
+        _basicInput!.bui = _fuelTypePreset.averageBUI;
+        persistSetting('bui', _fuelTypePreset.averageBUI);
+        persistFuelTypePreset(_fuelTypePreset);
+      }
     });
   }
 
@@ -145,40 +149,47 @@ class BasicFireBehaviourPredictionFormState
 
   @override
   void initState() {
-    _basicInput = BasicInput(
-        ws: 5,
-        bui: _fuelTypePreset.averageBUI,
-        coordinate: Coordinate(latitude: 37, longitude: -122, altitude: 100));
+    loadBasic().then((settings) {
+      setState(() {
+        _fuelTypePreset = settings.fuelTypePreset;
+        _basicInput = settings.basicInput;
+      });
+    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_basicInput == null) {
+      return const Text('Loading...');
+    }
+    print('calculating with ${_basicInput!.cc}');
     final dayOfYear = getDayOfYear();
     const double minutes = 60; // 60 minutes.
     final input = FireBehaviourPredictionInput(
         FUELTYPE: _fuelTypePreset.code.name,
-        LAT: _basicInput.coordinate.latitude,
-        LONG: _basicInput.coordinate.longitude,
-        ELV: _basicInput.coordinate.altitude,
+        LAT: _basicInput!.coordinate.latitude,
+        LONG: _basicInput!.coordinate.longitude,
+        ELV: _basicInput!.coordinate.altitude,
         DJ: dayOfYear,
         D0: null,
         FMC: null,
-        FFMC: _basicInput.ffmc,
-        BUI: _basicInput.bui,
-        WS: _basicInput.ws,
-        WD: _basicInput.waz,
-        GS: _basicInput.gs,
+        FFMC: _basicInput!.ffmc,
+        BUI: _basicInput!.bui,
+        WS: _basicInput!.ws,
+        WD: _basicInput!.waz,
+        GS: _basicInput!.gs,
         PC: _fuelTypePreset.pc,
         PDF: _fuelTypePreset.pdf,
         GFL: _fuelTypePreset.gfl,
-        CC: _basicInput.cc,
+        CC: _basicInput!.cc,
         ACCEL: false,
-        ASPECT: _basicInput.aspect,
+        ASPECT: _basicInput!.aspect,
         BUIEFF: true,
         CBH: _fuelTypePreset.cbh,
         CFL: _fuelTypePreset.cfl,
         HR: minutes / 60.0);
+    print('basic   : ${input}');
     try {
       FireBehaviourPredictionPrimary prediction = FBPcalc(input, output: "ALL");
       prediction.RAZ =
@@ -199,20 +210,23 @@ class BasicFireBehaviourPredictionFormState
         children: <Widget>[
           // Presets
           Row(children: [
-            Expanded(child: FuelTypePresetDropdown(
+            Expanded(
+                child: FuelTypePresetDropdown(
               onChanged: (FuelTypePreset? value) {
                 if (value != null) {
                   _onPresetChanged(value);
                 }
               },
+              initialValue: _fuelTypePreset,
             ))
           ]),
           Row(
             children: [
               Expanded(
                   child: BasicInputWidget(
-                      value: _basicInput,
+                      basicInput: _basicInput!,
                       prediction: prediction,
+                      fuelTypePreset: _fuelTypePreset,
                       onChanged: (BasicInput basicInput) {
                         _onBasicInputChanged(basicInput);
                       }))

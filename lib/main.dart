@@ -192,6 +192,7 @@ class HomePageState extends State<HomePage> {
 
   void _changeSection(Section section) {
     setState(() {
+      print('changing section...');
       _selectedSection = section;
     });
     Navigator.pop(context);

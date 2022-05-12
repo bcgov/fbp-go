@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License along with
 FBP Go. If not, see <https://www.gnu.org/licenses/>.
 */
 import 'dart:developer';
+import 'package:fire_behaviour_app/persist.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -39,13 +40,19 @@ class Coordinate {
   }
 }
 
+Coordinate createDefaultCoordinate() {
+  return Coordinate(
+      latitude: defaultLatitude,
+      longitude: defaultLongitude,
+      altitude: defaultAltitude);
+}
+
 class CoordinatePickerState extends State<CoordinatePicker> {
   final _latitudeController = TextEditingController();
   final _longitudeController = TextEditingController();
   final _elevationController = TextEditingController();
 
-  final Coordinate _coordinate =
-      Coordinate(latitude: 37, longitude: -122, altitude: 5);
+  late Coordinate _coordinate;
 
   _getPosition() async {
     log('calling _getPosition');
@@ -62,16 +69,19 @@ class CoordinatePickerState extends State<CoordinatePicker> {
   void _setLatitude(latitude) {
     // Limit to 2 decimal places for consistent input.
     _coordinate.latitude = roundDouble(latitude, 2);
+    persistSetting('latitude', _coordinate.latitude);
   }
 
   void _setLongitude(longitude) {
     // Limit to 2 decimal places for consistent input.
     _coordinate.longitude = roundDouble(longitude, 2);
+    persistSetting('longitude', _coordinate.longitude);
   }
 
   void _setAltitude(altitude) {
     // Only need integer level accuracy.
     _coordinate.altitude = altitude.roundToDouble();
+    persistSetting('altitude', _coordinate.latitude);
   }
 
   void _updatePosition() {
@@ -96,7 +106,9 @@ class CoordinatePickerState extends State<CoordinatePicker> {
   @override
   void initState() {
     super.initState();
-    _updatePosition();
+    // We only load the position if the user asks for it!
+    // _updatePosition();
+    _coordinate = widget.coordinate;
     _updateCoordinateControllers();
   }
 
@@ -179,8 +191,11 @@ class CoordinatePickerState extends State<CoordinatePicker> {
 
 class CoordinatePicker extends StatefulWidget {
   final Function onChanged;
+  final Coordinate coordinate;
 
-  const CoordinatePicker({Key? key, required this.onChanged}) : super(key: key);
+  const CoordinatePicker(
+      {Key? key, required this.onChanged, required this.coordinate})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
