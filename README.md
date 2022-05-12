@@ -151,6 +151,9 @@ similar.
 
 ## Log of changes & decisions
 
+### v1.0.6 Release Candidate (future)
+- [ ] Incorporate card sort feedback in advanced and or basic tab.
+
 ### v1.0.5 (future)
 - [ ] Modal bug. You can click anywhere on the screen, and that closes the modal.
 - [x] Only showing GFL and curing for OA1 and O1B.
