@@ -155,7 +155,8 @@ similar.
 - [ ] Modal bug. You can click anywhere on the screen, and that closes the modal.
 - [x] Only showing GFL and curing for OA1 and O1B.
 - [x] Only showing PDF and PC sliders for M1, M2, M3 and M4.
-- [ ] Persist last settings? (Except for lat/long - since that's a log of the persons location and we don't want to persist anything personal)
+- [x] Persist last settings. (excluding PC and PDF)
+- [x] No longer automatically loading your location on start.
 - [ ] Make heading height in advanced and basic look the same.
 - [ ] More spacing between each result, and space between heading and 1st result.
 - [ ] A bit more space between the last input item and the results. (e.g. space between curing and primary heading is different.)
