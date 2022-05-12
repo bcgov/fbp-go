@@ -145,7 +145,7 @@ similar.
 - Grass fuel should be a slider.
 - " It would also be nice if the values I enter in the basic tab would transfer over to the advanced tab, right now it seems to default to C2 for fuel type."
 - " Would be nice to decrease the sensitivity of some of the sliders. Hot dog fingers make it hard to hone in" <- "Mostly the wind slider, but any value that is incremented by one denomination is similar."
-- "If it’s possible to connect the “my location” button to the wildfire one portal to automatically input the local indicies from the closest weather station/stations that would be a cool feature"
+- "If it’s possible to connect the “my location” button to the wildfire one portal to automatically input the local indices from the closest weather station/stations that would be a cool feature"
 - "It would be sweet is you could input numbers manually"
 - "And if there was a map so you could click on the location and it would input the coordinates instead of having to do that yourself."
 
@@ -156,17 +156,16 @@ similar.
 
 ### v1.0.5 (future)
 - [ ] Modal bug. You can click anywhere on the screen, and that closes the modal.
-- [x] Only showing GFL and curing for OA1 and O1B.
-- [x] Only showing PDF and PC sliders for M1, M2, M3 and M4.
-- [x] Persist last settings. (excluding PC and PDF)
-- [x] No longer automatically loading your location on start.
-- [ ] Make heading height in advanced and basic look the same.
-- [ ] More spacing between each result, and space between heading and 1st result.
-- [ ] A bit more space between the last input item and the results. (e.g. space between curing and primary heading is different.)
-- [ ] Consider swapping out ExpansionPanel (it uses up a lot of space).?
+- [x] Basic+Advanced: Only showing GFL and curing for OA1 and O1B.
+- [x] Basic+Advanced: Persist last settings. (excluding PC and PDF)
+- [x] Basic+Advanced: No longer automatically loading your location on start.
+- [x] Basic+Advanced: More spacing between each result, and space between heading and 1st result.
+- [x] Basic+Advanced: A bit more space between the last input item and the results. (e.g. space between curing and primary heading is different.)
+- [x] Advanced: Only showing PDF and PC sliders for M1, M2, M3 and M4.
+- [x] Basic: Make heading height in advanced and basic look the same.
+- [x] Drop acronyms, except where there is limited space.
 - [ ] Plus/minus buttons.
 - [ ] Automated build (apk + appbundle) in github workflow.
-- [ ] Consider dropping acronyms.
 - [ ] What is the unit of measure for the fire spread.
 - [ ] Finalise disclaimer popup.
 

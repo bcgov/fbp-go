@@ -45,14 +45,21 @@ class BasicResults extends StatelessWidget {
     TextStyle valueStyle = TextStyle(
         color: color, fontWeight: FontWeight.bold, fontSize: fontSize);
     TextStyle labelStyle = TextStyle(color: color, fontSize: fontSize);
+    const double textPadding = 1.0;
     return Row(children: [
       Expanded(
           flex: 5,
           child: Padding(
-              padding: const EdgeInsets.only(right: 5.0),
+              padding: const EdgeInsets.only(
+                  right: 5.0, top: textPadding, bottom: textPadding),
               child:
                   Text(value, textAlign: TextAlign.right, style: valueStyle))),
-      Expanded(flex: 6, child: Text(label, style: labelStyle)),
+      Expanded(
+          flex: 6,
+          child: Padding(
+              padding:
+                  const EdgeInsets.only(top: textPadding, bottom: textPadding),
+              child: Text(label, style: labelStyle))),
     ]);
   }
 
@@ -70,8 +77,10 @@ class BasicResults extends StatelessWidget {
               // using spacers to centre text horizontally
               // const Spacer(),
               Padding(
+                // left padding gives us some breathing space between left hand side and text.
+                // top+bottom padding to match the expansions box heading used in advanced.
+                padding: const EdgeInsets.only(left: 10, top: 16, bottom: 16),
                 child: Text('Fire Behaviour Outputs', style: labelStyle),
-                padding: const EdgeInsets.only(left: 10),
               ),
               // const Spacer()
             ],
@@ -80,12 +89,12 @@ class BasicResults extends StatelessWidget {
       buildRow(getFireDescription(prediction.FD), 'Fire type', textStyle.color),
       // Crown fraction burned
       buildRow('${((prediction.CFB * 100).toStringAsFixed(0))}%',
-          'Crown fraction burned (CFB)', textStyle.color),
+          'Crown fraction burned', textStyle.color),
       // Rate of spread
-      buildRow('${prediction.ROS.toStringAsFixed(1)} (m/min)',
-          'Rate of spread (ROS)', textStyle.color),
+      buildRow('${prediction.ROS.toStringAsFixed(1)} (m/min)', 'Rate of spread',
+          textStyle.color),
       // ISI
-      buildRow(prediction.ISI.toStringAsFixed(0), 'Initial spread index (ISI)',
+      buildRow(prediction.ISI.toStringAsFixed(0), 'Initial spread index',
           textStyle.color),
       // Surface flame length
       buildRow('${surfaceFlameLength.toStringAsFixed(2)} (m)',
@@ -94,7 +103,7 @@ class BasicResults extends StatelessWidget {
       buildRow('$intensityClass', 'Intensity class', textStyle.color),
       // HFI
       buildRow('${prediction.HFI.toStringAsFixed(0)} (kW/m)',
-          'Head fire intensity (HFI)', textStyle.color),
+          'Head fire intensity', textStyle.color),
       // 60 minute fire size
       buildRow('${fireSize?.toStringAsFixed(1)} (ha)',
           '${minutes.toStringAsFixed(0)} minute fire size', textStyle.color),
@@ -232,11 +241,13 @@ class BasicFireBehaviourPredictionFormState
                       }))
             ],
           ),
-          BasicResults(
-              prediction: prediction,
-              minutes: minutes,
-              fireSize: fireSize,
-              surfaceFlameLength: surfaceFlameLength)
+          Padding(
+              padding: const EdgeInsets.only(top: 2.0),
+              child: BasicResults(
+                  prediction: prediction,
+                  minutes: minutes,
+                  fireSize: fireSize,
+                  surfaceFlameLength: surfaceFlameLength))
         ],
       );
     } catch (e) {

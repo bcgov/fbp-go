@@ -36,6 +36,7 @@ abstract class Group {
   Row _buildRow(String value, String label, Color? color) {
     const int valueFlex = 3;
     const int labelFlex = 6;
+    const double textPadding = 1.0;
     TextStyle valueStyle = TextStyle(
         color: color, fontWeight: FontWeight.bold, fontSize: fontSize);
     TextStyle labelStyle = TextStyle(color: color, fontSize: fontSize);
@@ -43,10 +44,16 @@ abstract class Group {
       Expanded(
           flex: valueFlex,
           child: Padding(
-              padding: const EdgeInsets.only(right: 5.0),
+              padding: const EdgeInsets.only(
+                  right: 5.0, top: textPadding, bottom: textPadding),
               child:
                   Text(value, textAlign: TextAlign.right, style: valueStyle))),
-      Expanded(flex: labelFlex, child: Text(label, style: labelStyle)),
+      Expanded(
+          flex: labelFlex,
+          child: Padding(
+              padding:
+                  const EdgeInsets.only(top: textPadding, bottom: textPadding),
+              child: Text(label, style: labelStyle))),
     ]);
   }
 
@@ -72,7 +79,6 @@ class SecondaryFireBehaviourGroup extends Group {
       double minutes,
       num surfaceFlameLength) {
     TextStyle textStyle = const TextStyle(color: Colors.black);
-    const valueFlex = 3;
     return buildContainer([
       // Planned ignition
       _buildRow('${(prediction.SFC).toStringAsFixed(0)} (kg/\u33A1)',
@@ -149,8 +155,8 @@ class PrimaryFireBehaviourGroup extends Group {
           'Rate of spread - Back', textStyle.color),
       _buildRow('${surfaceFlameLength.toStringAsFixed(2)} (m)',
           'Surface flame length', textStyle.color),
-      _buildRow(((prediction.ISI).toStringAsFixed(0)),
-          'Initial Spread Index (ISI)', textStyle.color),
+      _buildRow(((prediction.ISI).toStringAsFixed(0)), 'Initial Spread Index',
+          textStyle.color),
       _buildRow(
           ((getHeadFireIntensityClass(prediction.HFI)).toStringAsFixed(0)),
           'Intensity class',

@@ -372,15 +372,17 @@ class AdvancedFireBehaviourPredictionFormState
           ],
         ),
       ),
-      ResultsStateWidget(
-          prediction: prediction,
-          minutes: _minutes,
-          fireSize: fireSize,
-          surfaceFlameLength: surfaceFlameLength,
-          input: input,
-          intensityClass: intensityClass,
-          intensityClassColour: intensityClassColour,
-          intensityClassTextColor: intensityClassTextColour)
+      Padding(
+          padding: const EdgeInsets.only(top: 2.0),
+          child: ResultsStateWidget(
+              prediction: prediction,
+              minutes: _minutes,
+              fireSize: fireSize,
+              surfaceFlameLength: surfaceFlameLength,
+              input: input,
+              intensityClass: intensityClass,
+              intensityClassColour: intensityClassColour,
+              intensityClassTextColor: intensityClassTextColour))
     ]);
   }
 }

@@ -157,14 +157,14 @@ class HomePageState extends State<HomePage> {
             decoration: BoxDecoration(color: Colors.blue),
           ),
           ListTile(
-              title: const Text('Basic Fire Behaviour Prediction (FBP)'),
+              title: const Text('Basic Fire Behaviour Prediction'),
               onTap: () {
                 _changeSection(Section.basic);
               }),
           ListTile(
               title: const Tooltip(
                   message: 'FBP for nerds',
-                  child: Text('Advanced Fire Behaviour Prediction (FBP)')),
+                  child: Text('Advanced Fire Behaviour Prediction')),
               onTap: () {
                 _changeSection(Section.advanced);
               }),
