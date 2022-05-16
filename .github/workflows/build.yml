@@ -12,20 +12,6 @@ jobs:
     name: Build android
     runs-on: ubuntu-latest
     steps:
-      - name: Decode Keystore
-        env:
-            ENCODED_STRING: ${{ secrets.KEYSTORE }}
-        run: |
-            TMP_KEYSTORE_FILE_PATH="${RUNNER_TEMP}"/keystore
-            mkdir "${TMP_KEYSTORE_FILE_PATH}"
-            echo $ENCODED_STRING | base64 -di > "${TMP_KEYSTORE_FILE_PATH}"/your_keystore_file.jks
-      - name: Build keystore properties file
-        env:
-          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
-          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
-          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
-        run: |
-            echo "keyAlias=${{ secrets.SIGNING_KEY_ALIAS }}" > ./android/key.properties
       # Set up Flutter.      
       - name: Install OpenJDK
         uses: actions/setup-java@v3
@@ -54,14 +40,12 @@ jobs:
             TMP_KEYSTORE_FILE_PATH="${RUNNER_TEMP}"/keystore
             mkdir "${TMP_KEYSTORE_FILE_PATH}"
             echo $ENCODED_STRING | base64 -di > "${TMP_KEYSTORE_FILE_PATH}"/your_keystore_file.jks
-      - name: Build keystore properties file
+      - run: flutter build apk
         env:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
-        run: |
-            echo "keyAlias=${{ secrets.SIGNING_KEY_ALIAS }}" > "./android/key.properties
-      - run: flutter build apk
+          KEYSTORE_FILE_PATH: "${RUNNER_TEMP}"/keystore/your_keystore_file.jks
       - run: flutter build appbundle   
   build-on-macos:
     name: Build web + macos-latest
