@@ -55,7 +55,7 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  Section _selectedSection = Section.basic;
+  Section _selectedSection = Section.advanced;
   bool showDisclaimer = true;
 
   String _getSectionText() {
@@ -79,6 +79,7 @@ class HomePageState extends State<HomePage> {
     String disclaimer = await rootBundle.loadString('assets/DISCLAIMER.txt');
     return showDialog<void>(
         context: context,
+        barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Disclaimer'),
@@ -96,9 +97,9 @@ class HomePageState extends State<HomePage> {
         });
   }
 
-  _getSelectedSection(Section _section) {
+  _getSelectedSection(Section section) {
     const double edgeInset = 3;
-    switch (_section) {
+    switch (section) {
       case (Section.about):
         return SingleChildScrollView(
             padding: const EdgeInsets.only(left: edgeInset, right: edgeInset),
@@ -153,8 +154,8 @@ class HomePageState extends State<HomePage> {
         padding: EdgeInsets.zero,
         children: [
           const DrawerHeader(
-            child: Text('FBP Go\n\nFire Behaviour Prediction on the go'),
             decoration: BoxDecoration(color: Colors.blue),
+            child: Text('FBP Go\n\nFire Behaviour Prediction on the go'),
           ),
           // ListTile(
           //     title: const Text('Basic Fire Behaviour Prediction'),

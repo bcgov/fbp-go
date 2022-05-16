@@ -157,23 +157,22 @@ similar.
 - [ ] Re-factor - removing "basic" screen code from app (just commented out for now, in case we want to bring it back in).
 
 ### v1.0.5 Release Candidate (current)
-- [ ] Modal bug. You can click anywhere on the screen, and that closes the modal.
-- [x] Basic: Removed basic screen.
-- [x] Advanced: Change "Basic Fire Behaviour Outputs" to match values from Basic, moving all other values to the Advanced group.
-- [x] Advanced: Changed headings to "Basic Fire Behaviour Outputs" and "Advanced Fire Behaviour Outputs".
-- [x] Basic+Advanced: Only showing GFL and curing for OA1 and O1B.
-- [x] Basic+Advanced: Persist last settings. (excluding PC and PDF)
-- [x] Basic+Advanced: No longer automatically loading your location on start.
-- [x] Basic+Advanced: More spacing between each result, and space between heading and 1st result.
-- [x] Basic+Advanced: A bit more space between the last input item and the results. (e.g. space between curing and primary heading is different.)
-- [x] Advanced: Only showing PDF and PC sliders for M1, M2, M3 and M4.
-- [x] Advanced: Added unit of measure (m) to fire spread distance.
-- [x] Basic: Make heading height in advanced and basic look the same.
-- [x] Drop acronyms, except where there is limited space.
-- [ ] Plus/minus buttons.
-- [ ] Automated build (apk + appbundle) in github workflow.
-- [ ] Finalise disclaimer popup.
-- [x] Tried out FontWeight.normal on unit of measure, but it didn't look good. Reverted back to using same font weight as the value.
+- [x] FBP: Removed basic screen.
+- [x] FBP: Change "Basic Fire Behaviour Outputs" to match values from Basic, moving all other values to the Advanced group.
+- [x] FBP: Changed headings to "Basic Fire Behaviour Outputs" and "Advanced Fire Behaviour Outputs".
+- [x] FBP: Only showing GFL and curing for OA1 and O1B.
+- [x] FBP: Persist last settings. (excluding PC and PDF)
+- [x] FBP: No longer automatically loading your location on start.
+- [x] FBP: More spacing between each result, and space between heading and 1st result.
+- [x] FBP: A bit more space between the last input item and the results. (e.g. space between curing and primary heading is different.)
+- [x] FBP: Only showing PDF and PC sliders for M1, M2, M3 and M4.
+- [x] FBP: Added unit of measure (m) to fire spread distance.
+- [x] FBP: Drop acronyms, except where there is limited space.
+- [ ] FBP: Plus/minus buttons for sliders.
+- [x] FBP: Tried out FontWeight.normal on unit of measure, but it didn't look good. Reverted back to using same font weight as the value.
+- [x] Disclaimer: Changed text from "No warrant or guarantee..." to "No warranty or guarantee...".
+- [x] Disclaimer: Fix bug where user could click away disclaimer without clicking on "OK".
+- [ ] Tech: Automated build (apk + appbundle) in github workflow.
 
 ### v1.0.4
 

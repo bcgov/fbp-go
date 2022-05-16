@@ -20,6 +20,7 @@ import 'package:fire_behaviour_app/persist.dart';
 import 'package:flutter/material.dart';
 
 import 'cffdrs/fbp_calc.dart';
+import 'fancy_slider.dart';
 import 'fire.dart';
 import 'coordinate_picker.dart';
 import 'fire_widgets.dart';
@@ -173,6 +174,26 @@ class BasicInputState extends State<BasicInputWidget> {
             onChanged: (coordinate) {
               _onCoordinateChanged(coordinate);
             }),
+        Row(
+          children: [
+            makeLabel('Wind Speed', '${_input.ws.toInt()}', ' (km/h)',
+                textStyle, textStyleBold),
+            Expanded(
+                flex: sliderFlex,
+                child: FancySliderWidget(
+                    value: _input.ws,
+                    min: 0,
+                    max: 50,
+                    divisions: 50,
+                    activeColor: activeColor,
+                    onChanged: (value) {
+                      // We need to round the wind speed. The slider doesn't give
+                      // us nice clean whole numbers! This way we ensure we get
+                      // that.
+                      _onWSChanged(value.roundToDouble());
+                    })),
+          ],
+        ),
         // Wind Speed
         Row(children: [
           makeLabel('Wind Speed', '${_input.ws.toInt()}', ' (km/h)', textStyle,
