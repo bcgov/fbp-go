@@ -42,7 +42,7 @@ jobs:
             echo $ENCODED_STRING | base64 -di > "${TMP_KEYSTORE_FILE_PATH}"/your_keystore_file.jks
       - name: Build APK
         env:
-            SIGNING_KEY_ALIAS: "moo"
+            SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
         # env:
         #     SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
         #     SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
