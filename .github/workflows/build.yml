@@ -25,7 +25,7 @@ jobs:
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
         run: |
-            echo "keyAlias=${{ secrets.SIGNING_KEY_ALIAS }}" > "./android/key.properties
+            echo "keyAlias=${{ secrets.SIGNING_KEY_ALIAS }}" > ./android/key.properties
       # Set up Flutter.      
       - name: Install OpenJDK
         uses: actions/setup-java@v3
