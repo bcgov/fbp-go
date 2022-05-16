@@ -20,18 +20,17 @@ import 'package:flutter/material.dart';
 class FancySliderState extends State<FancySliderWidget> {
   @override
   Widget build(BuildContext context) {
-    const iconSize = 20.0;
-    const padding = 10.0;
+    const iconSize = 25.0;
     double step = (widget.max - widget.min) / widget.divisions;
     return Padding(
-        padding: const EdgeInsets.only(top: padding, bottom: padding),
+        padding: const EdgeInsets.only(top: 13, bottom: 13),
         child: Column(
           children: [
             Row(
               children: [
                 IconButton(
                   constraints: const BoxConstraints(),
-                  padding: const EdgeInsets.all(0),
+                  padding: const EdgeInsets.only(right: 10),
                   icon: const Icon(Icons.remove_circle_rounded, size: iconSize),
                   onPressed: () {
                     if (widget.value > widget.min) {
@@ -56,7 +55,7 @@ class FancySliderState extends State<FancySliderWidget> {
                         ))),
                 IconButton(
                   constraints: const BoxConstraints(),
-                  padding: const EdgeInsets.all(0),
+                  padding: const EdgeInsets.only(left: 10, right: 5),
                   icon: const Icon(Icons.add_circle_rounded, size: iconSize),
                   onPressed: () {
                     if (widget.value < widget.max) {

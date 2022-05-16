@@ -26,7 +26,6 @@ class AdvancedSettings extends BasicSettings {
 
 void persistSetting(String key, double value) {
   SharedPreferences.getInstance().then((prefs) {
-    print('Persisting $key = $value');
     prefs.setDouble(key, value);
   });
 }
@@ -36,22 +35,6 @@ void persistFuelTypePreset(FuelTypePreset value) {
     prefs.setInt('fuelTypePreset', value.id);
   });
 }
-
-// void persistBasic(BasicInput basicInput, FuelType fuelType) {
-//   SharedPreferences.getInstance().then((prefs) {
-//     prefs.setDouble('ws', basicInput.ws);
-//     prefs.setDouble('waz', basicInput.waz);
-//     prefs.setDouble('gs', basicInput.gs);
-//     prefs.setDouble('bui', basicInput.bui);
-//     prefs.setDouble('cc', basicInput.cc);
-//     prefs.setDouble('ffmc', basicInput.ffmc);
-//     prefs.setDouble('aspect', basicInput.aspect);
-//     prefs.setString('fuelType', fuelType.name);
-//     prefs.setDouble('latitude', basicInput.coordinate.latitude);
-//     prefs.setDouble('longitude', basicInput.coordinate.longitude);
-//     prefs.setDouble('altitude', basicInput.coordinate.altitude);
-//   });
-// }
 
 BasicSettings _loadBasic(SharedPreferences prefs) {
   final c2 = getC2BorealSpruce();

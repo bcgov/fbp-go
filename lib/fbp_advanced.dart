@@ -197,7 +197,7 @@ class AdvancedFireBehaviourPredictionFormState
 
   Expanded makeInputLabel(String heading, String value, String unitOfMeasure,
       TextStyle textStyle, TextStyle textStyleBold) {
-    const labelFlex = 4;
+    const labelFlex = 5;
     return Expanded(
         flex: labelFlex,
         child: Column(children: [
@@ -243,7 +243,7 @@ class AdvancedFireBehaviourPredictionFormState
         CBH: _cbh,
         CFL: _cfl,
         HR: _minutes / 60.0);
-    print('advanced: ${input}');
+    // print('advanced: ${input}');
     FireBehaviourPredictionPrimary prediction = FBPcalc(input, output: "ALL");
     _onFMCChanged(prediction.FMC);
     // Wind direction correction:
@@ -259,7 +259,7 @@ class AdvancedFireBehaviourPredictionFormState
           prediction.secondary!.LB);
     }
     final surfaceFlameLength = calculateApproxFlameLength(prediction.HFI);
-    const sliderFlex = 9;
+    const sliderFlex = 10;
     final intensityClass = getHeadFireIntensityClass(prediction.HFI);
     final intensityClassColour = getIntensityClassColor(intensityClass);
     final intensityClassTextColour = getIntensityClassTextColor(intensityClass);
