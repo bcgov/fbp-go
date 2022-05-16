@@ -71,6 +71,10 @@ select app
 internal testing -> create new release -> upload
 releases overview -> review it
 
+#### Github Workflow
+
+
+
 ### Build for iOS - on M1 silicon
 
 If you use the default ruby+gem setup that comes out of the box, you'll get errors about
@@ -159,6 +163,16 @@ similar.
 - [ ] FBP: Consider input option without sliders.
 
 ### v1.0.5 Release Candidate (current)
+
+#### Summary:
+
+- Single FBP window. (No longer differentiating between Basic/Advanced.)
+- Various input, styling & formatting changes.
+- Added +/- buttons for fine value adjustment.
+- Remember settings.
+
+#### Detail:
+
 - [x] FBP: Removed basic screen.
 - [x] FBP: Change "Basic Fire Behaviour Outputs" to match values from Basic, moving all other values to the Advanced group.
 - [x] FBP: Changed headings to "Basic Fire Behaviour Outputs" and "Advanced Fire Behaviour Outputs".
