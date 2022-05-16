@@ -307,7 +307,7 @@ class AdvancedFireBehaviourPredictionFormState
                       '%', textStyle, textStyleBold),
                   Expanded(
                       flex: sliderFlex,
-                      child: Slider(
+                      child: FancySliderWidget(
                         value: _pdf ?? 0,
                         min: 0,
                         max: 100,
@@ -326,7 +326,7 @@ class AdvancedFireBehaviourPredictionFormState
                     textStyle, textStyleBold),
                 Expanded(
                     flex: sliderFlex,
-                    child: Slider(
+                    child: FancySliderWidget(
                       value: _pc ?? 0,
                       min: 0,
                       max: 100,

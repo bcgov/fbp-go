@@ -123,7 +123,7 @@ class BasicInputState extends State<BasicInputWidget> {
           'Curing', '${_input.cc.toInt()}', '%', textStyle, textStyleBold),
       Expanded(
           flex: sliderFlex,
-          child: Slider(
+          child: FancySliderWidget(
             value: _input.cc,
             min: 0,
             max: 100,

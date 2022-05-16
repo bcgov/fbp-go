@@ -31,7 +31,7 @@ class FancySliderState extends State<FancySliderWidget> {
                 IconButton(
                   constraints: const BoxConstraints(),
                   padding: const EdgeInsets.only(right: 10),
-                  icon: const Icon(Icons.remove_circle_rounded, size: iconSize),
+                  icon: const Icon(Icons.remove_circle_outline, size: iconSize),
                   onPressed: () {
                     if (widget.value > widget.min) {
                       widget.onChanged(widget.value - step);
@@ -56,7 +56,7 @@ class FancySliderState extends State<FancySliderWidget> {
                 IconButton(
                   constraints: const BoxConstraints(),
                   padding: const EdgeInsets.only(left: 10, right: 5),
-                  icon: const Icon(Icons.add_circle_rounded, size: iconSize),
+                  icon: const Icon(Icons.add_circle_outline, size: iconSize),
                   onPressed: () {
                     if (widget.value < widget.max) {
                       widget.onChanged(widget.value + step);

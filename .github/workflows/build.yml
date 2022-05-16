@@ -34,18 +34,26 @@ jobs:
       # tests failing here but not locally?
       - run: flutter test
       - run: flutter build web
+      - name: Decode Keystore
+        env:
+            ENCODED_STRING: ${{ secrets.KEYSTORE }}
+        run: |
+            TMP_KEYSTORE_FILE_PATH="${RUNNER_TEMP}"/keystore
+            mkdir "${TMP_KEYSTORE_FILE_PATH}"
+            echo $ENCODED_STRING | base64 -di > "${TMP_KEYSTORE_FILE_PATH}"/your_keystore_file.jks
+      - name: Build keystore properties file
+        env:
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+        run: |
+            echo "keyAlias=${{ secrets.SIGNING_KEY_ALIAS }}" > ${RUNNER_TEMP}/android/key.properties
       - run: flutter build apk
       - run: flutter build appbundle   
   build-on-macos:
     name: Build web + macos-latest
     runs-on: macos-latest
     steps:
-      # Set up Flutter.      
-      # - name: Install OpenJDK
-      #   uses: actions/setup-java@v3
-      #   with:
-      #     distribution: 'zulu'
-      #     java-version: '11'
       - name: Get latest stable version of Flutter
         uses: subosito/flutter-action@v2
         with:

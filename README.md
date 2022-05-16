@@ -153,8 +153,10 @@ similar.
 ## Log of changes & decisions
 
 ### v1.0.6 Release Candidate (future)
-- [ ] Incorporate card sort feedback.
+- [ ] FBP: Incorporate card sort feedback.
 - [ ] Re-factor - removing "basic" screen code from app (just commented out for now, in case we want to bring it back in).
+- [ ] FBP: Switch grass fuel load to slider
+- [ ] FBP: Consider input option without sliders.
 
 ### v1.0.5 Release Candidate (current)
 - [x] FBP: Removed basic screen.
@@ -168,11 +170,12 @@ similar.
 - [x] FBP: Only showing PDF and PC sliders for M1, M2, M3 and M4.
 - [x] FBP: Added unit of measure (m) to fire spread distance.
 - [x] FBP: Drop acronyms, except where there is limited space.
-- [ ] FBP: Plus/minus buttons for sliders.
+- [x] FBP: Plus/minus buttons for sliders.
 - [x] FBP: Tried out FontWeight.normal on unit of measure, but it didn't look good. Reverted back to using same font weight as the value.
 - [x] Disclaimer: Changed text from "No warrant or guarantee..." to "No warranty or guarantee...".
 - [x] Disclaimer: Fix bug where user could click away disclaimer without clicking on "OK".
 - [ ] Tech: Automated build (apk + appbundle) in github workflow.
+- [x] Tech: Upgrade to flutter 3.0.0.
 
 ### v1.0.4
 
