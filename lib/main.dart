@@ -63,7 +63,7 @@ class HomePageState extends State<HomePage> {
       case Section.basic:
         return 'Basic FBP';
       case Section.advanced:
-        return 'Advanced FBP';
+        return 'Fire Behaviour Prediction';
       case Section.fwi:
         return 'Fire Weather Index';
       case Section.about:
@@ -156,15 +156,16 @@ class HomePageState extends State<HomePage> {
             child: Text('FBP Go\n\nFire Behaviour Prediction on the go'),
             decoration: BoxDecoration(color: Colors.blue),
           ),
+          // ListTile(
+          //     title: const Text('Basic Fire Behaviour Prediction'),
+          //     onTap: () {
+          //       _changeSection(Section.basic);
+          //     }),
           ListTile(
-              title: const Text('Basic Fire Behaviour Prediction'),
-              onTap: () {
-                _changeSection(Section.basic);
-              }),
-          ListTile(
-              title: const Tooltip(
-                  message: 'FBP for nerds',
-                  child: Text('Advanced Fire Behaviour Prediction')),
+              // title: const Tooltip(
+              // message: 'FBP for nerds',
+              // child: Text('Fire Behaviour Prediction')),
+              title: const Text('Fire Behaviour Prediction'),
               onTap: () {
                 _changeSection(Section.advanced);
               }),

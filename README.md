@@ -148,14 +148,19 @@ similar.
 - "If it’s possible to connect the “my location” button to the wildfire one portal to automatically input the local indices from the closest weather station/stations that would be a cool feature"
 - "It would be sweet is you could input numbers manually"
 - "And if there was a map so you could click on the location and it would input the coordinates instead of having to do that yourself."
+- Create an "Assumptions tab", that explains the input values and formulae being used in the background.
 
 ## Log of changes & decisions
 
 ### v1.0.6 Release Candidate (future)
-- [ ] Incorporate card sort feedback in advanced and or basic tab.
+- [ ] Incorporate card sort feedback.
+- [ ] Re-factor - removing "basic" screen code from app (just commented out for now, in case we want to bring it back in).
 
-### v1.0.5 (future)
+### v1.0.5 Release Candidate (current)
 - [ ] Modal bug. You can click anywhere on the screen, and that closes the modal.
+- [x] Basic: Removed basic screen.
+- [x] Advanced: Change "Basic Fire Behaviour Outputs" to match values from Basic, moving all other values to the Advanced group.
+- [x] Advanced: Changed headings to "Basic Fire Behaviour Outputs" and "Advanced Fire Behaviour Outputs".
 - [x] Basic+Advanced: Only showing GFL and curing for OA1 and O1B.
 - [x] Basic+Advanced: Persist last settings. (excluding PC and PDF)
 - [x] Basic+Advanced: No longer automatically loading your location on start.
@@ -168,8 +173,9 @@ similar.
 - [ ] Plus/minus buttons.
 - [ ] Automated build (apk + appbundle) in github workflow.
 - [ ] Finalise disclaimer popup.
+- [x] Tried out FontWeight.normal on unit of measure, but it didn't look good. Reverted back to using same font weight as the value.
 
-### v1.0.4 (current)
+### v1.0.4
 
 - [x] Basic+Advanced: Left align headings.
 - [x] Basic+Advanced: Added flame length.
