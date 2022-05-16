@@ -21,50 +21,53 @@ class FancySliderState extends State<FancySliderWidget> {
   @override
   Widget build(BuildContext context) {
     const iconSize = 20.0;
+    const padding = 10.0;
     double step = (widget.max - widget.min) / widget.divisions;
-    return Column(
-      children: [
-        Row(
+    return Padding(
+        padding: const EdgeInsets.only(top: padding, bottom: padding),
+        child: Column(
           children: [
-            IconButton(
-              constraints: const BoxConstraints(),
-              padding: const EdgeInsets.all(0),
-              icon: const Icon(Icons.remove_circle_rounded, size: iconSize),
-              onPressed: () {
-                if (widget.value > widget.min) {
-                  widget.onChanged(widget.value - step);
-                }
-              },
-            ),
-            Expanded(
-                child: SliderTheme(
-                    data: SliderThemeData(
-                        overlayShape: SliderComponentShape.noOverlay),
-                    child: Slider(
-                      value: widget.value,
-                      min: widget.min,
-                      max: widget.max,
-                      divisions: widget.divisions,
-                      activeColor: widget.activeColor,
-                      label: widget.value.toStringAsFixed(0),
-                      onChanged: (double value) {
-                        widget.onChanged(value);
-                      },
-                    ))),
-            IconButton(
-              constraints: const BoxConstraints(),
-              padding: const EdgeInsets.all(0),
-              icon: const Icon(Icons.add_circle_rounded, size: iconSize),
-              onPressed: () {
-                if (widget.value < widget.max) {
-                  widget.onChanged(widget.value + step);
-                }
-              },
+            Row(
+              children: [
+                IconButton(
+                  constraints: const BoxConstraints(),
+                  padding: const EdgeInsets.all(0),
+                  icon: const Icon(Icons.remove_circle_rounded, size: iconSize),
+                  onPressed: () {
+                    if (widget.value > widget.min) {
+                      widget.onChanged(widget.value - step);
+                    }
+                  },
+                ),
+                Expanded(
+                    child: SliderTheme(
+                        data: SliderThemeData(
+                            overlayShape: SliderComponentShape.noOverlay),
+                        child: Slider(
+                          value: widget.value,
+                          min: widget.min,
+                          max: widget.max,
+                          divisions: widget.divisions,
+                          activeColor: widget.activeColor,
+                          label: widget.label,
+                          onChanged: (double value) {
+                            widget.onChanged(value);
+                          },
+                        ))),
+                IconButton(
+                  constraints: const BoxConstraints(),
+                  padding: const EdgeInsets.all(0),
+                  icon: const Icon(Icons.add_circle_rounded, size: iconSize),
+                  onPressed: () {
+                    if (widget.value < widget.max) {
+                      widget.onChanged(widget.value + step);
+                    }
+                  },
+                )
+              ],
             )
           ],
-        )
-      ],
-    );
+        ));
   }
 }
 
@@ -74,6 +77,7 @@ class FancySliderWidget extends StatefulWidget {
   final double max;
   final int divisions;
   final Color activeColor;
+  final String label;
   final Function onChanged;
 
   const FancySliderWidget(
@@ -83,6 +87,7 @@ class FancySliderWidget extends StatefulWidget {
       required this.max,
       required this.divisions,
       required this.activeColor,
+      required this.label,
       required this.onChanged})
       : super(key: key);
   @override

@@ -186,6 +186,8 @@ class BasicInputState extends State<BasicInputWidget> {
                     max: 50,
                     divisions: 50,
                     activeColor: activeColor,
+                    label:
+                        '${_input.ws.toInt()} km/h\nBeaufort scale:\n${beaufortScale.range}\n${beaufortScale.description}\n${beaufortScale.effects}',
                     onChanged: (value) {
                       // We need to round the wind speed. The slider doesn't give
                       // us nice clean whole numbers! This way we ensure we get
@@ -195,27 +197,27 @@ class BasicInputState extends State<BasicInputWidget> {
           ],
         ),
         // Wind Speed
-        Row(children: [
-          makeLabel('Wind Speed', '${_input.ws.toInt()}', ' (km/h)', textStyle,
-              textStyleBold),
-          Expanded(
-              flex: sliderFlex,
-              child: Slider(
-                value: _input.ws,
-                min: 0,
-                max: 50,
-                divisions: 50,
-                activeColor: activeColor,
-                label:
-                    '${_input.ws.toInt()} km/h\nBeaufort scale:\n${beaufortScale.range}\n${beaufortScale.description}\n${beaufortScale.effects}',
-                onChanged: (value) {
-                  // We need to round the wind speed. The slider doesn't give
-                  // us nice clean whole numbers! This way we ensure we get
-                  // that.
-                  _onWSChanged(value.roundToDouble());
-                },
-              ))
-        ]),
+        // Row(children: [
+        //   makeLabel('Wind Speed', '${_input.ws.toInt()}', ' (km/h)', textStyle,
+        //       textStyleBold),
+        //   Expanded(
+        //       flex: sliderFlex,
+        //       child: Slider(
+        //         value: _input.ws,
+        //         min: 0,
+        //         max: 50,
+        //         divisions: 50,
+        //         activeColor: activeColor,
+        //         label:
+        //             '${_input.ws.toInt()} km/h\nBeaufort scale:\n${beaufortScale.range}\n${beaufortScale.description}\n${beaufortScale.effects}',
+        //         onChanged: (value) {
+        //           // We need to round the wind speed. The slider doesn't give
+        //           // us nice clean whole numbers! This way we ensure we get
+        //           // that.
+        //           _onWSChanged(value.roundToDouble());
+        //         },
+        //       ))
+        // ]),
         // Wind Azimuth
         Row(children: [
           makeLabel(
@@ -226,7 +228,7 @@ class BasicInputState extends State<BasicInputWidget> {
               textStyleBold),
           Expanded(
               flex: sliderFlex,
-              child: Slider(
+              child: FancySliderWidget(
                 value: _input.waz,
                 min: 0,
                 max: 360,
@@ -246,7 +248,7 @@ class BasicInputState extends State<BasicInputWidget> {
               textStyleBold),
           Expanded(
               flex: sliderFlex,
-              child: Slider(
+              child: FancySliderWidget(
                 value: _input.gs,
                 min: 0,
                 max: 90,
@@ -271,7 +273,7 @@ class BasicInputState extends State<BasicInputWidget> {
               textStyleBold),
           Expanded(
               flex: sliderFlex,
-              child: Slider(
+              child: FancySliderWidget(
                 value: _input.aspect,
                 min: 0,
                 max: 360,
@@ -290,7 +292,7 @@ class BasicInputState extends State<BasicInputWidget> {
               textStyleBold),
           Expanded(
               flex: sliderFlex,
-              child: Slider(
+              child: FancySliderWidget(
                 value: _input.bui,
                 min: 0,
                 max: 200,
@@ -311,7 +313,7 @@ class BasicInputState extends State<BasicInputWidget> {
               'FFMC', '${_input.ffmc.toInt()}', '', textStyle, textStyleBold),
           Expanded(
               flex: sliderFlex,
-              child: Slider(
+              child: FancySliderWidget(
                 value:
                     _input.ffmc >= 80 && _input.ffmc <= 100 ? _input.ffmc : 80,
                 min: 80,
