@@ -46,14 +46,14 @@ jobs:
             SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
             SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
             SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
-            KEYSTORE_FILE_PATH: "${RUNNER_TEMP}/keystore/your_keystore_file.jks"
+            KEYSTORE_FILE_PATH: "${{ env.RUNNER_TEMP }}/keystore/your_keystore_file.jks"
         run: flutter build apk
       - name: Build AppBundle
         env:
             SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
             SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
             SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
-            KEYSTORE_FILE_PATH: "${RUNNER_TEMP}/keystore/your_keystore_file.jks"
+            KEYSTORE_FILE_PATH: "${{ env.RUNNER_TEMP }}/keystore/your_keystore_file.jks"
         run: flutter build appbundle   
   build-on-macos:
     name: Build web + macos-latest
