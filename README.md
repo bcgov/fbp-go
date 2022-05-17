@@ -140,7 +140,6 @@ similar.
   - Add a screen where you you can see the impact of the diurnal FFMC (maybe sliding time?) - see: hffmc.
   - Work towards a screen where you can see the impact of changing FFMC on fire.
 - Do lots of re-factoring (code was written as p.o.c. in a big rush).
-- (pending p.o.) set the FFMC lower limit to 60?
 - Add reference content to the Nav - e.g. pictures of the fuel types (trees) a la red book - would be great for newer folks; Easy to do, but needs images that we have licences for.
 - User feedback/request: can we have pre-sets based on task? (Future idea) You open the app, say what you’re doing (prescribed burn, small fire, big fire/incident action plan, no fire just out and about - this is not the actual list) Prescribed burning: I don’t need all this info, reduce the list of data (maybe I can still personalize?) I wouldn’t care about the consumption of the flank in this case, and I better not be causing a crown fire
 - From testing session: users report difficulty with the sliders in terms of precision - hard to get the exact number they want. Sometimes this is ok, sometimes it’s very bad. Either way, it’s frustrating. Users pointed out that in the field their hands will be sweaty and dirty. Some folks realized they could turn their phone to landscape mode and it was a bit better. User-feature request: in addition to the sliders, can we have + and - buttons There may be other ways, UX can collaborate
@@ -152,15 +151,34 @@ similar.
 - "If it’s possible to connect the “my location” button to the wildfire one portal to automatically input the local indices from the closest weather station/stations that would be a cool feature"
 - "It would be sweet is you could input numbers manually"
 - "And if there was a map so you could click on the location and it would input the coordinates instead of having to do that yourself."
-- Create an "Assumptions tab", that explains the input values and formulae being used in the background.
+- Create an "Assumptions tab", that explains the input values and formulae being used in the background:
+"Assumptions – FBP Go
+
+Care should be exercised not to apply the system beyond its useful range. FBP Go/ FBP System can be used to make predictions for a fire spreading during one burning period from a point or line source of fire with the following assumptions:
+•	Fuel conditions are representative one of the 18 benchmark fuel types.
+•	The Fire Weather Index (FWI) values used are representative of the site conditions.
+•	Fuels are uniform and continuous; topography is homogenous. and the wind is constant and one direction during the prediction period.
+•	The fire is wind or wind/slope driven, and spread is not affected by a convection column. 
+•	Wind is measured in the open and is corrected to 10 m.
+•	The rate of fire spread levels off at high wind speed and initial spread index (ISI) values.
+•	The fire is unaffected by suppression activities (free burning).
+•	The effect of short-range spotting of firebrands on spread is considered.
+•	A fire starting from a point source will have an elliptical shape under the above conditions.
+
+The FBP System is based on observations of experimental fires and wildfires. There are very few records of sustained fire spread with wind speeds above 60 km and/or ISI > 70. Thus, the largest ROS values in this App roughly correspond to the upper limit of observed spread rates in each fuel type. Higher ROS values may occur with higher wind speeds and during gusts.
+"
+
 
 ## Log of changes & decisions
 
 ### v1.0.6 Release Candidate (future)
-- [ ] FBP: Incorporate card sort feedback.
 - [ ] Re-factor - removing "basic" screen code from app (just commented out for now, in case we want to bring it back in).
 - [ ] FBP: Switch grass fuel load to slider
 - [ ] FBP: Consider input option without sliders.
+- [ ] FBP: FFMC lower limit kept at 80 (values lower than 80 not deemed relevant).
+- [ ] FBP: Incorporate card sort feedback.
+- [ ] FBP: Grass Fuel Load - crashes app when set to negative.
+- [ ] FBP: Grass Fuel Load - is this a slider or an input box?
 - [ ] Tech: Automated build (apk + appbundle) in github workflow.
 
 ### v1.0.5 Release Candidate (current)
