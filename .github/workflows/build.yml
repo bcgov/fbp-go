@@ -8,25 +8,64 @@ on:
       - main
 
 jobs:
-  build:
-    name: Build web + macos-latest
-    runs-on: macos-latest
-    strategy:
-      fail-fast: false
+  build-on-ubuntu:
+    name: Build android
+    runs-on: ubuntu-latest
     steps:
       # Set up Flutter.      
-      # - name: Install OpenJDK
-      #   uses: actions/setup-java@v3
-      #   with:
-      #     distribution: 'zulu'
-      #     java-version: '11'
+      - name: Install OpenJDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '11'
       - name: Get latest stable version of Flutter
         uses: subosito/flutter-action@v2
         with:
+          flutter-version: '3.x'
           channel: stable
           cache: true
-          cache-key: flutter # optional, change this to force refresh cache
-          cache-path: ${{ runner.tool_cache }}/flutter # optional, change this to specify the cache path
+          cache-key: flutter-3.x # optional, change this to force refresh cache
+      - run: flutter --version
+      - run: flutter doctor -v
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - run: flutter pub get -v
+      # tests failing here but not locally?
+      # - run: flutter test
+      # - run: flutter build web
+      - name: Decode Keystore
+        env:
+            ENCODED_STRING: ${{ secrets.KEYSTORE }}
+        run: |
+            TMP_KEYSTORE_FILE_PATH="${RUNNER_TEMP}"/keystore
+            mkdir "${TMP_KEYSTORE_FILE_PATH}"
+            echo $ENCODED_STRING | base64 --decode > "${TMP_KEYSTORE_FILE_PATH}"/your_keystore_file.jks
+      # builds failing with: "Failed to read key  from store "/home/runner/work/_temp/keystore/your_keystore_file.jks": Short read of DER length"
+      # - name: Build APK
+      #   env:
+      #       SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+      #       SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+      #       SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+      #       KEYSTORE_FILE_PATH: "${{ runner.temp }}/keystore/your_keystore_file.jks"
+      #   run: flutter build apk
+      # - name: Build AppBundle
+      #   env:
+      #       SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+      #       SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+      #       SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+      #       KEYSTORE_FILE_PATH: "${{ runner.temp }}/keystore/your_keystore_file.jks"
+      #   run: flutter build appbundle   
+  build-on-macos:
+    name: Build web + macos-latest
+    runs-on: macos-latest
+    steps:
+      - name: Get latest stable version of Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.x'
+          channel: stable
+          cache: true
+          cache-key: flutter-3.x # optional, change this to force refresh cache
       - run: flutter --version
       - run: flutter config --enable-macos-desktop
       - run: flutter doctor -v
@@ -39,4 +78,4 @@ jobs:
       - run: flutter build ios --release --no-codesign
       # does not work on macos?
       # - run: flutter build apk
-      # - run: flutter build appbundle      
+      # - run: flutter build appbundle

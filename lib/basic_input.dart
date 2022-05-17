@@ -16,9 +16,11 @@ You should have received a copy of the GNU General Public License along with
 FBP Go. If not, see <https://www.gnu.org/licenses/>.
 */
 import 'package:fire_behaviour_app/beaufort.dart';
+import 'package:fire_behaviour_app/persist.dart';
 import 'package:flutter/material.dart';
 
 import 'cffdrs/fbp_calc.dart';
+import 'fancy_slider.dart';
 import 'fire.dart';
 import 'coordinate_picker.dart';
 import 'fire_widgets.dart';
@@ -30,16 +32,12 @@ class BasicInput {
   double gs = 0;
   double aspect = 0;
   double bui;
-  double cc = 50;
-  double ffmc = 80;
+  double cc = defaultCC;
+  double ffmc = defaultFFMC;
 
   Coordinate coordinate;
 
-  BasicInput({
-    required this.ws,
-    required this.bui,
-    required this.coordinate,
-  });
+  BasicInput({required this.ws, required this.bui, required this.coordinate});
 
   @override
   String toString() {
@@ -55,6 +53,7 @@ class BasicInputState extends State<BasicInputWidget> {
       _input.ws = ws;
     });
     widget.onChanged(_input);
+    persistSetting('ws', ws);
   }
 
   void _onCoordinateChanged(coordinate) {
@@ -69,6 +68,7 @@ class BasicInputState extends State<BasicInputWidget> {
       _input.waz = waz;
     });
     widget.onChanged(_input);
+    persistSetting('waz', waz);
   }
 
   void _onGSChanged(double gs) {
@@ -76,6 +76,7 @@ class BasicInputState extends State<BasicInputWidget> {
       _input.gs = gs;
     });
     widget.onChanged(_input);
+    persistSetting('gs', gs);
   }
 
   void _onAspectChanged(double aspect) {
@@ -83,6 +84,7 @@ class BasicInputState extends State<BasicInputWidget> {
       _input.aspect = aspect;
     });
     widget.onChanged(_input);
+    persistSetting('aspect', aspect);
   }
 
   void _onBUIChanged(double bui) {
@@ -90,6 +92,7 @@ class BasicInputState extends State<BasicInputWidget> {
       _input.bui = bui;
     });
     widget.onChanged(_input);
+    persistSetting('bui', bui);
   }
 
   void _onCCChanged(double cc) {
@@ -97,6 +100,7 @@ class BasicInputState extends State<BasicInputWidget> {
       _input.cc = cc;
     });
     widget.onChanged(_input);
+    persistSetting('cc', cc);
   }
 
   void _onFFMCChanged(double ffmc) {
@@ -104,12 +108,36 @@ class BasicInputState extends State<BasicInputWidget> {
       _input.ffmc = ffmc;
     });
     widget.onChanged(_input);
+    persistSetting('ffmc', ffmc);
   }
 
   @override
   void initState() {
-    _input = widget.value;
+    _input = widget.basicInput;
     super.initState();
+  }
+
+  Row _buildCuringRow(textStyle, textStyleBold, sliderFlex, activeColor) {
+    return Row(children: [
+      makeLabel(
+          'Curing', '${_input.cc.toInt()}', '%', textStyle, textStyleBold),
+      Expanded(
+          flex: sliderFlex,
+          child: FancySliderWidget(
+            value: _input.cc,
+            min: 0,
+            max: 100,
+            divisions: 20,
+            label: '${_input.cc.toInt()}%',
+            activeColor: activeColor,
+            onChanged: (value) {
+              // We need to round the curing. The slider doesn't give
+              // us nice clean whole numbers! This way we ensure we get
+              // that.
+              _onCCChanged(value.roundToDouble());
+            },
+          )),
+    ]);
   }
 
   Expanded makeLabel(String heading, String value, String unitOfMeasure,
@@ -141,31 +169,34 @@ class BasicInputState extends State<BasicInputWidget> {
     return Column(
       children: [
         // lat, long, elevation
-        CoordinatePicker(onChanged: (coordinate) {
-          _onCoordinateChanged(coordinate);
-        }),
+        CoordinatePicker(
+            coordinate: _input.coordinate,
+            onChanged: (coordinate) {
+              _onCoordinateChanged(coordinate);
+            }),
         // Wind Speed
-        Row(children: [
-          makeLabel('Wind Speed', '${_input.ws.toInt()}', ' (km/h)', textStyle,
-              textStyleBold),
-          Expanded(
-              flex: sliderFlex,
-              child: Slider(
-                value: _input.ws,
-                min: 0,
-                max: 50,
-                divisions: 50,
-                activeColor: activeColor,
-                label:
-                    '${_input.ws.toInt()} km/h\nBeaufort scale:\n${beaufortScale.range}\n${beaufortScale.description}\n${beaufortScale.effects}',
-                onChanged: (value) {
-                  // We need to round the wind speed. The slider doesn't give
-                  // us nice clean whole numbers! This way we ensure we get
-                  // that.
-                  _onWSChanged(value.roundToDouble());
-                },
-              ))
-        ]),
+        Row(
+          children: [
+            makeLabel('Wind Speed', '${_input.ws.toInt()}', ' (km/h)',
+                textStyle, textStyleBold),
+            Expanded(
+                flex: sliderFlex,
+                child: FancySliderWidget(
+                    value: _input.ws,
+                    min: 0,
+                    max: 50,
+                    divisions: 50,
+                    activeColor: activeColor,
+                    label:
+                        '${_input.ws.toInt()} km/h\nBeaufort scale:\n${beaufortScale.range}\n${beaufortScale.description}\n${beaufortScale.effects}',
+                    onChanged: (value) {
+                      // We need to round the wind speed. The slider doesn't give
+                      // us nice clean whole numbers! This way we ensure we get
+                      // that.
+                      _onWSChanged(value.roundToDouble());
+                    })),
+          ],
+        ),
         // Wind Azimuth
         Row(children: [
           makeLabel(
@@ -176,7 +207,7 @@ class BasicInputState extends State<BasicInputWidget> {
               textStyleBold),
           Expanded(
               flex: sliderFlex,
-              child: Slider(
+              child: FancySliderWidget(
                 value: _input.waz,
                 min: 0,
                 max: 360,
@@ -196,7 +227,7 @@ class BasicInputState extends State<BasicInputWidget> {
               textStyleBold),
           Expanded(
               flex: sliderFlex,
-              child: Slider(
+              child: FancySliderWidget(
                 value: _input.gs,
                 min: 0,
                 max: 90,
@@ -221,7 +252,7 @@ class BasicInputState extends State<BasicInputWidget> {
               textStyleBold),
           Expanded(
               flex: sliderFlex,
-              child: Slider(
+              child: FancySliderWidget(
                 value: _input.aspect,
                 min: 0,
                 max: 360,
@@ -240,7 +271,7 @@ class BasicInputState extends State<BasicInputWidget> {
               textStyleBold),
           Expanded(
               flex: sliderFlex,
-              child: Slider(
+              child: FancySliderWidget(
                 value: _input.bui,
                 min: 0,
                 max: 200,
@@ -261,8 +292,9 @@ class BasicInputState extends State<BasicInputWidget> {
               'FFMC', '${_input.ffmc.toInt()}', '', textStyle, textStyleBold),
           Expanded(
               flex: sliderFlex,
-              child: Slider(
-                value: _input.ffmc,
+              child: FancySliderWidget(
+                value:
+                    _input.ffmc >= 80 && _input.ffmc <= 100 ? _input.ffmc : 80,
                 min: 80,
                 max: 100,
                 divisions: 20,
@@ -277,26 +309,8 @@ class BasicInputState extends State<BasicInputWidget> {
               )),
         ]),
         // Curing
-        Row(children: [
-          makeLabel(
-              'Curing', '${_input.cc.toInt()}', '%', textStyle, textStyleBold),
-          Expanded(
-              flex: sliderFlex,
-              child: Slider(
-                value: _input.cc,
-                min: 0,
-                max: 100,
-                divisions: 20,
-                label: '${_input.cc.toInt()}%',
-                activeColor: activeColor,
-                onChanged: (value) {
-                  // We need to round the curing. The slider doesn't give
-                  // us nice clean whole numbers! This way we ensure we get
-                  // that.
-                  _onCCChanged(value.roundToDouble());
-                },
-              )),
-        ]),
+        if (isGrassFuelType(widget.fuelTypePreset.code))
+          _buildCuringRow(textStyle, textStyleBold, sliderFlex, activeColor)
       ],
     );
   }
@@ -304,14 +318,16 @@ class BasicInputState extends State<BasicInputWidget> {
 
 class BasicInputWidget extends StatefulWidget {
   final Function onChanged;
-  final BasicInput value;
+  final BasicInput basicInput;
   final FireBehaviourPredictionPrimary prediction;
+  final FuelTypePreset fuelTypePreset;
 
   const BasicInputWidget(
       {Key? key,
       required this.onChanged,
-      required this.value,
-      required this.prediction})
+      required this.basicInput,
+      required this.prediction,
+      required this.fuelTypePreset})
       : super(key: key);
 
   @override

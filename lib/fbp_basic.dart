@@ -17,9 +17,9 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 */
 import 'dart:developer';
 
+import 'package:fire_behaviour_app/persist.dart';
 import 'package:flutter/material.dart';
 
-import 'coordinate_picker.dart';
 import 'cffdrs/fbp_calc.dart';
 import 'fire_widgets.dart';
 import 'fire.dart';
@@ -45,14 +45,21 @@ class BasicResults extends StatelessWidget {
     TextStyle valueStyle = TextStyle(
         color: color, fontWeight: FontWeight.bold, fontSize: fontSize);
     TextStyle labelStyle = TextStyle(color: color, fontSize: fontSize);
+    const double textPadding = 1.0;
     return Row(children: [
       Expanded(
           flex: 5,
           child: Padding(
-              padding: const EdgeInsets.only(right: 5.0),
+              padding: const EdgeInsets.only(
+                  right: 5.0, top: textPadding, bottom: textPadding),
               child:
                   Text(value, textAlign: TextAlign.right, style: valueStyle))),
-      Expanded(flex: 6, child: Text(label, style: labelStyle)),
+      Expanded(
+          flex: 6,
+          child: Padding(
+              padding:
+                  const EdgeInsets.only(top: textPadding, bottom: textPadding),
+              child: Text(label, style: labelStyle))),
     ]);
   }
 
@@ -70,8 +77,10 @@ class BasicResults extends StatelessWidget {
               // using spacers to centre text horizontally
               // const Spacer(),
               Padding(
+                // left padding gives us some breathing space between left hand side and text.
+                // top+bottom padding to match the expansions box heading used in advanced.
+                padding: const EdgeInsets.only(left: 10, top: 16, bottom: 16),
                 child: Text('Fire Behaviour Outputs', style: labelStyle),
-                padding: const EdgeInsets.only(left: 10),
               ),
               // const Spacer()
             ],
@@ -80,12 +89,12 @@ class BasicResults extends StatelessWidget {
       buildRow(getFireDescription(prediction.FD), 'Fire type', textStyle.color),
       // Crown fraction burned
       buildRow('${((prediction.CFB * 100).toStringAsFixed(0))}%',
-          'Crown fraction burned (CFB)', textStyle.color),
+          'Crown fraction burned', textStyle.color),
       // Rate of spread
-      buildRow('${prediction.ROS.toStringAsFixed(1)} (m/min)',
-          'Rate of spread (ROS)', textStyle.color),
+      buildRow('${prediction.ROS.toStringAsFixed(1)} (m/min)', 'Rate of spread',
+          textStyle.color),
       // ISI
-      buildRow(prediction.ISI.toStringAsFixed(0), 'Initial spread index (ISI)',
+      buildRow(prediction.ISI.toStringAsFixed(0), 'Initial spread index',
           textStyle.color),
       // Surface flame length
       buildRow('${surfaceFlameLength.toStringAsFixed(2)} (m)',
@@ -94,7 +103,7 @@ class BasicResults extends StatelessWidget {
       buildRow('$intensityClass', 'Intensity class', textStyle.color),
       // HFI
       buildRow('${prediction.HFI.toStringAsFixed(0)} (kW/m)',
-          'Head fire intensity (HFI)', textStyle.color),
+          'Head fire intensity', textStyle.color),
       // 60 minute fire size
       buildRow('${fireSize?.toStringAsFixed(1)} (ha)',
           '${minutes.toStringAsFixed(0)} minute fire size', textStyle.color),
@@ -127,13 +136,17 @@ class BasicResults extends StatelessWidget {
 class BasicFireBehaviourPredictionFormState
     extends State<BasicFireBehaviourPredictionForm> {
   FuelTypePreset _fuelTypePreset = getC2BorealSpruce();
-  late BasicInput _basicInput;
+  BasicInput? _basicInput;
 
   void _onPresetChanged(FuelTypePreset fuelTypePreset) {
     setState(() {
       log('preset changed to $fuelTypePreset');
-      _fuelTypePreset = fuelTypePreset;
-      _basicInput.bui = _fuelTypePreset.averageBUI;
+      if (_basicInput != null) {
+        _fuelTypePreset = fuelTypePreset;
+        _basicInput!.bui = _fuelTypePreset.averageBUI;
+        persistSetting('bui', _fuelTypePreset.averageBUI);
+        persistFuelTypePreset(_fuelTypePreset);
+      }
     });
   }
 
@@ -145,40 +158,47 @@ class BasicFireBehaviourPredictionFormState
 
   @override
   void initState() {
-    _basicInput = BasicInput(
-        ws: 5,
-        bui: _fuelTypePreset.averageBUI,
-        coordinate: Coordinate(latitude: 37, longitude: -122, altitude: 100));
+    loadBasic().then((settings) {
+      setState(() {
+        _fuelTypePreset = settings.fuelTypePreset;
+        _basicInput = settings.basicInput;
+      });
+    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_basicInput == null) {
+      return const Text('Loading...');
+    }
+    print('calculating with ${_basicInput!.cc}');
     final dayOfYear = getDayOfYear();
     const double minutes = 60; // 60 minutes.
     final input = FireBehaviourPredictionInput(
         FUELTYPE: _fuelTypePreset.code.name,
-        LAT: _basicInput.coordinate.latitude,
-        LONG: _basicInput.coordinate.longitude,
-        ELV: _basicInput.coordinate.altitude,
+        LAT: _basicInput!.coordinate.latitude,
+        LONG: _basicInput!.coordinate.longitude,
+        ELV: _basicInput!.coordinate.altitude,
         DJ: dayOfYear,
         D0: null,
         FMC: null,
-        FFMC: _basicInput.ffmc,
-        BUI: _basicInput.bui,
-        WS: _basicInput.ws,
-        WD: _basicInput.waz,
-        GS: _basicInput.gs,
+        FFMC: _basicInput!.ffmc,
+        BUI: _basicInput!.bui,
+        WS: _basicInput!.ws,
+        WD: _basicInput!.waz,
+        GS: _basicInput!.gs,
         PC: _fuelTypePreset.pc,
         PDF: _fuelTypePreset.pdf,
         GFL: _fuelTypePreset.gfl,
-        CC: _basicInput.cc,
+        CC: _basicInput!.cc,
         ACCEL: false,
-        ASPECT: _basicInput.aspect,
+        ASPECT: _basicInput!.aspect,
         BUIEFF: true,
         CBH: _fuelTypePreset.cbh,
         CFL: _fuelTypePreset.cfl,
         HR: minutes / 60.0);
+    print('basic   : ${input}');
     try {
       FireBehaviourPredictionPrimary prediction = FBPcalc(input, output: "ALL");
       prediction.RAZ =
@@ -199,30 +219,35 @@ class BasicFireBehaviourPredictionFormState
         children: <Widget>[
           // Presets
           Row(children: [
-            Expanded(child: FuelTypePresetDropdown(
+            Expanded(
+                child: FuelTypePresetDropdown(
               onChanged: (FuelTypePreset? value) {
                 if (value != null) {
                   _onPresetChanged(value);
                 }
               },
+              initialValue: _fuelTypePreset,
             ))
           ]),
           Row(
             children: [
               Expanded(
                   child: BasicInputWidget(
-                      value: _basicInput,
+                      basicInput: _basicInput!,
                       prediction: prediction,
+                      fuelTypePreset: _fuelTypePreset,
                       onChanged: (BasicInput basicInput) {
                         _onBasicInputChanged(basicInput);
                       }))
             ],
           ),
-          BasicResults(
-              prediction: prediction,
-              minutes: minutes,
-              fireSize: fireSize,
-              surfaceFlameLength: surfaceFlameLength)
+          Padding(
+              padding: const EdgeInsets.only(top: 2.0),
+              child: BasicResults(
+                  prediction: prediction,
+                  minutes: minutes,
+                  fireSize: fireSize,
+                  surfaceFlameLength: surfaceFlameLength))
         ],
       );
     } catch (e) {

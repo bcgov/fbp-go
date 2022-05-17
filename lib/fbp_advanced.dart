@@ -16,10 +16,11 @@ You should have received a copy of the GNU General Public License along with
 FBP Go. If not, see <https://www.gnu.org/licenses/>.
 */
 // Define a custom Form widget.
+import 'package:fire_behaviour_app/persist.dart';
 import 'package:flutter/material.dart';
 
-import 'coordinate_picker.dart';
 import 'cffdrs/fbp_calc.dart';
+import 'fancy_slider.dart';
 import 'fbp_results.dart';
 import 'fire.dart';
 import 'fire_widgets.dart';
@@ -54,8 +55,9 @@ class AdvancedFireBehaviourPredictionFormState
   // Note: This is a `GlobalKey<FormState>`,
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
-  FuelType _fuelType = FuelType.C2;
-  late BasicInput _basicInput;
+  // FuelType _fuelType = FuelType.C2;
+  FuelTypePreset? _fuelTypePreset = getC2BorealSpruce();
+  BasicInput? _basicInput;
   double? _pc = 0;
   double? _pdf = 0;
   double? _cbh = 0;
@@ -70,8 +72,8 @@ class AdvancedFireBehaviourPredictionFormState
 
   void setPreset(FuelTypePreset preset) {
     setState(() {
-      _fuelType = preset.code;
-      _fuelTypeState.currentState?.didChange(_fuelType);
+      _fuelTypePreset = preset;
+      _fuelTypeState.currentState?.didChange(_fuelTypePreset);
 
       _pc = preset.pc;
       _pdf = preset.pdf;
@@ -82,13 +84,15 @@ class AdvancedFireBehaviourPredictionFormState
       _cfl = preset.cfl;
       _cflController.text = _cfl.toString();
 
-      _basicInput.bui = preset.averageBUI;
+      _basicInput?.bui = preset.averageBUI;
     });
   }
 
   void _onPresetChanged(FuelTypePreset? preset) {
     if (preset != null) {
       setPreset(preset);
+      persistSetting('bui', preset.averageBUI);
+      persistFuelTypePreset(preset);
     }
   }
 
@@ -117,12 +121,14 @@ class AdvancedFireBehaviourPredictionFormState
   }
 
   void _onGFLChanged(double gfl) {
+    persistSetting('gfl', gfl);
     setState(() {
       _gfl = gfl;
     });
   }
 
   void _onTChanged(double t) {
+    persistSetting('t', t);
     setState(() {
       _minutes = t;
     });
@@ -147,12 +153,17 @@ class AdvancedFireBehaviourPredictionFormState
     cbhController.text = _cbh.toString();
     _cflController.text = _cfl.toString();
     _gflController.text = _gfl.toString();
-    _basicInput = BasicInput(
-        ws: 5,
-        bui: 0,
-        coordinate: Coordinate(latitude: 37, longitude: -122, altitude: 100));
 
-    setPreset(getC2BorealSpruce());
+    loadAdvanced().then((settings) {
+      setPreset(settings.fuelTypePreset);
+      setState(() {
+        _basicInput = settings.basicInput;
+        _gfl = settings.gfl;
+        _gflController.text = _gfl.toString();
+        _minutes = settings.t;
+      });
+    });
+
     super.initState();
   }
 
@@ -186,7 +197,7 @@ class AdvancedFireBehaviourPredictionFormState
 
   Expanded makeInputLabel(String heading, String value, String unitOfMeasure,
       TextStyle textStyle, TextStyle textStyleBold) {
-    const labelFlex = 4;
+    const labelFlex = 5;
     return Expanded(
         flex: labelFlex,
         child: Column(children: [
@@ -203,32 +214,36 @@ class AdvancedFireBehaviourPredictionFormState
 
   @override
   Widget build(BuildContext context) {
+    if (_basicInput == null || _fuelTypePreset == null) {
+      return const Text('Loading...');
+    }
     double? fireSize;
     final dayOfYear = getDayOfYear();
     final input = FireBehaviourPredictionInput(
-        FUELTYPE: _fuelType.name,
-        LAT: _basicInput.coordinate.latitude,
-        LONG: _basicInput.coordinate.longitude,
-        ELV: _basicInput.coordinate.altitude,
+        FUELTYPE: _fuelTypePreset!.code.name,
+        LAT: _basicInput!.coordinate.latitude,
+        LONG: _basicInput!.coordinate.longitude,
+        ELV: _basicInput!.coordinate.altitude,
         DJ: dayOfYear,
         D0: null,
         FMC: null,
-        FFMC: _basicInput.ffmc,
-        BUI: _basicInput.bui,
-        WS: _basicInput.ws,
-        WD: _basicInput.waz,
-        GS: _basicInput.gs,
+        FFMC: _basicInput!.ffmc,
+        BUI: _basicInput!.bui,
+        WS: _basicInput!.ws,
+        WD: _basicInput!.waz,
+        GS: _basicInput!.gs,
         PC: _pc,
         PDF: _pdf,
         GFL: _gfl,
-        CC: _basicInput.cc,
+        CC: _basicInput!.cc,
         THETA: 0, // we don't use THETA - so just default to 0
         ACCEL: false,
-        ASPECT: _basicInput.aspect,
+        ASPECT: _basicInput!.aspect,
         BUIEFF: true,
         CBH: _cbh,
         CFL: _cfl,
         HR: _minutes / 60.0);
+    // print('advanced: ${input}');
     FireBehaviourPredictionPrimary prediction = FBPcalc(input, output: "ALL");
     _onFMCChanged(prediction.FMC);
     // Wind direction correction:
@@ -236,7 +251,7 @@ class AdvancedFireBehaviourPredictionFormState
     prediction.RAZ = prediction.RAZ < 0 ? prediction.RAZ + 360 : prediction.RAZ;
     if (prediction.secondary != null) {
       fireSize = getFireSize(
-          _fuelType.name,
+          _fuelTypePreset!.code.name,
           prediction.ROS,
           prediction.secondary!.BROS,
           _minutes,
@@ -244,7 +259,7 @@ class AdvancedFireBehaviourPredictionFormState
           prediction.secondary!.LB);
     }
     final surfaceFlameLength = calculateApproxFlameLength(prediction.HFI);
-    const sliderFlex = 9;
+    const sliderFlex = 10;
     final intensityClass = getHeadFireIntensityClass(prediction.HFI);
     final intensityClassColour = getIntensityClassColor(intensityClass);
     final intensityClassTextColour = getIntensityClassTextColor(intensityClass);
@@ -259,94 +274,77 @@ class AdvancedFireBehaviourPredictionFormState
           children: <Widget>[
             // Presets
             Row(children: [
-              Expanded(child: FuelTypePresetDropdown(
+              Expanded(
+                  child: FuelTypePresetDropdown(
                 onChanged: (FuelTypePreset? value) {
                   _onPresetChanged(value);
                 },
+                initialValue: _fuelTypePreset!,
               ))
             ]),
-            Row(children: [
-              // GFL field
-              Expanded(
-                  child: TextField(
-                controller: _gflController,
-                decoration: const InputDecoration(
-                    labelText: "Grass Fuel Load (kg/\u33A1)",
-                    labelStyle: TextStyle(fontSize: labelFontSize)),
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  if (double.tryParse(value) != null) {
-                    _onGFLChanged(roundDouble(double.parse(value), 2));
-                  }
-                },
-              )),
-            ]),
-            // FMC
-            // TODO: You can't move the slider, because that re-calculates the FMC
-            // we need to de-couple the overreding FMC from the calculated on in some
-            // way!
-            // Row(
-            //   children: [
-            //     Expanded(
-            //       child: Text(
-            //           'Foliar Moisture Content: ${(_fmc ?? 0).toStringAsFixed(0)}'),
-            //     ),
-            //     Expanded(
-            //         child: Slider(
-            //       value: _fmc ?? 0,
-            //       min: 0,
-            //       max: 130,
-            //       divisions: 130,
-            //       onChanged: (value) {
-            //         _onFMCChanged(value);
-            //       },
-            //     ))
-            //   ],
-            // ),
+            if (isGrassFuelType(_fuelTypePreset!.code))
+              Row(children: [
+                // GFL field
+                Expanded(
+                    child: TextField(
+                  controller: _gflController,
+                  decoration: const InputDecoration(
+                      labelText: "Grass Fuel Load (kg/\u33A1)",
+                      labelStyle: TextStyle(fontSize: labelFontSize)),
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    if (double.tryParse(value) != null) {
+                      _onGFLChanged(roundDouble(double.parse(value), 2));
+                    }
+                  },
+                )),
+              ]),
             // PDF field
-            Row(
-              children: [
-                makeInputLabel('Dead Balsam', (_pdf ?? 0).toStringAsFixed(0),
-                    '%', textStyle, textStyleBold),
+            if (isBorealMixedWood(_fuelTypePreset!.code))
+              Row(
+                children: [
+                  makeInputLabel('Dead Balsam', (_pdf ?? 0).toStringAsFixed(0),
+                      '%', textStyle, textStyleBold),
+                  Expanded(
+                      flex: sliderFlex,
+                      child: FancySliderWidget(
+                        value: _pdf ?? 0,
+                        min: 0,
+                        max: 100,
+                        divisions: 100,
+                        activeColor: intensityClassColour,
+                        label: '${(_pdf ?? 0).toStringAsFixed(0)}%',
+                        onChanged: (value) {
+                          _onPDFChanged(value.roundToDouble());
+                        },
+                      ))
+                ],
+              ),
+            if (isBorealMixedWood(_fuelTypePreset!.code))
+              Row(children: [
+                makeInputLabel('Conifer', (_pc ?? 0).toStringAsFixed(0), '%',
+                    textStyle, textStyleBold),
                 Expanded(
                     flex: sliderFlex,
-                    child: Slider(
-                      value: _pdf ?? 0,
+                    child: FancySliderWidget(
+                      value: _pc ?? 0,
                       min: 0,
                       max: 100,
                       divisions: 100,
                       activeColor: intensityClassColour,
-                      label: '${(_pdf ?? 0).toStringAsFixed(0)}%',
+                      label: '${(_pc ?? 0).toStringAsFixed(0)}%',
                       onChanged: (value) {
-                        _onPDFChanged(value.roundToDouble());
+                        _onPCChanged(value.roundToDouble());
                       },
                     ))
-              ],
-            ),
-            Row(children: [
-              makeInputLabel('Conifer', (_pc ?? 0).toStringAsFixed(0), '%',
-                  textStyle, textStyleBold),
-              Expanded(
-                  flex: sliderFlex,
-                  child: Slider(
-                    value: _pc ?? 0,
-                    min: 0,
-                    max: 100,
-                    divisions: 100,
-                    activeColor: intensityClassColour,
-                    label: '${(_pc ?? 0).toStringAsFixed(0)}%',
-                    onChanged: (value) {
-                      _onPCChanged(value.roundToDouble());
-                    },
-                  ))
-            ]),
+              ]),
             // Elapsed time
             Row(children: [
               makeInputLabel('Time elapsed', '${_minutes.toInt()}', ' minutes',
                   textStyle, textStyleBold),
               Expanded(
                   flex: sliderFlex,
-                  child: Slider(
+                  child: FancySliderWidget(
                     value: _minutes,
                     min: 0,
                     max: 120,
@@ -362,8 +360,9 @@ class AdvancedFireBehaviourPredictionFormState
               children: [
                 Expanded(
                   child: BasicInputWidget(
-                    value: _basicInput,
+                    basicInput: _basicInput!,
                     prediction: prediction,
+                    fuelTypePreset: _fuelTypePreset!,
                     onChanged: (BasicInput basicInput) {
                       _onBasicInputChanged(basicInput);
                     },
@@ -374,15 +373,17 @@ class AdvancedFireBehaviourPredictionFormState
           ],
         ),
       ),
-      ResultsStateWidget(
-          prediction: prediction,
-          minutes: _minutes,
-          fireSize: fireSize,
-          surfaceFlameLength: surfaceFlameLength,
-          input: input,
-          intensityClass: intensityClass,
-          intensityClassColour: intensityClassColour,
-          intensityClassTextColor: intensityClassTextColour)
+      Padding(
+          padding: const EdgeInsets.only(top: 2.0),
+          child: ResultsStateWidget(
+              prediction: prediction,
+              minutes: _minutes,
+              fireSize: fireSize,
+              surfaceFlameLength: surfaceFlameLength,
+              input: input,
+              intensityClass: intensityClass,
+              intensityClassColour: intensityClassColour,
+              intensityClassTextColor: intensityClassTextColour))
     ]);
   }
 }

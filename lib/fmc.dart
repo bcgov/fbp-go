@@ -16,12 +16,13 @@ You should have received a copy of the GNU General Public License along with
 FBP Go. If not, see <https://www.gnu.org/licenses/>.
 */
 import 'package:fire_behaviour_app/cffdrs/fmc_calc.dart';
+import 'package:fire_behaviour_app/global.dart';
 import 'package:flutter/material.dart';
 
 class FoliarMoistureContentState extends State<FoliarMoistureContent> {
-  double latitude = 37;
-  double longitude = -122;
-  double elevation = 100;
+  double latitude = defaultLatitude;
+  double longitude = defaultLongitude;
+  double elevation = defaultAltitude;
   int dayOfYear = 100;
   int dateOfMinimumFoliarMoistureContent = -1;
 

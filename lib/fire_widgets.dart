@@ -83,9 +83,11 @@ class FuelTypePresetDropdownState extends State<FuelTypePresetDropdown> {
 
   @override
   Widget build(BuildContext context) {
+    var preset =
+        _presets.firstWhere((preset) => preset.id == widget.initialValue.id);
     return DropdownButtonFormField(
       isExpanded: true,
-      value: _presets[1],
+      value: preset,
       decoration: const InputDecoration(
           labelText: "Fuel type",
           labelStyle: TextStyle(fontSize: labelFontSize)),
@@ -106,8 +108,10 @@ class FuelTypePresetDropdownState extends State<FuelTypePresetDropdown> {
 
 class FuelTypePresetDropdown extends StatefulWidget {
   final Function onChanged;
+  final FuelTypePreset initialValue;
 
-  const FuelTypePresetDropdown({Key? key, required this.onChanged})
+  const FuelTypePresetDropdown(
+      {Key? key, required this.onChanged, required this.initialValue})
       : super(key: key);
 
   @override

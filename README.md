@@ -71,6 +71,10 @@ select app
 internal testing -> create new release -> upload
 releases overview -> review it
 
+#### Github Workflow
+
+
+
 ### Build for iOS - on M1 silicon
 
 If you use the default ruby+gem setup that comes out of the box, you'll get errors about
@@ -125,48 +129,69 @@ similar.
 ## Todo
 
 - Add FWI.
-- Grey out the curing slider for fuel types it doesn't apply to. (non-grass fuel types)
 - Add screenshots for iOS.
 - Localization - implement en-CA and fr-CA.
 - Coordinates - provide user feedback on location button. (e.g. fetching and failed state).
 - Add FMC option in advanced.
-- Advanced: Result columns - there are some "two line" columns. Would be nice if the result columns could size better.
 - FFMC scale at the bottom.
   - Possible, but nothing out of the box - so leaving it alone for now.
-- Finalise disclaimer popup.
 - Diurnal FFMC screen.
   - Add a screen where you can input yesterday's FFMC the RH and the Wind, to get the daily FFMC - see: ffmcCalc.
   - Add a screen where you you can see the impact of the diurnal FFMC (maybe sliding time?) - see: hffmc.
   - Work towards a screen where you can see the impact of changing FFMC on fire.
 - Do lots of re-factoring (code was written as p.o.c. in a big rush).
-- Persist last settings? (Except for lat/long - since that's a log of the persons location and we don't want to persist anything personal)
 - (pending p.o.) set the FFMC lower limit to 60?
 - Add reference content to the Nav - e.g. pictures of the fuel types (trees) a la red book - would be great for newer folks; Easy to do, but needs images that we have licences for.
-- Request: group the data differently, especially in the advanced tab Work with EK to refine, general idea is to group info by: Head of Fire - Flank of Fire - ROS - CFB - … Back of Fire - ROS - CFB - … So folks can isolate and easily scan the info. They also find it too jumbled and tight and are worried they’ll grab the wrong numbers - Tess can help with that part (layout, sizing, spacing)
 - User feedback/request: can we have pre-sets based on task? (Future idea) You open the app, say what you’re doing (prescribed burn, small fire, big fire/incident action plan, no fire just out and about - this is not the actual list) Prescribed burning: I don’t need all this info, reduce the list of data (maybe I can still personalize?) I wouldn’t care about the consumption of the flank in this case, and I better not be causing a crown fire
 - From testing session: users report difficulty with the sliders in terms of precision - hard to get the exact number they want. Sometimes this is ok, sometimes it’s very bad. Either way, it’s frustrating. Users pointed out that in the field their hands will be sweaty and dirty. Some folks realized they could turn their phone to landscape mode and it was a bit better. User-feature request: in addition to the sliders, can we have + and - buttons There may be other ways, UX can collaborate
 - Dev task tech dept: passing font size around sucks. Apply themes.
 - Let's talk about dead balsam fir and conifer and grass fuel load being affected by fuel type. (fuel load parameters)
 - Grass fuel should be a slider.
 - " It would also be nice if the values I enter in the basic tab would transfer over to the advanced tab, right now it seems to default to C2 for fuel type."
-- " Would be nice to decrease the sensitivity of some of the sliders. Hot dog fingers make it hard to hone in"
-- "If it’s possible to connect the “my location” button to the wildfire one portal to automatically input the local indicies from the closest weather station/stations that would be a cool feature"
+- " Would be nice to decrease the sensitivity of some of the sliders. Hot dog fingers make it hard to hone in" <- "Mostly the wind slider, but any value that is incremented by one denomination is similar."
+- "If it’s possible to connect the “my location” button to the wildfire one portal to automatically input the local indices from the closest weather station/stations that would be a cool feature"
 - "It would be sweet is you could input numbers manually"
 - "And if there was a map so you could click on the location and it would input the coordinates instead of having to do that yourself."
+- Create an "Assumptions tab", that explains the input values and formulae being used in the background.
 
 ## Log of changes & decisions
 
-### v1.0.5 (future)
-- [ ] Automated build (apk + appbundle) in github workflow.
-- [ ] Consider swapping out ExpansionPanel (it uses up a lot of space).?
-- [ ] Consider dropping acronyms.
-- [ ] Make heading height in advanced and basic look the same.
-- [ ] More spacing between each result, and space between heading and 1st result.
-- [ ] A bit more space between the last input item and the results. (e.g. space between curing and primary heading is different.)
-- [ ] What is the unit of measure for the fire spread.
-- [ ] Modal bug. You can click anywhere on the screen, and that closes the modal.
+### v1.0.6 Release Candidate (future)
+- [ ] FBP: Incorporate card sort feedback.
+- [ ] Re-factor - removing "basic" screen code from app (just commented out for now, in case we want to bring it back in).
+- [ ] FBP: Switch grass fuel load to slider
+- [ ] FBP: Consider input option without sliders.
+- [ ] Tech: Automated build (apk + appbundle) in github workflow.
 
-### v1.0.4 (current)
+### v1.0.5 Release Candidate (current)
+
+#### Summary:
+
+- Single FBP window. (No longer differentiating between Basic/Advanced.)
+- Various input, styling & formatting changes.
+- Added +/- buttons for fine value adjustment.
+- Remember settings.
+
+#### Detail:
+
+- [x] FBP: Removed basic screen.
+- [x] FBP: Change "Basic Fire Behaviour Outputs" to match values from Basic, moving all other values to the Advanced group.
+- [x] FBP: Changed headings to "Basic Fire Behaviour Outputs" and "Advanced Fire Behaviour Outputs".
+- [x] FBP: Only showing GFL and curing for OA1 and O1B.
+- [x] FBP: Persist last settings. (excluding PC and PDF)
+- [x] FBP: No longer automatically loading your location on start.
+- [x] FBP: More spacing between each result, and space between heading and 1st result.
+- [x] FBP: A bit more space between the last input item and the results. (e.g. space between curing and primary heading is different.)
+- [x] FBP: Only showing PDF and PC sliders for M1, M2, M3 and M4.
+- [x] FBP: Added unit of measure (m) to fire spread distance.
+- [x] FBP: Drop acronyms, except where there is limited space.
+- [x] FBP: Plus/minus buttons for sliders.
+- [x] FBP: Tried out FontWeight.normal on unit of measure, but it didn't look good. Reverted back to using same font weight as the value.
+- [x] Disclaimer: Changed text from "No warrant or guarantee..." to "No warranty or guarantee...".
+- [x] Disclaimer: Fix bug where user could click away disclaimer without clicking on "OK".
+- [x] Tech: Upgrade to flutter 3.0.0.
+
+### v1.0.4
 
 - [x] Basic+Advanced: Left align headings.
 - [x] Basic+Advanced: Added flame length.

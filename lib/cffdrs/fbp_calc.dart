@@ -174,6 +174,11 @@ class FireBehaviourPredictionInput {
       this.CFL,
       this.ISI,
       required this.HR});
+
+  @override
+  String toString() {
+    return 'FUELTYPE:${this.FUELTYPE} LAT:${this.LAT} LONG:${this.LONG} ELV:${this.ELV} DJ:${this.DJ} D0:${this.D0} FMC:${this.FMC} FFMC:${this.FFMC} BUI:${this.BUI} WS:${this.WS} WD:${this.WD} GS:${this.GS} SD:${this.SD} SH:${this.SH} PC:${this.PC} PDF:${this.PDF} GFL:${this.GFL} CC:${this.CC} THETA:${this.THETA} ACCELL:${this.ACCEL} ASPECT:${this.ASPECT} BUIEFF:${this.BUIEFF} CBH:${this.CBH} CFL:${this.CFL} ISI::${this.ISI} HR:${this.HR}';
+  }
 }
 
 class FireBehaviourPredictionSecondary {
