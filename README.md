@@ -171,17 +171,22 @@ The FBP System is based on observations of experimental fires and wildfires. The
 
 ## Log of changes & decisions
 
-### v1.0.6 Release Candidate (future)
+### v1.0.7 Release Candidate (future)
 - [ ] Re-factor - removing "basic" screen code from app (just commented out for now, in case we want to bring it back in).
 - [ ] FBP: Switch grass fuel load to slider
 - [ ] FBP: Consider input option without sliders.
 - [ ] FBP: FFMC lower limit kept at 80 (values lower than 80 not deemed relevant).
 - [ ] FBP: Incorporate card sort feedback.
-- [ ] FBP: Grass Fuel Load - crashes app when set to negative.
 - [ ] FBP: Grass Fuel Load - is this a slider or an input box?
+- [ ] FBP: Hide CFB and CFL when using grass fuel type.
 - [ ] Tech: Automated build (apk + appbundle) in github workflow.
+- [ ] Web: About isn't working on the web version.
 
-### v1.0.5 Release Candidate (current)
+### v1.0.6 Release Candidate (current)
+
+- [x] FBP: Grass Fuel Load - crashes app when set to negative.
+
+### v1.0.5 Release Candidate
 
 #### Summary:
 
