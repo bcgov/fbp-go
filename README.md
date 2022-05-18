@@ -96,6 +96,14 @@ gem update --system
 gem install cocoapods
 ```
 
+Sometimes you'll get a build error saying your pods aren't up to date
+```
+gem update --system
+gem update cocoapods
+cd ios
+pod install
+```
+
 ### https://github.com/rbenv/rbenv
 
 For rbenv you need to have the shim in your path.
