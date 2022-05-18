@@ -294,7 +294,10 @@ class AdvancedFireBehaviourPredictionFormState
                   keyboardType: TextInputType.number,
                   onChanged: (value) {
                     if (double.tryParse(value) != null) {
-                      _onGFLChanged(roundDouble(double.parse(value), 2));
+                      // We need to pin grass fuel load to be greater than or equal to 0
+                      var gflValue = double.parse(value);
+                      _onGFLChanged(
+                          roundDouble(gflValue >= 0 ? gflValue : 0, 2));
                     }
                   },
                 )),
