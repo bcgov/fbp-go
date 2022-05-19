@@ -179,7 +179,7 @@ The FBP System is based on observations of experimental fires and wildfires. The
 
 ## Log of changes & decisions
 
-### v1.0.7 Release Candidate (future)
+### v1.0.7 (future)
 - [ ] Re-factor - removing "basic" screen code from app (just commented out for now, in case we want to bring it back in).
 - [ ] FBP: Switch grass fuel load to slider? Or fix input (can't dismiss keyboard in iOS).
 - [ ] FBP: Consider input option without sliders.
