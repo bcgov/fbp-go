@@ -135,8 +135,6 @@ manually translated, and in order to debug and stay up to date with changes, it'
 similar.
 
 ## Todo
-
-- Add FWI.
 - Add screenshots for iOS.
 - Localization - implement en-CA and fr-CA.
 - Coordinates - provide user feedback on location button. (e.g. fetching and failed state).
@@ -179,6 +177,9 @@ The FBP System is based on observations of experimental fires and wildfires. The
 
 ## Log of changes & decisions
 
+### v1.1.0 (next phase)
+- [ ] Add FWI.
+
 ### v1.0.7 (future)
 - [ ] Re-factor - removing "basic" screen code from app (just commented out for now, in case we want to bring it back in).
 - [ ] FBP: Switch grass fuel load to slider? Or fix input (can't dismiss keyboard in iOS).
@@ -189,6 +190,7 @@ The FBP System is based on observations of experimental fires and wildfires. The
 - [ ] Tech: Automated build (apk + appbundle) in github workflow.
 - [ ] Web: About isn't working on the web version.
 - [ ] FBP: The percent dead fir slider showing in M1/2, it should only be showing in M3/4.
+- [ ] FBP: When switching between fuel types it remembers all settings, but resets BUI to a baseline value
 
 ### v1.0.6 Release Candidate (current)
 
