@@ -181,6 +181,8 @@ The FBP System is based on observations of experimental fires and wildfires. The
 - [ ] Add FWI.
 
 ### v1.0.7 (future)
+BUI no longer changing when fuel type changes. PDF slider no longer showing for M1/M2.
+
 - [ ] Re-factor - removing "basic" screen code from app (just commented out for now, in case we want to bring it back in).
 - [ ] FBP: Switch grass fuel load to slider? Or fix input (can't dismiss keyboard in iOS).
 - [ ] FBP: Consider input option without sliders.
