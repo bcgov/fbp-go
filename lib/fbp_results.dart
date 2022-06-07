@@ -35,7 +35,9 @@ abstract class Group {
 
   bool showCFB(FireBehaviourPredictionInput input) {
     FuelType fuelType = FuelType.values.byName(input.FUELTYPE);
-    return !(isGrassFuelType(fuelType) || isSlashFuelType(fuelType));
+    return !(isGrassFuelType(fuelType) ||
+        isSlashFuelType(fuelType) ||
+        fuelType == FuelType.D1);
   }
 
   Row _buildRow(String value, String uom, String label, Color? color) {
