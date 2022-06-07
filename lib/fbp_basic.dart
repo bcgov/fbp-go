@@ -143,8 +143,6 @@ class BasicFireBehaviourPredictionFormState
       log('preset changed to $fuelTypePreset');
       if (_basicInput != null) {
         _fuelTypePreset = fuelTypePreset;
-        _basicInput!.bui = _fuelTypePreset.averageBUI;
-        persistSetting('bui', _fuelTypePreset.averageBUI);
         persistFuelTypePreset(_fuelTypePreset);
       }
     });

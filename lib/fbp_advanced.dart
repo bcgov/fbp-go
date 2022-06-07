@@ -83,15 +83,12 @@ class AdvancedFireBehaviourPredictionFormState
 
       _cfl = preset.cfl;
       _cflController.text = _cfl.toString();
-
-      _basicInput?.bui = preset.averageBUI;
     });
   }
 
   void _onPresetChanged(FuelTypePreset? preset) {
     if (preset != null) {
       setPreset(preset);
-      persistSetting('bui', preset.averageBUI);
       persistFuelTypePreset(preset);
     }
   }
@@ -303,7 +300,7 @@ class AdvancedFireBehaviourPredictionFormState
                 )),
               ]),
             // PDF field
-            if (isBorealMixedWood(_fuelTypePreset!.code))
+            if (canAdjustDeadFir(_fuelTypePreset!.code))
               Row(
                 children: [
                   makeInputLabel('Dead Balsam', (_pdf ?? 0).toStringAsFixed(0),

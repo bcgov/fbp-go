@@ -189,8 +189,8 @@ The FBP System is based on observations of experimental fires and wildfires. The
 - [ ] FBP: Hide CFB and CFL when using grass fuel type.
 - [ ] Tech: Automated build (apk + appbundle) in github workflow.
 - [ ] Web: About isn't working on the web version.
-- [ ] FBP: The percent dead fir slider showing in M1/2, it should only be showing in M3/4.
-- [ ] FBP: When switching between fuel types it remembers all settings, but resets BUI to a baseline value
+- [x] FBP: The percent dead fir slider showing in M1/2, it should only be showing in M3/4.
+- [x] FBP: When switching between fuel types it remembers all settings, but resets BUI to a baseline value
 
 ### v1.0.6 Release Candidate (current)
 
