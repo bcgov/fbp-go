@@ -21,7 +21,6 @@ import 'about.dart';
 import 'fbp_advanced.dart';
 import 'package:flutter/material.dart';
 import 'cffdrs/fbp_calc.dart';
-import 'fbp_basic.dart';
 import 'fmc.dart';
 
 void main() => runApp(const MyApp());
@@ -43,7 +42,7 @@ String getSecondaryText(FireBehaviourPredictionPrimary? prediction) {
   return '';
 }
 
-enum Section { basic, advanced, fwi, about, fmc }
+enum Section { advanced, fwi, about, fmc }
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -60,8 +59,6 @@ class HomePageState extends State<HomePage> {
 
   String _getSectionText() {
     switch (_selectedSection) {
-      case Section.basic:
-        return 'Basic FBP';
       case Section.advanced:
         return 'Fire Behaviour Prediction';
       case Section.fwi:
@@ -106,14 +103,6 @@ class HomePageState extends State<HomePage> {
             child: Column(
               children: const [AboutPage()],
             ));
-      case (Section.basic):
-        return Center(
-            child: SingleChildScrollView(
-                padding:
-                    const EdgeInsets.only(left: edgeInset, right: edgeInset),
-                child: Column(
-                  children: const [BasicFireBehaviourPredictionForm()],
-                )));
       // child: Theme(
       //     data: Theme.of(context).copyWith(
       //         textTheme: TextTheme(

@@ -185,6 +185,12 @@ double getFireSize(String fuelType, double ros, double bros,
       10000.0;
 }
 
+bool isSlashFuelType(FuelType fuelType) {
+  return fuelType == FuelType.S1 ||
+      fuelType == FuelType.S2 ||
+      fuelType == FuelType.S3;
+}
+
 bool isGrassFuelType(FuelType fuelType) {
   return fuelType == FuelType.O1A || fuelType == FuelType.O1B;
 }
