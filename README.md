@@ -181,7 +181,7 @@ The FBP System is based on observations of experimental fires and wildfires. The
 - [ ] Add FWI.
 
 ### v1.0.7 (future)
-BUI no longer changing when fuel type changes. PDF slider no longer showing for M1/M2.
+BUI no longer changing when fuel type changes. PDF slider no longer showing for M1/M2. 2 decimal places for fuel consumption.
 
 - [ ] Re-factor - removing "basic" screen code from app (just commented out for now, in case we want to bring it back in).
 - [ ] FBP: Switch grass fuel load to slider? Or fix input (can't dismiss keyboard in iOS).
@@ -193,6 +193,7 @@ BUI no longer changing when fuel type changes. PDF slider no longer showing for 
 - [ ] Web: About isn't working on the web version.
 - [x] FBP: The percent dead fir slider showing in M1/2, it should only be showing in M3/4.
 - [x] FBP: When switching between fuel types it remembers all settings, but resets BUI to a baseline value
+- [x] FBP: Change fuel consumption to show 2 decimal places (otherwise shows as 0 for grass).
 
 ### v1.0.6 Release Candidate (current)
 

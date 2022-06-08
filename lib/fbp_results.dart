@@ -118,7 +118,7 @@ class SecondaryFireBehaviourGroup extends Group {
           'Direction of spread',
           textStyle.color),
       // Planned ignition
-      _buildRow((prediction.SFC).toStringAsFixed(0), ' (kg/\u33A1)',
+      _buildRow(formatNumber(prediction.SFC), ' (kg/\u33A1)',
           'Surface fuel consumption', textStyle.color),
       ...(showCFB(input)
           ? [
@@ -126,12 +126,12 @@ class SecondaryFireBehaviourGroup extends Group {
                   'Crown fuel consumption', textStyle.color)
             ]
           : []),
-      _buildRow((prediction.TFC).toStringAsFixed(0), ' (kg/\u33A1)',
+      _buildRow(formatNumber(prediction.TFC), ' (kg/\u33A1)',
           'Total fuel consumption', textStyle.color),
-      _buildRow('${(prediction.secondary?.FTFC)?.toStringAsFixed(0)}',
-          ' (kg/\u33A1)', 'Total fuel consumption - flank', textStyle.color),
-      _buildRow('${(prediction.secondary?.BTFC)?.toStringAsFixed(0)}',
-          ' (kg/\u33A1)', 'Total fuel consumption - back', textStyle.color),
+      _buildRow(formatNumber(prediction.secondary?.FTFC), ' (kg/\u33A1)',
+          'Total fuel consumption - flank', textStyle.color),
+      _buildRow(formatNumber(prediction.secondary?.BTFC), ' (kg/\u33A1)',
+          'Total fuel consumption - back', textStyle.color),
       // Fire growth potential
       _buildRow(prediction.WSV.toStringAsFixed(0), ' (km/h)',
           'Net effective wind speed', textStyle.color),
