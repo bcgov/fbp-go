@@ -230,8 +230,8 @@ class BasicInputState extends State<BasicInputWidget> {
               child: FancySliderWidget(
                 value: _input.gs,
                 min: 0,
-                max: 90,
-                divisions: 18,
+                max: 60,
+                divisions: 12,
                 activeColor: activeColor,
                 label: '${_input.gs.toInt()}%',
                 onChanged: (value) {
