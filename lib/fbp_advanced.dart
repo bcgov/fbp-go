@@ -118,10 +118,10 @@ class AdvancedFireBehaviourPredictionFormState
   }
 
   void _onGFLChanged(double gfl) {
-    persistSetting('gfl', gfl);
     setState(() {
-      _gfl = gfl;
+      _gfl = pinGFL(gfl);
     });
+    persistSetting('gfl', _gfl);
   }
 
   void _onTChanged(double t) {
@@ -288,9 +288,9 @@ class AdvancedFireBehaviourPredictionFormState
                     flex: sliderFlex,
                     child: FancySliderWidget(
                       value: _gfl,
-                      min: 0,
-                      max: 1,
-                      divisions: 20,
+                      min: minGFL,
+                      max: maxGFL,
+                      divisions: ((maxGFL - minGFL) / 0.05).round(),
                       activeColor: intensityClassColour,
                       label: '${_gfl.toStringAsFixed(2)} kg/\u33A1',
                       onChanged: (value) {

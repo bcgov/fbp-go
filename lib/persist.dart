@@ -68,17 +68,13 @@ Future<BasicSettings> loadBasic() async {
 AdvancedSettings _loadAdvanced(SharedPreferences prefs) {
   var basicSettings = _loadBasic(prefs);
 
-  var gfl = prefs.getDouble('gfl') ?? 0.35;
+  var gfl = prefs.getDouble('gfl') ?? defaultGFL;
   var t = prefs.getDouble('t') ?? 60;
 
-  if (gfl < 0) {
-    // In v1.0.5, it was possible to set a negative gfl, which would cause the app to crash. On re-starting the app,
-    // the invalid gfl would be loaded, and the app would crash again.
-    // Pinning the GFL to 0, avoids this problem.
-    gfl = 0.35;
-  } else if (gfl > 1) {
-    gfl = 0.35;
-  }
+  // In v1.0.5, it was possible to set a negative gfl, which would cause the app to crash. On re-starting the app,
+  // the invalid gfl would be loaded, and the app would crash again.
+  // Pinning the GFL to min and max avoids this problem.
+  gfl = pinGFL(gfl);
 
   return AdvancedSettings(
       gfl: gfl,

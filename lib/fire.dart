@@ -17,6 +17,8 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 */
 import 'dart:math';
 
+import 'package:fire_behaviour_app/global.dart';
+
 import 'cffdrs/dist_calc.dart';
 import 'cffdrs/lb_t_calc.dart';
 
@@ -314,4 +316,13 @@ int getDayOfYear() {
 double roundDouble(double value, int places) {
   final multiplier = pow(10, places);
   return (value * multiplier).round() / multiplier;
+}
+
+double pinGFL(double gfl) {
+  if (gfl < minGFL) {
+    return minGFL;
+  } else if (gfl > maxGFL) {
+    return maxGFL;
+  }
+  return gfl;
 }
