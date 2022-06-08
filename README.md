@@ -159,6 +159,7 @@ similar.
 - "And if there was a map so you could click on the location and it would input the coordinates instead of having to do that yourself."
 - Create an "Assumptions tab", that explains the input values and formulae being used in the background:
 "Assumptions – FBP Go
+- Reset defaults feature.
 
 Care should be exercised not to apply the system beyond its useful range. FBP Go/ FBP System can be used to make predictions for a fire spreading during one burning period from a point or line source of fire with the following assumptions:
 •	Fuel conditions are representative one of the 18 benchmark fuel types.
@@ -184,7 +185,7 @@ The FBP System is based on observations of experimental fires and wildfires. The
 BUI no longer changing when fuel type changes. PDF slider no longer showing for M1/M2. 2 decimal places for fuel consumption. Slope limited to 60%. GFL changed to slider (resolves various bugs relating to text input).
 
 - [x] Re-factor - removing "basic" screen code from app (just commented out for now, in case we want to bring it back in).
-- [x] FBP: Switch grass fuel load to slider. (0.05 minimum, 1.00 maximum).
+- [x] FBP: Switch grass fuel load to slider. (0.1 minimum, 1.00 maximum).
 - [ ] FBP: Consider input option without sliders.
 - [x] FBP: FFMC lower limit kept at 80 (values lower than 80 not deemed relevant).
 - [ ] FBP: Incorporate card sort feedback.

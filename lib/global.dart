@@ -6,6 +6,6 @@ const double defaultFFMC = 80;
 const double defaultLatitude = 37;
 const double defaultLongitude = -122;
 const double defaultAltitude = 100;
-const double minGFL = 0.05;
+const double minGFL = 0.1;
 const double maxGFL = 1.0;
 const double defaultGFL = 0.35;
