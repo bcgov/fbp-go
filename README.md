@@ -183,12 +183,12 @@ The FBP System is based on observations of experimental fires and wildfires. The
 ### v1.0.7 (future)
 BUI no longer changing when fuel type changes. PDF slider no longer showing for M1/M2. 2 decimal places for fuel consumption.
 
-- [ ] Re-factor - removing "basic" screen code from app (just commented out for now, in case we want to bring it back in).
+- [x] Re-factor - removing "basic" screen code from app (just commented out for now, in case we want to bring it back in).
 - [ ] FBP: Switch grass fuel load to slider? Or fix input (can't dismiss keyboard in iOS).
 - [ ] FBP: Consider input option without sliders.
 - [x] FBP: FFMC lower limit kept at 80 (values lower than 80 not deemed relevant).
 - [ ] FBP: Incorporate card sort feedback.
-- [ ] FBP: Hide CFB and CFL when using grass fuel type.
+- [x] FBP: Hide CFB and CFC when using grass fuel type.
 - [ ] Tech: Automated build (apk + appbundle) in github workflow.
 - [ ] Web: About isn't working on the web version.
 - [x] FBP: The percent dead fir slider showing in M1/2, it should only be showing in M3/4.

@@ -33,7 +33,7 @@ abstract class Group {
   String heading;
   bool isExpanded;
 
-  bool showCFB(FireBehaviourPredictionInput input) {
+  bool showCrown(FireBehaviourPredictionInput input) {
     FuelType fuelType = FuelType.values.byName(input.FUELTYPE);
     return !(isGrassFuelType(fuelType) ||
         isSlashFuelType(fuelType) ||
@@ -96,7 +96,7 @@ class SecondaryFireBehaviourGroup extends Group {
     TextStyle textStyle = const TextStyle(color: Colors.black);
     return buildContainer([
       // Primary outputs
-      ...(showCFB(input)
+      ...(showCrown(input)
           ? [
               _buildRow(((prediction.secondary!.FCFB * 100).toStringAsFixed(0)),
                   '%', 'Crown fraction burned - Flank', textStyle.color),
@@ -120,7 +120,7 @@ class SecondaryFireBehaviourGroup extends Group {
       // Planned ignition
       _buildRow(formatNumber(prediction.SFC), ' (kg/\u33A1)',
           'Surface fuel consumption', textStyle.color),
-      ...(showCFB(input)
+      ...(showCrown(input)
           ? [
               _buildRow((prediction.CFC).toStringAsFixed(0), ' (kg/\u33A1)',
                   'Crown fuel consumption', textStyle.color)
@@ -179,7 +179,7 @@ class PrimaryFireBehaviourGroup extends Group {
     return buildContainer([
       _buildRow(
           getFireDescription(prediction.FD), '', 'Fire type', textStyle.color),
-      ...(showCFB(input)
+      ...(showCrown(input)
           ? [
               _buildRow(((prediction.CFB * 100).toStringAsFixed(0)), '%',
                   'Crown fraction burned', textStyle.color)
