@@ -282,22 +282,37 @@ class AdvancedFireBehaviourPredictionFormState
             if (isGrassFuelType(_fuelTypePreset!.code))
               Row(children: [
                 // GFL field
+                makeInputLabel('Grass Fuel Load', _gfl.toStringAsFixed(2),
+                    ' kg/\u33A1', textStyle, textStyleBold),
                 Expanded(
-                    child: TextField(
-                  controller: _gflController,
-                  decoration: const InputDecoration(
-                      labelText: "Grass Fuel Load (kg/\u33A1)",
-                      labelStyle: TextStyle(fontSize: labelFontSize)),
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) {
-                    if (double.tryParse(value) != null) {
-                      // We need to pin grass fuel load to be greater than or equal to 0
-                      var gflValue = double.parse(value);
-                      _onGFLChanged(
-                          roundDouble(gflValue >= 0 ? gflValue : 0, 2));
-                    }
-                  },
-                )),
+                    flex: sliderFlex,
+                    child: FancySliderWidget(
+                      value: _gfl,
+                      min: 0,
+                      max: 1,
+                      divisions: 20,
+                      activeColor: intensityClassColour,
+                      label: '${_gfl.toStringAsFixed(2)} kg/\u33A1',
+                      onChanged: (value) {
+                        _onGFLChanged(value);
+                      },
+                    )),
+                // Expanded(
+                //     child: TextField(
+                //   controller: _gflController,
+                //   decoration: const InputDecoration(
+                //       labelText: "Grass Fuel Load (kg/\u33A1)",
+                //       labelStyle: TextStyle(fontSize: labelFontSize)),
+                //   keyboardType: TextInputType.number,
+                //   onChanged: (value) {
+                //     if (double.tryParse(value) != null) {
+                //       // We need to pin grass fuel load to be greater than or equal to 0
+                //       var gflValue = double.parse(value);
+                //       _onGFLChanged(
+                //           roundDouble(gflValue >= 0 ? gflValue : 0, 2));
+                //     }
+                //   },
+                // )),
               ]),
             // PDF field
             if (canAdjustDeadFir(_fuelTypePreset!.code))

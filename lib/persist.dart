@@ -75,7 +75,9 @@ AdvancedSettings _loadAdvanced(SharedPreferences prefs) {
     // In v1.0.5, it was possible to set a negative gfl, which would cause the app to crash. On re-starting the app,
     // the invalid gfl would be loaded, and the app would crash again.
     // Pinning the GFL to 0, avoids this problem.
-    gfl = 0;
+    gfl = 0.35;
+  } else if (gfl > 1) {
+    gfl = 0.35;
   }
 
   return AdvancedSettings(
