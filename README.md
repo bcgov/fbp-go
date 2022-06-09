@@ -198,6 +198,8 @@ The FBP System is based on observations of experimental fires and wildfires. The
 
 BUI no longer changing when fuel type changes. PDF slider no longer showing for M1/M2. 2 decimal places for fuel consumption. Slope limited to 60%. GFL changed to slider (resolves various bugs relating to text input), and no longer storing user value.
 
+#### Detail:
+
 - [x] Re-factor - removing "basic" screen code from app (just commented out for now, in case we want to bring it back in).
 - [x] FBP: Switch grass fuel load to slider. (0.1 minimum, 1.00 maximum).
 - [x] FBP: Reset grass to default on fuel type change, no longer storing GFL.
