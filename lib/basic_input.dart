@@ -72,6 +72,7 @@ class BasicInputState extends State<BasicInputWidget> {
   }
 
   void _onGSChanged(double gs) {
+    gs = pinGS(gs);
     setState(() {
       _input.gs = gs;
     });
@@ -229,9 +230,9 @@ class BasicInputState extends State<BasicInputWidget> {
               flex: sliderFlex,
               child: FancySliderWidget(
                 value: _input.gs,
-                min: 0,
-                max: 90,
-                divisions: 18,
+                min: minGS,
+                max: maxGS,
+                divisions: 12,
                 activeColor: activeColor,
                 label: '${_input.gs.toInt()}%',
                 onChanged: (value) {

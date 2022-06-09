@@ -177,7 +177,8 @@ class FireBehaviourPredictionInput {
 
   @override
   String toString() {
-    return 'FUELTYPE:${this.FUELTYPE} LAT:${this.LAT} LONG:${this.LONG} ELV:${this.ELV} DJ:${this.DJ} D0:${this.D0} FMC:${this.FMC} FFMC:${this.FFMC} BUI:${this.BUI} WS:${this.WS} WD:${this.WD} GS:${this.GS} SD:${this.SD} SH:${this.SH} PC:${this.PC} PDF:${this.PDF} GFL:${this.GFL} CC:${this.CC} THETA:${this.THETA} ACCELL:${this.ACCEL} ASPECT:${this.ASPECT} BUIEFF:${this.BUIEFF} CBH:${this.CBH} CFL:${this.CFL} ISI::${this.ISI} HR:${this.HR}';
+    // ignore: unnecessary_brace_in_string_interps
+    return 'FUELTYPE:${FUELTYPE} LAT:${LAT} LONG:${LONG} ELV:${ELV} DJ:${DJ} D0:${D0} FMC:${FMC} FFMC:${FFMC} BUI:${BUI} WS:${WS} WD:${WD} GS:${GS} SD:${SD} SH:${SH} PC:${PC} PDF:${PDF} GFL:${GFL} CC:${CC} THETA:${THETA} ACCELL:${ACCEL} ASPECT:${ASPECT} BUIEFF:${BUIEFF} CBH:${CBH} CFL:${CFL} ISI::${ISI} HR:${HR}';
   }
 }
 

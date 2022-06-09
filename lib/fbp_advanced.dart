@@ -64,7 +64,7 @@ class AdvancedFireBehaviourPredictionFormState
   double? _fmc = 0;
   double _cfl = 0;
   double _minutes = 60;
-  double _gfl = 0.35;
+  double _gfl = defaultGFL;
 
   // bool _expanded = false;
 
@@ -81,17 +81,16 @@ class AdvancedFireBehaviourPredictionFormState
       _cbh = preset.cbh;
       cbhController.text = _cbh.toString();
 
+      _gfl = defaultGFL;
+
       _cfl = preset.cfl;
       _cflController.text = _cfl.toString();
-
-      _basicInput?.bui = preset.averageBUI;
     });
   }
 
   void _onPresetChanged(FuelTypePreset? preset) {
     if (preset != null) {
       setPreset(preset);
-      persistSetting('bui', preset.averageBUI);
       persistFuelTypePreset(preset);
     }
   }
@@ -121,10 +120,11 @@ class AdvancedFireBehaviourPredictionFormState
   }
 
   void _onGFLChanged(double gfl) {
-    persistSetting('gfl', gfl);
+    gfl = pinGFL(gfl);
     setState(() {
       _gfl = gfl;
     });
+    persistSetting('gfl', _gfl);
   }
 
   void _onTChanged(double t) {
@@ -158,7 +158,7 @@ class AdvancedFireBehaviourPredictionFormState
       setPreset(settings.fuelTypePreset);
       setState(() {
         _basicInput = settings.basicInput;
-        _gfl = settings.gfl;
+        _gfl = defaultGFL;
         _gflController.text = _gfl.toString();
         _minutes = settings.t;
       });
@@ -285,25 +285,24 @@ class AdvancedFireBehaviourPredictionFormState
             if (isGrassFuelType(_fuelTypePreset!.code))
               Row(children: [
                 // GFL field
+                makeInputLabel('Grass Fuel Load', _gfl.toStringAsFixed(2),
+                    ' kg/\u33A1', textStyle, textStyleBold),
                 Expanded(
-                    child: TextField(
-                  controller: _gflController,
-                  decoration: const InputDecoration(
-                      labelText: "Grass Fuel Load (kg/\u33A1)",
-                      labelStyle: TextStyle(fontSize: labelFontSize)),
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) {
-                    if (double.tryParse(value) != null) {
-                      // We need to pin grass fuel load to be greater than or equal to 0
-                      var gflValue = double.parse(value);
-                      _onGFLChanged(
-                          roundDouble(gflValue >= 0 ? gflValue : 0, 2));
-                    }
-                  },
-                )),
+                    flex: sliderFlex,
+                    child: FancySliderWidget(
+                      value: _gfl,
+                      min: minGFL,
+                      max: maxGFL,
+                      divisions: ((maxGFL - minGFL) / 0.05).round(),
+                      activeColor: intensityClassColour,
+                      label: '${_gfl.toStringAsFixed(2)} kg/\u33A1',
+                      onChanged: (value) {
+                        _onGFLChanged(value);
+                      },
+                    )),
               ]),
             // PDF field
-            if (isBorealMixedWood(_fuelTypePreset!.code))
+            if (canAdjustDeadFir(_fuelTypePreset!.code))
               Row(
                 children: [
                   makeInputLabel('Dead Balsam', (_pdf ?? 0).toStringAsFixed(0),

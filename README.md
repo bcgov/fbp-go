@@ -159,6 +159,7 @@ similar.
 - "And if there was a map so you could click on the location and it would input the coordinates instead of having to do that yourself."
 - Create an "Assumptions tab", that explains the input values and formulae being used in the background:
 "Assumptions – FBP Go
+- Reset defaults feature.
 
 Care should be exercised not to apply the system beyond its useful range. FBP Go/ FBP System can be used to make predictions for a fire spreading during one burning period from a point or line source of fire with the following assumptions:
 •	Fuel conditions are representative one of the 18 benchmark fuel types.
@@ -180,20 +181,37 @@ The FBP System is based on observations of experimental fires and wildfires. The
 
 ### v1.1.0 (next phase)
 - [ ] Add FWI.
-
-### v1.0.7 (future)
-- [ ] Re-factor - removing "basic" screen code from app (just commented out for now, in case we want to bring it back in).
-- [ ] FBP: Switch grass fuel load to slider? Or fix input (can't dismiss keyboard in iOS).
 - [ ] FBP: Consider input option without sliders.
-- [x] FBP: FFMC lower limit kept at 80 (values lower than 80 not deemed relevant).
+
+### v1.0.8 (future) Release Candidate
 - [ ] FBP: Incorporate card sort feedback.
-- [ ] FBP: Hide CFB and CFL when using grass fuel type.
 - [ ] Tech: Automated build (apk + appbundle) in github workflow.
 - [ ] Web: About isn't working on the web version.
-- [ ] FBP: The percent dead fir slider showing in M1/2, it should only be showing in M3/4.
-- [ ] FBP: When switching between fuel types it remembers all settings, but resets BUI to a baseline value
+- [ ] FBP: Limit altitude : -200 to 3000 (might consider switching input to slider)
+- [ ] FBP: Altitude should specify that it's meters. - MVP
+- [ ] FBP: Investigate altitude related crash. - MVP
+- [ ] FBP: Delete saved settings on crash.
 
-### v1.0.6 Release Candidate (current)
+
+### v1.0.7 (current)
+
+#### Summary:
+
+BUI no longer changing when fuel type changes. PDF slider no longer showing for M1/M2. 2 decimal places for fuel consumption. Slope limited to 60%. GFL changed to slider (resolves various bugs relating to text input), and no longer storing user value.
+
+#### Detail:
+
+- [x] Re-factor - removing "basic" screen code from app (just commented out for now, in case we want to bring it back in).
+- [x] FBP: Switch grass fuel load to slider. (0.1 minimum, 1.00 maximum).
+- [x] FBP: Reset grass to default on fuel type change, no longer storing GFL.
+- [x] FBP: FFMC lower limit kept at 80 (values lower than 80 not deemed relevant).
+- [x] FBP: Hide CFB and CFC when using grass fuel type.
+- [x] FBP: The percent dead fir slider showing in M1/2, it should only be showing in M3/4.
+- [x] FBP: When switching between fuel types it remembers all settings, but resets BUI to a baseline value
+- [x] FBP: Change fuel consumption to show 2 decimal places (otherwise shows as 0 for grass).
+- [x] FBP: Limit slope to 60%
+
+### v1.0.6 Release Candidate
 
 - [x] FBP: Grass Fuel Load - crashes app when set to negative.
 

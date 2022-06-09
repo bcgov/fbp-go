@@ -33,6 +33,13 @@ abstract class Group {
   String heading;
   bool isExpanded;
 
+  bool showCrown(FireBehaviourPredictionInput input) {
+    FuelType fuelType = FuelType.values.byName(input.FUELTYPE);
+    return !(isGrassFuelType(fuelType) ||
+        isSlashFuelType(fuelType) ||
+        fuelType == FuelType.D1);
+  }
+
   Row _buildRow(String value, String uom, String label, Color? color) {
     const int valueFlex = 3;
     const int labelFlex = 6;
@@ -89,10 +96,14 @@ class SecondaryFireBehaviourGroup extends Group {
     TextStyle textStyle = const TextStyle(color: Colors.black);
     return buildContainer([
       // Primary outputs
-      _buildRow(((prediction.secondary!.FCFB * 100).toStringAsFixed(0)), '%',
-          'Crown fraction burned - Flank', textStyle.color),
-      _buildRow(((prediction.secondary!.BCFB * 100).toStringAsFixed(0)), '%',
-          'Crown fraction burned - Back', textStyle.color),
+      ...(showCrown(input)
+          ? [
+              _buildRow(((prediction.secondary!.FCFB * 100).toStringAsFixed(0)),
+                  '%', 'Crown fraction burned - Flank', textStyle.color),
+              _buildRow(((prediction.secondary!.BCFB * 100).toStringAsFixed(0)),
+                  '%', 'Crown fraction burned - Back', textStyle.color)
+            ]
+          : []),
       _buildRow(((prediction.secondary!.FROS).toStringAsFixed(0)), ' (m/min)',
           'Rate of spread - Flank', textStyle.color),
       _buildRow(((prediction.secondary!.BROS).toStringAsFixed(0)), ' (m/min)',
@@ -107,16 +118,20 @@ class SecondaryFireBehaviourGroup extends Group {
           'Direction of spread',
           textStyle.color),
       // Planned ignition
-      _buildRow((prediction.SFC).toStringAsFixed(0), ' (kg/\u33A1)',
+      _buildRow(formatNumber(prediction.SFC), ' (kg/\u33A1)',
           'Surface fuel consumption', textStyle.color),
-      _buildRow((prediction.CFC).toStringAsFixed(0), ' (kg/\u33A1)',
-          'Crown fuel consumption', textStyle.color),
-      _buildRow((prediction.TFC).toStringAsFixed(0), ' (kg/\u33A1)',
+      ...(showCrown(input)
+          ? [
+              _buildRow((prediction.CFC).toStringAsFixed(0), ' (kg/\u33A1)',
+                  'Crown fuel consumption', textStyle.color)
+            ]
+          : []),
+      _buildRow(formatNumber(prediction.TFC), ' (kg/\u33A1)',
           'Total fuel consumption', textStyle.color),
-      _buildRow('${(prediction.secondary?.FTFC)?.toStringAsFixed(0)}',
-          ' (kg/\u33A1)', 'Total fuel consumption - flank', textStyle.color),
-      _buildRow('${(prediction.secondary?.BTFC)?.toStringAsFixed(0)}',
-          ' (kg/\u33A1)', 'Total fuel consumption - back', textStyle.color),
+      _buildRow(formatNumber(prediction.secondary?.FTFC), ' (kg/\u33A1)',
+          'Total fuel consumption - flank', textStyle.color),
+      _buildRow(formatNumber(prediction.secondary?.BTFC), ' (kg/\u33A1)',
+          'Total fuel consumption - back', textStyle.color),
       // Fire growth potential
       _buildRow(prediction.WSV.toStringAsFixed(0), ' (km/h)',
           'Net effective wind speed', textStyle.color),
@@ -164,8 +179,12 @@ class PrimaryFireBehaviourGroup extends Group {
     return buildContainer([
       _buildRow(
           getFireDescription(prediction.FD), '', 'Fire type', textStyle.color),
-      _buildRow(((prediction.CFB * 100).toStringAsFixed(0)), '%',
-          'Crown fraction burned', textStyle.color),
+      ...(showCrown(input)
+          ? [
+              _buildRow(((prediction.CFB * 100).toStringAsFixed(0)), '%',
+                  'Crown fraction burned', textStyle.color)
+            ]
+          : []),
       _buildRow(((prediction.ROS).toStringAsFixed(0)), ' (m/min)',
           'Rate of spread', textStyle.color),
       _buildRow(((prediction.ISI).toStringAsFixed(0)), '',

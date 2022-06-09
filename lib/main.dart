@@ -21,7 +21,6 @@ import 'about.dart';
 import 'fbp_advanced.dart';
 import 'package:flutter/material.dart';
 import 'cffdrs/fbp_calc.dart';
-import 'fbp_basic.dart';
 import 'fmc.dart';
 
 void main() => runApp(const MyApp());
@@ -43,7 +42,7 @@ String getSecondaryText(FireBehaviourPredictionPrimary? prediction) {
   return '';
 }
 
-enum Section { basic, advanced, fwi, about, fmc }
+enum Section { advanced, fwi, about, fmc }
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -60,8 +59,6 @@ class HomePageState extends State<HomePage> {
 
   String _getSectionText() {
     switch (_selectedSection) {
-      case Section.basic:
-        return 'Basic FBP';
       case Section.advanced:
         return 'Fire Behaviour Prediction';
       case Section.fwi:
@@ -106,21 +103,6 @@ class HomePageState extends State<HomePage> {
             child: Column(
               children: const [AboutPage()],
             ));
-      case (Section.basic):
-        return Center(
-            child: SingleChildScrollView(
-                padding:
-                    const EdgeInsets.only(left: edgeInset, right: edgeInset),
-                child: Column(
-                  children: const [BasicFireBehaviourPredictionForm()],
-                )));
-      // child: Theme(
-      //     data: Theme.of(context).copyWith(
-      //         textTheme: TextTheme(
-      //             bodyText1: TextStyle(color: Colors.green))),
-      //     child: Column(
-      //       children: [BasicFireBehaviourPredictionForm()],
-      //     ))));
       case (Section.advanced):
         return Center(
             child: SingleChildScrollView(
@@ -157,15 +139,7 @@ class HomePageState extends State<HomePage> {
             decoration: BoxDecoration(color: Colors.blue),
             child: Text('FBP Go\n\nFire Behaviour Prediction on the go'),
           ),
-          // ListTile(
-          //     title: const Text('Basic Fire Behaviour Prediction'),
-          //     onTap: () {
-          //       _changeSection(Section.basic);
-          //     }),
           ListTile(
-              // title: const Tooltip(
-              // message: 'FBP for nerds',
-              // child: Text('Fire Behaviour Prediction')),
               title: const Text('Fire Behaviour Prediction'),
               onTap: () {
                 _changeSection(Section.advanced);
@@ -175,12 +149,6 @@ class HomePageState extends State<HomePage> {
           //     title: const Text('Fire Weather Index (FWI)'),
           //     onTap: () {
           //       _changeSection(Section.fwi);
-          //     }),
-          // TODO: No-one wants this, but just keep it here for now.
-          // ListTile(
-          //     title: const Text('Foliar Moisture Content (FMC)'),
-          //     onTap: () {
-          //       _changeSection(Section.fmc);
           //     }),
           ListTile(
               title: const Text('About'),
