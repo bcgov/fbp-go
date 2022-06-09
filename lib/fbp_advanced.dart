@@ -64,7 +64,7 @@ class AdvancedFireBehaviourPredictionFormState
   double? _fmc = 0;
   double _cfl = 0;
   double _minutes = 60;
-  double _gfl = 0.35;
+  double _gfl = defaultGFL;
 
   // bool _expanded = false;
 
@@ -80,6 +80,8 @@ class AdvancedFireBehaviourPredictionFormState
 
       _cbh = preset.cbh;
       cbhController.text = _cbh.toString();
+
+      _gfl = defaultGFL;
 
       _cfl = preset.cfl;
       _cflController.text = _cfl.toString();
@@ -155,7 +157,7 @@ class AdvancedFireBehaviourPredictionFormState
       setPreset(settings.fuelTypePreset);
       setState(() {
         _basicInput = settings.basicInput;
-        _gfl = settings.gfl;
+        _gfl = defaultGFL;
         _gflController.text = _gfl.toString();
         _minutes = settings.t;
       });

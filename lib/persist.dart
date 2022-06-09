@@ -13,13 +13,11 @@ class BasicSettings {
 }
 
 class AdvancedSettings extends BasicSettings {
-  double gfl;
   double t;
 
   AdvancedSettings(
       {required BasicInput basicInput,
       required FuelTypePreset fuelTypePreset,
-      required this.gfl,
       required this.t})
       : super(basicInput: basicInput, fuelTypePreset: fuelTypePreset);
 }
@@ -68,16 +66,9 @@ Future<BasicSettings> loadBasic() async {
 AdvancedSettings _loadAdvanced(SharedPreferences prefs) {
   var basicSettings = _loadBasic(prefs);
 
-  var gfl = prefs.getDouble('gfl') ?? defaultGFL;
   var t = prefs.getDouble('t') ?? 60;
 
-  // In v1.0.5, it was possible to set a negative gfl, which would cause the app to crash. On re-starting the app,
-  // the invalid gfl would be loaded, and the app would crash again.
-  // Pinning the GFL to min and max avoids this problem.
-  gfl = pinGFL(gfl);
-
   return AdvancedSettings(
-      gfl: gfl,
       t: t,
       basicInput: basicSettings.basicInput,
       fuelTypePreset: basicSettings.fuelTypePreset);
