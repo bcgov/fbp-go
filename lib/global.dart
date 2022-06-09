@@ -9,3 +9,5 @@ const double defaultAltitude = 100;
 const double minGFL = 0.1;
 const double maxGFL = 1.0;
 const double defaultGFL = 0.35;
+const double minGS = 0;
+const double maxGS = 60;

@@ -326,3 +326,12 @@ double pinGFL(double gfl) {
   }
   return gfl;
 }
+
+double pinGS(double gs) {
+  if (gs < minGS) {
+    return minGS;
+  } else if (gs > maxGS) {
+    return maxGS;
+  }
+  return gs;
+}

@@ -120,8 +120,9 @@ class AdvancedFireBehaviourPredictionFormState
   }
 
   void _onGFLChanged(double gfl) {
+    gfl = pinGFL(gfl);
     setState(() {
-      _gfl = pinGFL(gfl);
+      _gfl = gfl;
     });
     persistSetting('gfl', _gfl);
   }

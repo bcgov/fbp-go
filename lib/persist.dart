@@ -50,7 +50,9 @@ BasicSettings _loadBasic(SharedPreferences prefs) {
           altitude: prefs.getDouble('altitude') ?? defaultAltitude));
 
   basicInput.waz = prefs.getDouble('waz') ?? 0;
-  basicInput.gs = prefs.getDouble('gs') ?? 0;
+  // we need to pin the ground slope, because the input range has been changed,
+  // if a user has the old value saved, we need to override it.
+  basicInput.gs = pinGS(prefs.getDouble('gs') ?? 0);
   basicInput.cc = prefs.getDouble('cc') ?? defaultCC;
   basicInput.ffmc = prefs.getDouble('ffmc') ?? defaultFFMC;
   basicInput.aspect = prefs.getDouble('aspect') ?? 0;
