@@ -182,7 +182,7 @@ The FBP System is based on observations of experimental fires and wildfires. The
 - [ ] Add FWI.
 - [ ] FBP: Consider input option without sliders.
 
-### v1.0.8 (future)
+### v1.0.8 (future) Release Candidate
 - [ ] FBP: Incorporate card sort feedback.
 - [ ] Tech: Automated build (apk + appbundle) in github workflow.
 - [ ] Web: About isn't working on the web version.
@@ -192,7 +192,7 @@ The FBP System is based on observations of experimental fires and wildfires. The
 - [ ] FBP: Delete saved settings on crash.
 
 
-### v1.0.7 (future)
+### v1.0.7 (current)
 
 #### Summary:
 
@@ -210,7 +210,7 @@ BUI no longer changing when fuel type changes. PDF slider no longer showing for 
 - [x] FBP: Change fuel consumption to show 2 decimal places (otherwise shows as 0 for grass).
 - [x] FBP: Limit slope to 60%
 
-### v1.0.6 Release Candidate (current)
+### v1.0.6 Release Candidate
 
 - [x] FBP: Grass Fuel Load - crashes app when set to negative.
 
