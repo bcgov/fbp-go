@@ -285,8 +285,8 @@ class AdvancedFireBehaviourPredictionFormState
             if (isGrassFuelType(_fuelTypePreset!.code))
               Row(children: [
                 // GFL field
-                makeInputLabel('Grass Fuel Load', _gfl.toStringAsFixed(2),
-                    ' kg/\u33A1', textStyle, textStyleBold),
+                makeInputLabel('GFL', _gfl.toStringAsFixed(2), ' kg/\u33A1',
+                    textStyle, textStyleBold),
                 Expanded(
                     flex: sliderFlex,
                     child: FancySliderWidget(
@@ -295,7 +295,8 @@ class AdvancedFireBehaviourPredictionFormState
                       max: maxGFL,
                       divisions: ((maxGFL - minGFL) / 0.05).round(),
                       activeColor: intensityClassColour,
-                      label: '${_gfl.toStringAsFixed(2)} kg/\u33A1',
+                      label:
+                          'Grass Fuel Load: ${_gfl.toStringAsFixed(2)} kg/\u33A1',
                       onChanged: (value) {
                         _onGFLChanged(value);
                       },
