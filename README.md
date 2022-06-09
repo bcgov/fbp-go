@@ -173,6 +173,7 @@ Care should be exercised not to apply the system beyond its useful range. FBP Go
 
 The FBP System is based on observations of experimental fires and wildfires. There are very few records of sustained fire spread with wind speeds above 60 km and/or ISI > 70. Thus, the largest ROS values in this App roughly correspond to the upper limit of observed spread rates in each fuel type. Higher ROS values may occur with higher wind speeds and during gusts.
 "
+- [ ] Consider adding date dialog (important for FMC)
 
 
 ## Log of changes & decisions
