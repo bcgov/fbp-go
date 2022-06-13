@@ -73,8 +73,6 @@ releases overview -> review it
 
 #### Github Workflow
 
-
-
 ### Build for iOS - on M1 silicon
 
 If you use the default ruby+gem setup that comes out of the box, you'll get errors about
@@ -133,6 +131,7 @@ Product -> Archive (make sure you've selected the correct target)
 - Dart naming convention rules are often broken in order to conform with the CFFDRS R library. The R code has been
 manually translated, and in order to debug and stay up to date with changes, it's just easier if the code looks
 similar.
+- Variable names throughout conform to conventions in [ST-X-3](https://cfs.nrcan.gc.ca/publications/download-pdf/10068) Appendix II and [GLC-X-10](https://cfs.nrcan.gc.ca/publications/download-pdf/31414) Appendix I. E.g. `GFL` instead of `grassFuelLoad` or `minGS` instead of `minGroundSlope`. Validating formulae an math in code can get very confusing if one does not conform to the acronyms used in the related scientific literature.
 
 ## Todo
 - Add screenshots for iOS.
@@ -183,7 +182,7 @@ The FBP System is based on observations of experimental fires and wildfires. The
 - [ ] Add FWI.
 - [ ] FBP: Consider input option without sliders.
 
-### v1.0.8 (future) Release Candidate
+### v1.0.8 (current) Release Candidate
 - [ ] FBP: Incorporate card sort feedback.
 - [ ] Tech: Automated build (apk + appbundle) in github workflow.
 - [ ] Web: About isn't working on the web version.
@@ -192,8 +191,7 @@ The FBP System is based on observations of experimental fires and wildfires. The
 - [ ] FBP: Investigate altitude related crash. - MVP
 - [ ] FBP: Delete saved settings on crash.
 
-
-### v1.0.7 (current)
+### v1.0.7
 
 #### Summary:
 
