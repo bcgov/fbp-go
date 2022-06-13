@@ -13,13 +13,11 @@ class BasicSettings {
 }
 
 class AdvancedSettings extends BasicSettings {
-  double gfl;
   double t;
 
   AdvancedSettings(
       {required BasicInput basicInput,
       required FuelTypePreset fuelTypePreset,
-      required this.gfl,
       required this.t})
       : super(basicInput: basicInput, fuelTypePreset: fuelTypePreset);
 }
@@ -52,7 +50,9 @@ BasicSettings _loadBasic(SharedPreferences prefs) {
           altitude: prefs.getDouble('altitude') ?? defaultAltitude));
 
   basicInput.waz = prefs.getDouble('waz') ?? 0;
-  basicInput.gs = prefs.getDouble('gs') ?? 0;
+  // we need to pin the ground slope, because the input range has been changed,
+  // if a user has the old value saved, we need to override it.
+  basicInput.gs = pinGS(prefs.getDouble('gs') ?? 0);
   basicInput.cc = prefs.getDouble('cc') ?? defaultCC;
   basicInput.ffmc = prefs.getDouble('ffmc') ?? defaultFFMC;
   basicInput.aspect = prefs.getDouble('aspect') ?? 0;
@@ -68,18 +68,9 @@ Future<BasicSettings> loadBasic() async {
 AdvancedSettings _loadAdvanced(SharedPreferences prefs) {
   var basicSettings = _loadBasic(prefs);
 
-  var gfl = prefs.getDouble('gfl') ?? 0.35;
   var t = prefs.getDouble('t') ?? 60;
 
-  if (gfl < 0) {
-    // In v1.0.5, it was possible to set a negative gfl, which would cause the app to crash. On re-starting the app,
-    // the invalid gfl would be loaded, and the app would crash again.
-    // Pinning the GFL to 0, avoids this problem.
-    gfl = 0;
-  }
-
   return AdvancedSettings(
-      gfl: gfl,
       t: t,
       basicInput: basicSettings.basicInput,
       fuelTypePreset: basicSettings.fuelTypePreset);
