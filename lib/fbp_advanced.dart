@@ -207,7 +207,7 @@ class AdvancedFireBehaviourPredictionFormState
 
   Widget buildError(String? errorMessage) {
     if (errorMessage == null) {
-      return const Text('Could not generate prediction due to unknown');
+      return const Text('Could not generate prediction due to unknown error');
     }
     return Text('Could not generate prediction due to error:\n$errorMessage');
   }
