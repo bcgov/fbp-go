@@ -186,9 +186,9 @@ The FBP System is based on observations of experimental fires and wildfires. The
 - [ ] FBP: Incorporate card sort feedback.
 - [ ] Tech: Automated build (apk + appbundle) in github workflow.
 - [ ] Web: About isn't working on the web version.
-- [ ] FBP: Limit altitude : -200 to 3000 (might consider switching input to slider)
-- [ ] FBP: Altitude should specify that it's meters. - MVP
-- [ ] FBP: Investigate altitude related crash. - MVP
+- [x] FBP: Limit altitude : 0 to 3000 (might consider switching input to slider)
+- [x] FBP: Altitude should specify that it's meters. - MVP
+- [x] FBP: Coordinate latitude was accidentally being saved as altitude. Could cause crash on app if latitude was negative.
 - [ ] FBP: Delete saved settings on crash.
 
 ### v1.0.7

@@ -16,11 +16,13 @@ You should have received a copy of the GNU General Public License along with
 FBP Go. If not, see <https://www.gnu.org/licenses/>.
 */
 import 'dart:developer';
+import 'package:fire_behaviour_app/fbp_results.dart';
 import 'package:fire_behaviour_app/persist.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'fancy_slider.dart';
 import 'fire.dart';
 import 'global.dart';
 
@@ -78,10 +80,13 @@ class CoordinatePickerState extends State<CoordinatePicker> {
     persistSetting('longitude', _coordinate.longitude);
   }
 
-  void _setAltitude(altitude) {
+  void _setAltitude(value) {
+    // We pin the altitude to acceptable ranges. The altitude could come back as a negative number,
+    // WGS84 projection gives some locations on earth, that are above sea level, a negative number.
+    double altitude = pinAltitude(value);
     // Only need integer level accuracy.
     _coordinate.altitude = altitude.roundToDouble();
-    persistSetting('altitude', _coordinate.latitude);
+    persistSetting('altitude', _coordinate.altitude);
   }
 
   void _updatePosition() {
@@ -93,7 +98,7 @@ class CoordinatePickerState extends State<CoordinatePicker> {
                   setState(() {
                     _setLatitude(position.latitude);
                     _setLongitude(position.longitude);
-                    _setAltitude(position.altitude > 0 ? position.altitude : 0);
+                    _setAltitude(position.altitude);
                     widget.onChanged(_coordinate);
                     _updateCoordinateControllers();
                   });
@@ -118,72 +123,137 @@ class CoordinatePickerState extends State<CoordinatePicker> {
     _elevationController.text = _coordinate.altitude.toStringAsFixed(0);
   }
 
+  String? get _elevationErrorText {
+    final text = _elevationController.value.text;
+
+    if (text.isEmpty) {
+      return 'Can\'t be empty';
+    }
+    if (double.tryParse(text) != null) {
+      double elevation = double.parse(text);
+      if (elevation < minAltitude) {
+        return 'Min: ${formatNumber(minAltitude, digits: 0)}';
+      } else if (elevation > maxAltitude) {
+        return 'Max: ${formatNumber(maxAltitude, digits: 0)}';
+      }
+    } else {
+      return 'Not a number';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
-    const TextStyle textStyle = TextStyle(fontSize: labelFontSize);
-    return Row(
+    const TextStyle textStyle = TextStyle(fontSize: fontSize);
+    const TextStyle textStyleBold =
+        TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold);
+    return Column(
       children: [
-        // latitude Field
-        Expanded(
-            child: TextField(
-          controller: _latitudeController,
-          decoration: const InputDecoration(
-              labelText: "Latitude", labelStyle: textStyle),
-          keyboardType: const TextInputType.numberWithOptions(
-              signed: true, decimal: true),
-          onChanged: (value) {
-            if (double.tryParse(value) != null) {
-              double latitude = double.parse(value);
-              if (latitude >= -90 && latitude <= 90) {
-                setState(() {
-                  _setLatitude(latitude);
+        Row(
+          children: [
+            // TODO: If this is going to stick, you need to make the text flex, and the slider flex consants somewhere else.
+            // TODO: If this is going to stick, you need to make some common code for making the lable and the slider things.
+            Expanded(
+                flex: 5,
+                child: Column(children: [
+                  Row(children: const [
+                    Text('Elevation', style: textStyle),
+                    Text(':', style: textStyle)
+                  ]),
+                  Row(children: [
+                    Text(_coordinate.altitude.toStringAsFixed(0),
+                        style: textStyleBold),
+                    const Text('(m)', style: textStyle)
+                  ])
+                ])),
+            Expanded(
+                flex: 10,
+                child: FancySliderWidget(
+                  value: _coordinate.altitude,
+                  min: minAltitude,
+                  max: maxAltitude,
+                  divisions: 100,
+                  activeColor: Colors.green,
+                  label: '${_coordinate.altitude.toStringAsFixed(0)} m',
+                  onChanged: (value) {
+                    _setAltitude(value);
+                    widget.onChanged(_coordinate);
+                    _elevationController.text =
+                        _coordinate.altitude.toStringAsFixed(0);
+                  },
+                ))
+          ],
+        ),
+        Row(
+          children: [
+            //     // latitude Field
+            Expanded(
+                child: TextField(
+              controller: _latitudeController,
+              decoration: const InputDecoration(
+                  labelText: "Latitude", labelStyle: textStyle),
+              keyboardType: const TextInputType.numberWithOptions(
+                  signed: true, decimal: true),
+              onChanged: (value) {
+                if (double.tryParse(value) != null) {
+                  double latitude = double.parse(value);
+                  if (latitude >= -90 && latitude <= 90) {
+                    setState(() {
+                      _setLatitude(latitude);
+                      widget.onChanged(_coordinate);
+                    });
+                  }
+                }
+              },
+            )),
+            // longitude Field
+            Expanded(
+                child: TextField(
+              controller: _longitudeController,
+              decoration: const InputDecoration(
+                  labelText: "Longitude", labelStyle: textStyle),
+              keyboardType: const TextInputType.numberWithOptions(
+                  signed: true, decimal: true),
+              onChanged: (value) {
+                if (double.tryParse(value) != null) {
+                  double longitude = double.parse(value);
+                  if (longitude >= -180 && longitude.abs() <= 180) {
+                    _setLongitude(longitude);
+                    widget.onChanged(_coordinate);
+                  }
+                }
+              },
+            )),
+            Expanded(
+                child: TextField(
+              controller: _elevationController,
+              decoration: InputDecoration(
+                  labelText: "Elevation (m)",
+                  labelStyle: textStyle,
+                  errorText: _elevationErrorText),
+              keyboardType: const TextInputType.numberWithOptions(
+                  signed: true, decimal: true),
+              onChanged: (value) {
+                print('onChanged: ${value}');
+                if (double.tryParse(value) != null) {
+                  var altitude = double.parse(value);
+                  _setAltitude(altitude);
                   widget.onChanged(_coordinate);
-                });
-              }
-            }
-          },
-        )),
-        // longitude Field
-        Expanded(
-            child: TextField(
-          controller: _longitudeController,
-          decoration: const InputDecoration(
-              labelText: "Longitude", labelStyle: textStyle),
-          keyboardType: const TextInputType.numberWithOptions(
-              signed: true, decimal: true),
-          onChanged: (value) {
-            if (double.tryParse(value) != null) {
-              double longitude = double.parse(value);
-              if (longitude >= -180 && longitude.abs() <= 180) {
-                _setLongitude(longitude);
-                widget.onChanged(_coordinate);
-              }
-            }
-          },
-        )),
-        Expanded(
-            child: TextField(
-          controller: _elevationController,
-          decoration: const InputDecoration(
-              labelText: "Elevation", labelStyle: textStyle),
-          keyboardType: const TextInputType.numberWithOptions(
-              signed: true, decimal: true),
-          onChanged: (value) {
-            if (double.tryParse(value) != null) {
-              var altitude = double.parse(value);
-              if (altitude >= 0) {
-                _setAltitude(altitude);
-                widget.onChanged(_coordinate);
-              }
-            }
-          },
-        )),
-        Expanded(
-            child: IconButton(
-                icon: const Icon(Icons.my_location),
-                onPressed: () {
-                  _updatePosition();
-                }))
+                } else {
+                  print('cannot parse that');
+                  _setAltitude(minAltitude);
+                  widget.onChanged(_coordinate);
+                }
+              },
+            )),
+            Expanded(
+                child: IconButton(
+                    icon: const Icon(Icons.my_location),
+                    onPressed: () {
+                      _updatePosition();
+                    }))
+          ],
+        )
       ],
     );
   }

@@ -335,3 +335,12 @@ double pinGS(double gs) {
   }
   return gs;
 }
+
+double pinAltitude(double altitude) {
+  if (altitude < minAltitude) {
+    return minAltitude;
+  } else if (altitude > maxAltitude) {
+    return maxAltitude;
+  }
+  return altitude;
+}

@@ -47,7 +47,10 @@ BasicSettings _loadBasic(SharedPreferences prefs) {
       coordinate: Coordinate(
           latitude: prefs.getDouble('latitude') ?? defaultLatitude,
           longitude: prefs.getDouble('longitude') ?? defaultLongitude,
-          altitude: prefs.getDouble('altitude') ?? defaultAltitude));
+          // We need to in altitude, if a value below zero was persisted, it will cause the FBP calculation
+          // to fail.
+          altitude:
+              pinAltitude(prefs.getDouble('altitude') ?? defaultAltitude)));
 
   basicInput.waz = prefs.getDouble('waz') ?? 0;
   // we need to pin the ground slope, because the input range has been changed,
