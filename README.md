@@ -137,7 +137,7 @@ similar.
 - Add screenshots for iOS.
 - Localization - implement en-CA and fr-CA.
 - Coordinates - provide user feedback on location button. (e.g. fetching and failed state).
-- Add FMC option in advanced.
+- Add FMC option in advanced. (Probably won't happen? But maybe setting the date?)
 - FFMC scale at the bottom.
   - Possible, but nothing out of the box - so leaving it alone for now.
 - Diurnal FFMC screen.
@@ -150,14 +150,11 @@ similar.
 - From testing session: users report difficulty with the sliders in terms of precision - hard to get the exact number they want. Sometimes this is ok, sometimes it’s very bad. Either way, it’s frustrating. Users pointed out that in the field their hands will be sweaty and dirty. Some folks realized they could turn their phone to landscape mode and it was a bit better. User-feature request: in addition to the sliders, can we have + and - buttons There may be other ways, UX can collaborate
 - Dev task tech dept: passing font size around sucks. Apply themes.
 - Let's talk about dead balsam fir and conifer and grass fuel load being affected by fuel type. (fuel load parameters)
-- Grass fuel should be a slider.
-- " It would also be nice if the values I enter in the basic tab would transfer over to the advanced tab, right now it seems to default to C2 for fuel type."
-- " Would be nice to decrease the sensitivity of some of the sliders. Hot dog fingers make it hard to hone in" <- "Mostly the wind slider, but any value that is incremented by one denomination is similar."
 - "If it’s possible to connect the “my location” button to the wildfire one portal to automatically input the local indices from the closest weather station/stations that would be a cool feature"
 - "It would be sweet is you could input numbers manually"
 - "And if there was a map so you could click on the location and it would input the coordinates instead of having to do that yourself."
 - Create an "Assumptions tab", that explains the input values and formulae being used in the background:
-"Assumptions – FBP Go
+- "Assumptions – FBP Go
 - Reset defaults feature.
 
 Care should be exercised not to apply the system beyond its useful range. FBP Go/ FBP System can be used to make predictions for a fire spreading during one burning period from a point or line source of fire with the following assumptions:
@@ -174,6 +171,7 @@ Care should be exercised not to apply the system beyond its useful range. FBP Go
 The FBP System is based on observations of experimental fires and wildfires. There are very few records of sustained fire spread with wind speeds above 60 km and/or ISI > 70. Thus, the largest ROS values in this App roughly correspond to the upper limit of observed spread rates in each fuel type. Higher ROS values may occur with higher wind speeds and during gusts.
 "
 - [ ] Consider adding date dialog (important for FMC)
+- [ ] FBP: Incorporate card sort feedback.
 
 
 ## Log of changes & decisions
@@ -182,14 +180,24 @@ The FBP System is based on observations of experimental fires and wildfires. The
 - [ ] Add FWI.
 - [ ] FBP: Consider input option without sliders.
 
-### v1.0.8 (current) Release Candidate
-- [ ] FBP: Incorporate card sort feedback.
+### v1.0.9 (future)
 - [ ] Tech: Automated build (apk + appbundle) in github workflow.
-- [ ] Web: About isn't working on the web version.
-- [x] FBP: Limit altitude : 0 to 3000 (might consider switching input to slider)
-- [x] FBP: Altitude should specify that it's meters. - MVP
+
+### v1.0.8 (current) Release Candidate
+
+#### Summary:
+
+Improved validation on coordinate input, and resolved some crashes related to invalid values.
+
+#### Detail:
+
+- [x] Web: About was crashing in web version.
+- [x] FBP: Limit altitude : 0 to 3000 (negative values are possible in WGS84, but not valid for calculations)
+- [x] FBP: Altitude should specify that it's meters.
 - [x] FBP: Coordinate latitude was accidentally being saved as altitude. Could cause crash on app if latitude was negative.
-- [ ] FBP: Delete saved settings on crash.
+- [x] FBP: Latitude, Longitude & Elevation validation implemented.
+- [x] FBP: Handling conditions where prediction could not be calculated. Instead of user getting a gray screen, user should now be able to adjust input conditions to resolve the issue.
+- [x] Added some semantics for accessibility.
 
 ### v1.0.7
 

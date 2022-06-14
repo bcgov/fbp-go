@@ -61,7 +61,6 @@ class AdvancedFireBehaviourPredictionFormState
   double? _pc = 0;
   double? _pdf = 0;
   double? _cbh = 0;
-  double? _fmc = 0;
   double _cfl = 0;
   double _minutes = 60;
   double _gfl = defaultGFL;
@@ -131,12 +130,6 @@ class AdvancedFireBehaviourPredictionFormState
     persistSetting('t', t);
     setState(() {
       _minutes = t;
-    });
-  }
-
-  void _onFMCChanged(double fmc) {
-    setState(() {
-      _fmc = fmc;
     });
   }
 
@@ -212,6 +205,13 @@ class AdvancedFireBehaviourPredictionFormState
         ]));
   }
 
+  Widget buildError(String? errorMessage) {
+    if (errorMessage == null) {
+      return const Text('Could not generate prediction due to unknown');
+    }
+    return Text('Could not generate prediction due to error:\n$errorMessage');
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_basicInput == null || _fuelTypePreset == null) {
@@ -243,26 +243,35 @@ class AdvancedFireBehaviourPredictionFormState
         CBH: _cbh,
         CFL: _cfl,
         HR: _minutes / 60.0);
-    // print('advanced: ${input}');
-    FireBehaviourPredictionPrimary prediction = FBPcalc(input, output: "ALL");
-    _onFMCChanged(prediction.FMC);
-    // Wind direction correction:
-    prediction.RAZ -= 180;
-    prediction.RAZ = prediction.RAZ < 0 ? prediction.RAZ + 360 : prediction.RAZ;
-    if (prediction.secondary != null) {
-      fireSize = getFireSize(
-          _fuelTypePreset!.code.name,
-          prediction.ROS,
-          prediction.secondary!.BROS,
-          _minutes,
-          prediction.CFB,
-          prediction.secondary!.LB);
+
+    FireBehaviourPredictionPrimary? prediction;
+    num surfaceFlameLength = 0;
+    int intensityClass = 1;
+    String? errorMessage;
+
+    try {
+      prediction = FBPcalc(input, output: "ALL");
+      // Wind direction correction:
+      prediction.RAZ -= 180;
+      prediction.RAZ =
+          prediction.RAZ < 0 ? prediction.RAZ + 360 : prediction.RAZ;
+      if (prediction.secondary != null) {
+        fireSize = getFireSize(
+            _fuelTypePreset!.code.name,
+            prediction.ROS,
+            prediction.secondary!.BROS,
+            _minutes,
+            prediction.CFB,
+            prediction.secondary!.LB);
+      }
+      surfaceFlameLength = calculateApproxFlameLength(prediction.HFI);
+      intensityClass = getHeadFireIntensityClass(prediction.HFI);
+    } catch (e) {
+      errorMessage = e.toString();
     }
-    final surfaceFlameLength = calculateApproxFlameLength(prediction.HFI);
-    const sliderFlex = 10;
-    final intensityClass = getHeadFireIntensityClass(prediction.HFI);
     final intensityClassColour = getIntensityClassColor(intensityClass);
     final intensityClassTextColour = getIntensityClassTextColor(intensityClass);
+    const sliderFlex = 10;
     const TextStyle textStyle = TextStyle(fontSize: fontSize);
     const TextStyle textStyleBold =
         TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold);
@@ -376,17 +385,19 @@ class AdvancedFireBehaviourPredictionFormState
           ],
         ),
       ),
-      Padding(
-          padding: const EdgeInsets.only(top: 2.0),
-          child: ResultsStateWidget(
-              prediction: prediction,
-              minutes: _minutes,
-              fireSize: fireSize,
-              surfaceFlameLength: surfaceFlameLength,
-              input: input,
-              intensityClass: intensityClass,
-              intensityClassColour: intensityClassColour,
-              intensityClassTextColor: intensityClassTextColour))
+      (prediction == null)
+          ? buildError(errorMessage)
+          : Padding(
+              padding: const EdgeInsets.only(top: 2.0),
+              child: ResultsStateWidget(
+                  prediction: prediction,
+                  minutes: _minutes,
+                  fireSize: fireSize,
+                  surfaceFlameLength: surfaceFlameLength,
+                  input: input,
+                  intensityClass: intensityClass,
+                  intensityClassColour: intensityClassColour,
+                  intensityClassTextColor: intensityClassTextColour))
     ]);
   }
 }

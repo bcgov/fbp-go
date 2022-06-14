@@ -44,11 +44,11 @@ BasicSettings _loadBasic(SharedPreferences prefs) {
   BasicInput basicInput = BasicInput(
       ws: prefs.getDouble('ws') ?? 5,
       bui: prefs.getDouble('bui') ?? fuelTypePreset.averageBUI,
+      // We pin coordinate values to avoid loading bad data.
       coordinate: Coordinate(
-          latitude: prefs.getDouble('latitude') ?? defaultLatitude,
-          longitude: prefs.getDouble('longitude') ?? defaultLongitude,
-          // We need to in altitude, if a value below zero was persisted, it will cause the FBP calculation
-          // to fail.
+          latitude: pinLatitude(prefs.getDouble('latitude') ?? defaultLatitude),
+          longitude:
+              pinLongitude(prefs.getDouble('longitude') ?? defaultLongitude),
           altitude:
               pinAltitude(prefs.getDouble('altitude') ?? defaultAltitude)));
 

@@ -318,29 +318,31 @@ double roundDouble(double value, int places) {
   return (value * multiplier).round() / multiplier;
 }
 
-double pinGFL(double gfl) {
-  if (gfl < minGFL) {
-    return minGFL;
-  } else if (gfl > maxGFL) {
-    return maxGFL;
+double pinValue(double value, double minValue, double maxValue) {
+  if (value < minValue) {
+    return minValue;
+  } else if (value > maxValue) {
+    return maxValue;
   }
-  return gfl;
+  return value;
+}
+
+double pinGFL(double gfl) {
+  return pinValue(gfl, minGFL, maxGFL);
 }
 
 double pinGS(double gs) {
-  if (gs < minGS) {
-    return minGS;
-  } else if (gs > maxGS) {
-    return maxGS;
-  }
-  return gs;
+  return pinValue(gs, minGS, maxGS);
 }
 
 double pinAltitude(double altitude) {
-  if (altitude < minAltitude) {
-    return minAltitude;
-  } else if (altitude > maxAltitude) {
-    return maxAltitude;
-  }
-  return altitude;
+  return pinValue(altitude, minAltitude, maxAltitude);
+}
+
+double pinLongitude(double longitude) {
+  return pinValue(longitude, minLongitude, maxLongitude);
+}
+
+double pinLatitude(double latitude) {
+  return pinValue(latitude, minLatitude, maxLatitude);
 }
