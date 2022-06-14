@@ -175,11 +175,9 @@ class CoordinatePickerState extends State<CoordinatePicker> {
           onChanged: (value) {
             if (double.tryParse(value) != null) {
               double latitude = double.parse(value);
-              // if (latitude >= -90 && latitude <= 90) {
               setState(() {
                 _setLatitude(latitude);
               });
-              // }
             }
             widget.onChanged(_coordinate);
           },
@@ -197,11 +195,9 @@ class CoordinatePickerState extends State<CoordinatePicker> {
           onChanged: (value) {
             if (double.tryParse(value) != null) {
               double longitude = double.parse(value);
-              // if (longitude >= -180 && longitude.abs() <= 180) {
               setState(() {
                 _setLongitude(longitude);
               });
-              // }
             }
             widget.onChanged(_coordinate);
           },
