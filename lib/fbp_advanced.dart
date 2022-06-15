@@ -251,10 +251,6 @@ class AdvancedFireBehaviourPredictionFormState
 
     try {
       prediction = FBPcalc(input, output: "ALL");
-      // Wind direction correction:
-      prediction.RAZ -= 180;
-      prediction.RAZ =
-          prediction.RAZ < 0 ? prediction.RAZ + 360 : prediction.RAZ;
       if (prediction.secondary != null) {
         fireSize = getFireSize(
             _fuelTypePreset!.code.name,

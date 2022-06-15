@@ -281,6 +281,11 @@ String getFireType(String fuelType, double crownFractionBurned) {
       "Cannot calculate fire type. Invalid Crown Fraction Burned percentage received.");
 }
 
+double razToNetEffectiveWindDirection(double raz) {
+  // The net effective wind direction is 180 degrees opposite from the direction of spread.
+  return (raz + 180.0) % 360.0;
+}
+
 String degreesToCompassPoint(double azimuth) {
   /** Given an aspect (degree 0 to 360), return compass point.
    * e.g. 0 degrees is North, 90 is East, 180 is South, 270 is West.

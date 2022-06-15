@@ -187,11 +187,11 @@ The FBP System is based on observations of experimental fires and wildfires. The
 
 #### Summary:
 
-Improved validation on coordinate input, and resolved some crashes related to invalid values.
-
+Improved validation on coordinate input, and resolved some crashes related to invalid values. Direction of spread was incorrectly showing the net effective wind direction.
 #### Detail:
 
 - [x] Web: About was crashing in web version.
+- [x] FBP: Direction of spread was incorrect (was showing net effective wind direction).
 - [x] FBP: Limit altitude : 0 to 3000 (negative values are possible in WGS84, but not valid for calculations)
 - [x] FBP: Altitude should specify that it's meters.
 - [x] FBP: Coordinate latitude was accidentally being saved as altitude. Could cause crash on app if latitude was negative.

@@ -94,6 +94,8 @@ class SecondaryFireBehaviourGroup extends Group {
       double minutes,
       num surfaceFlameLength) {
     TextStyle textStyle = const TextStyle(color: Colors.black);
+    double netEffectiveWindDirection =
+        razToNetEffectiveWindDirection(prediction.RAZ);
     return buildContainer([
       // Primary outputs
       ...(showCrown(input)
@@ -136,7 +138,7 @@ class SecondaryFireBehaviourGroup extends Group {
       _buildRow(prediction.WSV.toStringAsFixed(0), ' (km/h)',
           'Net effective wind speed', textStyle.color),
       _buildRow(
-          '${degreesToCompassPoint(prediction.RAZ)} ${prediction.RAZ.toStringAsFixed(1)}',
+          '${degreesToCompassPoint(netEffectiveWindDirection)} ${netEffectiveWindDirection.toStringAsFixed(1)}',
           '\u00B0',
           'Net effective wind direction',
           textStyle.color),
