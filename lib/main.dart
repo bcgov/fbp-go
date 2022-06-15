@@ -30,8 +30,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-        title: 'FBP Go (Fire Behaviour Prediction)', home: HomePage());
+    return Semantics(
+        label: 'FBP Go (Fire Behaviour Prediction) App',
+        child: const MaterialApp(
+            title: 'FBP Go (Fire Behaviour Prediction)', home: HomePage()));
   }
 }
 
@@ -78,19 +80,21 @@ class HomePageState extends State<HomePage> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Disclaimer'),
-            content: SingleChildScrollView(
-              child: Text(disclaimer),
-            ),
-            actions: <Widget>[
-              TextButton(
-                  child: const Text('OK'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  })
-            ],
-          );
+          return Semantics(
+              label: 'Disclaimer dialog',
+              child: AlertDialog(
+                title: const Text('Disclaimer'),
+                content: SingleChildScrollView(
+                  child: Text(disclaimer),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                      child: const Text('OK'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      })
+                ],
+              ));
         });
   }
 

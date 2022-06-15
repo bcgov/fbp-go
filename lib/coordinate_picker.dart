@@ -16,11 +16,13 @@ You should have received a copy of the GNU General Public License along with
 FBP Go. If not, see <https://www.gnu.org/licenses/>.
 */
 import 'dart:developer';
+import 'package:fire_behaviour_app/fbp_results.dart';
 import 'package:fire_behaviour_app/persist.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'fancy_slider.dart';
 import 'fire.dart';
 import 'global.dart';
 
@@ -66,22 +68,27 @@ class CoordinatePickerState extends State<CoordinatePicker> {
     }
   }
 
-  void _setLatitude(latitude) {
+  void _setLatitude(value) {
+    double latitude = pinLatitude(value);
     // Limit to 2 decimal places for consistent input.
     _coordinate.latitude = roundDouble(latitude, 2);
     persistSetting('latitude', _coordinate.latitude);
   }
 
-  void _setLongitude(longitude) {
+  void _setLongitude(value) {
+    double longitude = pinLongitude(value);
     // Limit to 2 decimal places for consistent input.
     _coordinate.longitude = roundDouble(longitude, 2);
     persistSetting('longitude', _coordinate.longitude);
   }
 
-  void _setAltitude(altitude) {
+  void _setAltitude(value) {
+    // We pin the altitude to acceptable ranges. The altitude could come back as a negative number,
+    // WGS84 projection gives some locations on earth, that are above sea level, a negative number.
+    double altitude = pinAltitude(value);
     // Only need integer level accuracy.
     _coordinate.altitude = altitude.roundToDouble();
-    persistSetting('altitude', _coordinate.latitude);
+    persistSetting('altitude', _coordinate.altitude);
   }
 
   void _updatePosition() {
@@ -93,7 +100,7 @@ class CoordinatePickerState extends State<CoordinatePicker> {
                   setState(() {
                     _setLatitude(position.latitude);
                     _setLongitude(position.longitude);
-                    _setAltitude(position.altitude > 0 ? position.altitude : 0);
+                    _setAltitude(position.altitude);
                     widget.onChanged(_coordinate);
                     _updateCoordinateControllers();
                   });
@@ -118,64 +125,100 @@ class CoordinatePickerState extends State<CoordinatePicker> {
     _elevationController.text = _coordinate.altitude.toStringAsFixed(0);
   }
 
+  String? _generateErrorText(String text, double minValue, double maxValue) {
+    if (text.isEmpty) {
+      return 'Can\'t be empty';
+    }
+    if (double.tryParse(text) == null) {
+      return 'Not a number';
+    }
+    double value = double.parse(text);
+    if (value < minValue) {
+      return 'Must be >= ${formatNumber(minValue, digits: 0)}';
+    } else if (value > maxValue) {
+      return 'Must be <= ${formatNumber(maxValue, digits: 0)}';
+    }
+    return null;
+  }
+
+  String? get _elevationErrorText {
+    return _generateErrorText(
+        _elevationController.text, minAltitude, maxAltitude);
+  }
+
+  String? get _longitudeErrorText {
+    return _generateErrorText(
+        _longitudeController.text, minLongitude, maxLongitude);
+  }
+
+  String? get _latitudeErrorText {
+    return _generateErrorText(
+        _latitudeController.text, minLatitude, maxLatitude);
+  }
+
   @override
   Widget build(BuildContext context) {
-    const TextStyle textStyle = TextStyle(fontSize: labelFontSize);
+    const TextStyle textStyle = TextStyle(fontSize: fontSize);
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // latitude Field
         Expanded(
             child: TextField(
           controller: _latitudeController,
-          decoration: const InputDecoration(
-              labelText: "Latitude", labelStyle: textStyle),
+          decoration: InputDecoration(
+              labelText: "Latitude",
+              labelStyle: textStyle,
+              errorText: _latitudeErrorText),
           keyboardType: const TextInputType.numberWithOptions(
               signed: true, decimal: true),
           onChanged: (value) {
             if (double.tryParse(value) != null) {
               double latitude = double.parse(value);
-              if (latitude >= -90 && latitude <= 90) {
-                setState(() {
-                  _setLatitude(latitude);
-                  widget.onChanged(_coordinate);
-                });
-              }
+              setState(() {
+                _setLatitude(latitude);
+              });
             }
+            widget.onChanged(_coordinate);
           },
         )),
         // longitude Field
         Expanded(
             child: TextField(
           controller: _longitudeController,
-          decoration: const InputDecoration(
-              labelText: "Longitude", labelStyle: textStyle),
+          decoration: InputDecoration(
+              labelText: "Longitude",
+              labelStyle: textStyle,
+              errorText: _longitudeErrorText),
           keyboardType: const TextInputType.numberWithOptions(
               signed: true, decimal: true),
           onChanged: (value) {
             if (double.tryParse(value) != null) {
               double longitude = double.parse(value);
-              if (longitude >= -180 && longitude.abs() <= 180) {
+              setState(() {
                 _setLongitude(longitude);
-                widget.onChanged(_coordinate);
-              }
+              });
             }
+            widget.onChanged(_coordinate);
           },
         )),
         Expanded(
             child: TextField(
           controller: _elevationController,
-          decoration: const InputDecoration(
-              labelText: "Elevation", labelStyle: textStyle),
+          decoration: InputDecoration(
+              labelText: "Elevation (m)",
+              labelStyle: textStyle,
+              errorText: _elevationErrorText),
           keyboardType: const TextInputType.numberWithOptions(
               signed: true, decimal: true),
           onChanged: (value) {
             if (double.tryParse(value) != null) {
               var altitude = double.parse(value);
-              if (altitude >= 0) {
+              setState(() {
                 _setAltitude(altitude);
-                widget.onChanged(_coordinate);
-              }
+              });
             }
+            widget.onChanged(_coordinate);
           },
         )),
         Expanded(

@@ -44,10 +44,13 @@ BasicSettings _loadBasic(SharedPreferences prefs) {
   BasicInput basicInput = BasicInput(
       ws: prefs.getDouble('ws') ?? 5,
       bui: prefs.getDouble('bui') ?? fuelTypePreset.averageBUI,
+      // We pin coordinate values to avoid loading bad data.
       coordinate: Coordinate(
-          latitude: prefs.getDouble('latitude') ?? defaultLatitude,
-          longitude: prefs.getDouble('longitude') ?? defaultLongitude,
-          altitude: prefs.getDouble('altitude') ?? defaultAltitude));
+          latitude: pinLatitude(prefs.getDouble('latitude') ?? defaultLatitude),
+          longitude:
+              pinLongitude(prefs.getDouble('longitude') ?? defaultLongitude),
+          altitude:
+              pinAltitude(prefs.getDouble('altitude') ?? defaultAltitude)));
 
   basicInput.waz = prefs.getDouble('waz') ?? 0;
   // we need to pin the ground slope, because the input range has been changed,

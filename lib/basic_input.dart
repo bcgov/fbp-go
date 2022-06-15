@@ -162,7 +162,8 @@ class BasicInputState extends State<BasicInputWidget> {
   Widget build(BuildContext context) {
     const sliderFlex = 10;
     final beaufortScale = getBeaufortScale(_input.ws);
-    final intensityClass = getHeadFireIntensityClass(widget.prediction.HFI);
+    final intensityClass =
+        getHeadFireIntensityClass(widget.prediction?.HFI ?? 0);
     final activeColor = getIntensityClassColor(intensityClass);
     const TextStyle textStyle = TextStyle(fontSize: fontSize);
     const TextStyle textStyleBold =
@@ -320,7 +321,7 @@ class BasicInputState extends State<BasicInputWidget> {
 class BasicInputWidget extends StatefulWidget {
   final Function onChanged;
   final BasicInput basicInput;
-  final FireBehaviourPredictionPrimary prediction;
+  final FireBehaviourPredictionPrimary? prediction;
   final FuelTypePreset fuelTypePreset;
 
   const BasicInputWidget(

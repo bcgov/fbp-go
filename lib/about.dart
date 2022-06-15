@@ -46,6 +46,22 @@ class AboutPageState extends State<AboutPage> {
         });
   }
 
+  String get _licenseFontFamily {
+    try {
+      return Platform.isIOS ? "Courier" : "monospace";
+    } catch (e) {
+      return "Courier";
+    }
+  }
+
+  double get _licenseFontSize {
+    try {
+      return Platform.isIOS ? 9 : 11;
+    } catch (e) {
+      return 11;
+    }
+  }
+
   @override
   void initState() {
     getAboutText();
@@ -67,11 +83,11 @@ class AboutPageState extends State<AboutPage> {
           text: licenseText,
           style: TextStyle(
               // On iOS "Courier" gives us a mono spaced font.
-              fontFamily: Platform.isIOS ? "Courier" : "monospace",
+              fontFamily: _licenseFontFamily,
               // Not the best idea, but I think iOS phones have slightly
               // smaller screens? Really need a better way to handle the
               // license.
-              fontSize: Platform.isIOS ? 9 : 11,
+              fontSize: _licenseFontSize,
               fontFeatures: const [FontFeature.tabularFigures()])),
     ]));
   }
