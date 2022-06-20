@@ -153,6 +153,7 @@ similar.
 - "If it’s possible to connect the “my location” button to the wildfire one portal to automatically input the local indices from the closest weather station/stations that would be a cool feature"
 - "It would be sweet is you could input numbers manually"
 - "And if there was a map so you could click on the location and it would input the coordinates instead of having to do that yourself."
+- "Produce a graphic of the modelled fire shape with wind and slope direction, it allows crews to visualize fire behaviour visually. Disclaimer: not realistic fire anatomy, but gives opportunity to see wind driven versus fuel finding incidents."
 - Create an "Assumptions tab", that explains the input values and formulae being used in the background:
 - "Assumptions – FBP Go
 - Reset defaults feature.
@@ -182,6 +183,7 @@ The FBP System is based on observations of experimental fires and wildfires. The
 
 ### v1.0.9 (current)
 - [ ] Tech: Automated build (apk + appbundle) in github workflow.
+- [x] FBP: M3 + M4 should only have dead fir, no conifer slider.
 - [ ] FBP: In B.C. the standard is to use degrees, minutes and seconds for coordinates.
 - [ ] FBP: Consider : decimal places on wind direction and aspect aren't useful, e.g. SSE can be 157 degrees, we don't need 157.5
 
