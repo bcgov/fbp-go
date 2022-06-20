@@ -153,6 +153,7 @@ similar.
 - "If it’s possible to connect the “my location” button to the wildfire one portal to automatically input the local indices from the closest weather station/stations that would be a cool feature"
 - "It would be sweet is you could input numbers manually"
 - "And if there was a map so you could click on the location and it would input the coordinates instead of having to do that yourself."
+- "Would be nice to tag a location on a map instead of entering coordinates for another weather station"
 - "Produce a graphic of the modelled fire shape with wind and slope direction, it allows crews to visualize fire behaviour visually. Disclaimer: not realistic fire anatomy, but gives opportunity to see wind driven versus fuel finding incidents."
 - Create an "Assumptions tab", that explains the input values and formulae being used in the background:
 - "Assumptions – FBP Go
