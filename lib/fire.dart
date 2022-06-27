@@ -201,9 +201,8 @@ bool canAdjustDeadFir(FuelType fuelType) {
   return fuelType == FuelType.M3 || fuelType == FuelType.M4;
 }
 
-bool isBorealMixedWood(FuelType fuelType) {
-  return [FuelType.M1, FuelType.M2, FuelType.M3, FuelType.M4]
-      .contains(fuelType);
+bool canAdjustConifer(FuelType fuelType) {
+  return fuelType == FuelType.M1 || fuelType == FuelType.M2;
 }
 
 int getHeadFireIntensityClass(double headFireIntensity) {

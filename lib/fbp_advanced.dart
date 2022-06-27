@@ -328,7 +328,7 @@ class AdvancedFireBehaviourPredictionFormState
                       ))
                 ],
               ),
-            if (isBorealMixedWood(_fuelTypePreset!.code))
+            if (canAdjustConifer(_fuelTypePreset!.code))
               Row(children: [
                 makeInputLabel('Conifer', (_pc ?? 0).toStringAsFixed(0), '%',
                     textStyle, textStyleBold),
