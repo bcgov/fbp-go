@@ -15,6 +15,7 @@ A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with 
 FBP Go. If not, see <https://www.gnu.org/licenses/>.
 */
+import 'package:fire_behaviour_app/fwi.dart';
 import 'package:flutter/services.dart';
 
 import 'about.dart';
@@ -44,7 +45,7 @@ String getSecondaryText(FireBehaviourPredictionPrimary? prediction) {
   return '';
 }
 
-enum Section { advanced, fwi, about, fmc }
+enum Section { fbp, fwi, about, fmc }
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -56,12 +57,12 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  Section _selectedSection = Section.advanced;
+  Section _selectedSection = Section.fbp;
   bool showDisclaimer = true;
 
   String _getSectionText() {
     switch (_selectedSection) {
-      case Section.advanced:
+      case Section.fbp:
         return 'Fire Behaviour Prediction';
       case Section.fwi:
         return 'Fire Weather Index';
@@ -107,7 +108,7 @@ class HomePageState extends State<HomePage> {
             child: Column(
               children: const [AboutPage()],
             ));
-      case (Section.advanced):
+      case (Section.fbp):
         return Center(
             child: SingleChildScrollView(
                 padding:
@@ -116,9 +117,13 @@ class HomePageState extends State<HomePage> {
                   children: const [AdvancedFireBehaviourPredictionForm()],
                 )));
       case (Section.fwi):
-        return Container(
-            padding: const EdgeInsets.only(left: edgeInset, right: edgeInset),
-            child: const Text('FWI'));
+        return Center(
+            child: SingleChildScrollView(
+                padding:
+                    const EdgeInsets.only(left: edgeInset, right: edgeInset),
+                child: Column(
+                  children: const [FWIForm()],
+                )));
       case (Section.fmc):
         return Container(
             padding: const EdgeInsets.only(left: edgeInset, right: edgeInset),
@@ -146,14 +151,13 @@ class HomePageState extends State<HomePage> {
           ListTile(
               title: const Text('Fire Behaviour Prediction'),
               onTap: () {
-                _changeSection(Section.advanced);
+                _changeSection(Section.fbp);
               }),
-          // TODO: Would be nice to have FWI
-          // ListTile(
-          //     title: const Text('Fire Weather Index (FWI)'),
-          //     onTap: () {
-          //       _changeSection(Section.fwi);
-          //     }),
+          ListTile(
+              title: const Text('Fire Weather Index (FWI)'),
+              onTap: () {
+                _changeSection(Section.fwi);
+              }),
           ListTile(
               title: const Text('About'),
               onTap: () {

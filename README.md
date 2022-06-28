@@ -134,7 +134,6 @@ similar.
 - Variable names throughout conform to conventions in [ST-X-3](https://cfs.nrcan.gc.ca/publications/download-pdf/10068) Appendix II and [GLC-X-10](https://cfs.nrcan.gc.ca/publications/download-pdf/31414) Appendix I. E.g. `GFL` instead of `grassFuelLoad` or `minGS` instead of `minGroundSlope`. Validating formulae an math in code can get very confusing if one does not conform to the acronyms used in the related scientific literature.
 
 ## Todo
-- Add screenshots for iOS.
 - Localization - implement en-CA and fr-CA.
 - Coordinates - provide user feedback on location button. (e.g. fetching and failed state).
 - Add FMC option in advanced. (Probably won't happen? But maybe setting the date?)
