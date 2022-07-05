@@ -21,6 +21,7 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 import 'package:flutter/material.dart';
 
 import 'cffdrs/ffmc_calc.dart';
+import 'cffdrs/hffmc.dart';
 import 'fancy_slider.dart';
 
 class FWIForm extends StatefulWidget {
@@ -82,6 +83,9 @@ class FWIFormState extends State<FWIForm> {
   @override
   Widget build(BuildContext context) {
     const sliderFlex = 7;
+    Weather weatherstream = Weather(temp: 10, rh: 10, ws: 10, prec: 10, hr: 10);
+    // weatherstream['id'] = [1, 2, 3];
+    double result = hffmc(weatherstream);
     return Column(
       children: [
         Form(
@@ -179,7 +183,7 @@ class FWIFormState extends State<FWIForm> {
                   Text(
                       'Next Day FFMC ${ffmcCalc(_ffmc, _temp, _rh, _ws, _prec)}')
                 ],
-              )
+              ),
             ]))
       ],
     );

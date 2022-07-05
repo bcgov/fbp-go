@@ -17,15 +17,18 @@
         "Flannigan",
         "FTFC",
         "FUELTYPE",
+        "hffmc",
         "interps",
         "LBtcalc",
         "monospace",
+        "nrow",
         "Parisien",
         "prec",
         "subosito",
         "TCFB",
         "TROS",
-        "TTFC"
+        "TTFC",
+        "weatherstream"
     ],
     "cSpell.language": "en-GB",
     "editor.rulers": [
