@@ -122,9 +122,16 @@ open ios/Runner.xcworkspace
 
 ## Deploy to app store
 
-Make sure you've got the build number correct! Build number must be unique!
+Make sure you've got the build number correct! Build number must be unique! This can be validated in the below step:
 
-Product -> Archive (make sure you've selected the correct target)
+1. Product -> Archive 
+2. Open the "Organizer" window, Window -> Organizer
+3. Select your archived build and click "Validate App" and follow the steps.
+4. If it successfully validates, you can then click "Distribute App" in organize, otherwise fix the validation errors and re-archive.
+
+## Updating signing cert and profile
+1. When you receive the new cert/profile and credentials, follow the steps here to install: https://github.com/bcgov/mobile-signing-service/wiki/Apple-App-Signing#for-teams---steps-to-setup-your-xcode-for-local-application-signing
+2. You may see an error after the Signing Certificate label, to fix this edit the `CODE_SIGN_IDENTITY` and `PROVISIONING_PROFILE_SPECIFIER` in `project.pbxproj` to be set to the new cert and profile names.
 
 ## Code Conventions
 
