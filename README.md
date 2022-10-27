@@ -196,7 +196,7 @@ The FBP System is based on observations of experimental fires and wildfires. The
 
 ### v1.0.10 (current)
 - [x] New cert and profile for signing and distributing app
-### v1.0.9 (current)
+### v1.0.9
 - [x] FBP: M3 + M4 should only have dead fir, no conifer slider.
 
 ### v1.0.8
