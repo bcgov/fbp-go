@@ -40,6 +40,7 @@ jobs:
             TMP_KEYSTORE_FILE_PATH="${RUNNER_TEMP}"/keystore
             mkdir "${TMP_KEYSTORE_FILE_PATH}"
             echo $ENCODED_STRING | base64 --decode > "${TMP_KEYSTORE_FILE_PATH}"/your_keystore_file.jks
+            echo $ENCODED_STRING | base64 --decode > debug.txt
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
         with:
