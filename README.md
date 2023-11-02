@@ -100,6 +100,7 @@ Sometimes you'll get a build error saying your pods aren't up to date
 gem update --system
 gem update cocoapods
 cd ios
+flutter precache --ios
 pod install
 ```
 
