@@ -88,8 +88,9 @@ Who wants to run rosetta? That's nuts. Rather get the latest version of ruby and
 This also solves having to run sudo with gem, everything neatly goes into .rbenv
 
 ```zsh
-rbenv install 3.1.0
-rbenv global 3.1.0
+rbenv install 3.2.2
+rbenv global 3.2.2
+rbenv init
 gem update --system
 gem install cocoapods
 ```
@@ -99,6 +100,7 @@ Sometimes you'll get a build error saying your pods aren't up to date
 gem update --system
 gem update cocoapods
 cd ios
+flutter precache --ios
 pod install
 ```
 

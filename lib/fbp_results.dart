@@ -248,7 +248,7 @@ class ResultsState extends State<ResultsStateWidget> {
                 expandedHeaderPadding: const EdgeInsets.all(0),
                 expansionCallback: (int index, bool isExpanded) {
                   setState(() {
-                    _groups[index].isExpanded = !isExpanded;
+                    _groups[index].isExpanded = isExpanded;
                   });
                   if (!isExpanded) {
                     // this doesn't seem perfect - we're waiting delaying
