@@ -18,7 +18,7 @@ parameters:
   - name: GIT_URL
     value: https://github.com/bcgov/fbp-go
   - name: GIT_BRANCH
-    value: main
+    value: task/openshift-web-build
 objects:
   #ImageStream is create if it doesn't already exist
   - apiVersion: v1

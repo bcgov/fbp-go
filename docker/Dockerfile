@@ -5,3 +5,18 @@ ARG DOCKER_IMAGE=artifacts.developer.gov.bc.ca/docker-remote/instrumentisto/flut
 # e.g. : docker build --build-arg DOCKER_IMAGE=wps-api-base:my-tag .
 
 FROM ${DOCKER_IMAGE}
+
+RUN flutter build web
+
+# # PHASE 2 - prepare hosting.
+# https://catalog.redhat.com/software/containers/ubi8/nginx-122/627245493b950f9f4eb01218?architecture=amd64&image=65cba48e6e4e02d0baaab056
+FROM registry.access.redhat.com/ubi8/nginx-122
+
+# Add application sources
+ADD ./openshift/nginx.conf "${NGINX_CONF_PATH}"
+
+# Copy the static content:
+COPY --from=static /opt/app-root/build/web .
+
+EXPOSE 3000
+CMD nginx -g "daemon off;"
