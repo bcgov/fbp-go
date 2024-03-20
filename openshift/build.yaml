@@ -1,0 +1,65 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: flutter-build
+labels:
+  app: flutter-build
+  phase: build
+  app.kubernetes.io/name: flutter-build
+  app.kubernetes.io/managed-by: template
+parameters:
+  - name: NAME
+    value: flutter-build
+  - name: VERSION
+    description: Output version
+    required: true
+    value: "latest"
+  - name: GIT_URL
+    value: https://github.com/bcgov/fbp-go
+  - name: GIT_BRANCH
+    value: main
+objects:
+  #ImageStream is create if it doesn't already exist
+  - apiVersion: v1
+    kind: ImageStream
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftNewBuild
+      labels:
+        app: flutter-build
+        common: "true"
+      name: fbp-go-web
+    spec:
+      lookupPolicy:
+        local: false
+  - apiVersion: v1
+    kind: BuildConfig
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftNewBuild
+      labels:
+        app: flutter-build
+      name: flutter-build
+    spec:
+      resources:
+        limits:
+          cpu: "2000m"
+          memory: "512Mi"
+        requests:
+          # we might as well start high!
+          cpu: "500m"
+          memory: "256Mi"
+      completionDeadlineSeconds: 600 # 10 minutes.
+      output:
+        to:
+          kind: ImageStreamTag
+          name: fbp-go-web:${VERSION}
+      source:
+        type: Git
+        git:
+          uri: ${GIT_URL}
+          ref: origin/${GIT_BRANCH}
+        contextDir: docker
+      strategy:
+        type: Docker
