@@ -8,8 +8,8 @@ FROM ${DOCKER_IMAGE} as static
 WORKDIR /opt/app-root/fbp-go/
 
 # Copy app files from repo
-COPY ./pubspec.yaml .
-COPY ./lib /lib/
+COPY pubspec.yaml .
+COPY lib /lib/
 
 RUN flutter build web
 
