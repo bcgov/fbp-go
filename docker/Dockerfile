@@ -5,9 +5,13 @@ ARG DOCKER_IMAGE=artifacts.developer.gov.bc.ca/docker-remote/instrumentisto/flut
 
 FROM ${DOCKER_IMAGE} as static
 
-RUN flutter build web
-
 WORKDIR /opt/app-root/fbp-go/
+
+# Copy app files from repo
+COPY ./pubspec.yaml .
+COPY ./lib /lib/
+
+RUN flutter build web
 
 # # PHASE 2 - prepare hosting.
 # https://catalog.redhat.com/software/containers/ubi8/nginx-122/627245493b950f9f4eb01218?architecture=amd64&image=65cba48e6e4e02d0baaab056&container-tabs=overview
