@@ -19,6 +19,10 @@ parameters:
     value: https://github.com/bcgov/fbp-go
   - name: GIT_BRANCH
     value: task/openshift-web-build
+  - name: DOCKER_FILE
+    description: Dockerfile to use
+    required: true
+    value: docker/Dockerfile
 objects:
   #ImageStream is create if it doesn't already exist
   - apiVersion: v1
@@ -60,6 +64,7 @@ objects:
         git:
           uri: ${GIT_URL}
           ref: origin/${GIT_BRANCH}
-        contextDir: docker
+        contextDir: ./
       strategy:
-        type: Docker
+        dockerStrategy:
+          dockerfilePath: ${DOCKER_FILE}
