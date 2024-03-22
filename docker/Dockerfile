@@ -9,6 +9,7 @@ WORKDIR /opt/app-root/fbp-go/
 
 # Copy app files from repo
 COPY ./pubspec.yaml /opt/app-root/fbp-go/
+COPY ./lib/ /opt/app-root/fbp-go/lib/
 
 RUN flutter build web
 
