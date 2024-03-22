@@ -8,10 +8,7 @@ FROM ${DOCKER_IMAGE} as static
 WORKDIR /opt/app-root/fbp-go/
 
 # Copy app files from repo
-COPY ./pubspec.yaml /opt/app-root/fbp-go/
-COPY ./pubspec.lock /opt/app-root/fbp-go/
-COPY ./lib/ /opt/app-root/fbp-go/lib/
-COPY ./web/ /opt/app-root/fbp-go/web/
+COPY . /opt/app-root/fbp-go/
 
 RUN flutter pub get
 
