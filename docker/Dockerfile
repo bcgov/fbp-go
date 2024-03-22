@@ -11,9 +11,6 @@ WORKDIR /opt/app-root/fbp-go/
 COPY ./pubspec.yaml /opt/app-root/fbp-go/
 COPY ./lib/ /opt/app-root/fbp-go/lib/
 
-# Switch to default user
-USER 1001
-
 RUN flutter build web
 
 # # PHASE 2 - prepare hosting.
