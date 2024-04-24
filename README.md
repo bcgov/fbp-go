@@ -88,8 +88,9 @@ Who wants to run rosetta? That's nuts. Rather get the latest version of ruby and
 This also solves having to run sudo with gem, everything neatly goes into .rbenv
 
 ```zsh
-rbenv install 3.1.0
-rbenv global 3.1.0
+rbenv install 3.2.2
+rbenv global 3.2.2
+rbenv init
 gem update --system
 gem install cocoapods
 ```
@@ -99,6 +100,7 @@ Sometimes you'll get a build error saying your pods aren't up to date
 gem update --system
 gem update cocoapods
 cd ios
+flutter precache --ios
 pod install
 ```
 
@@ -122,9 +124,16 @@ open ios/Runner.xcworkspace
 
 ## Deploy to app store
 
-Make sure you've got the build number correct! Build number must be unique!
+Make sure you've got the build number correct! Build number must be unique! This can be validated in the below step:
 
-Product -> Archive (make sure you've selected the correct target)
+1. Product -> Archive 
+2. Open the "Organizer" window, Window -> Organizer
+3. Select your archived build and click "Validate App" and follow the steps.
+4. If it successfully validates, you can then click "Distribute App" in organize, otherwise fix the validation errors and re-archive.
+
+## Updating signing cert and profile
+1. When you receive the new cert/profile and credentials, follow the steps here to install: https://github.com/bcgov/mobile-signing-service/wiki/Apple-App-Signing#for-teams---steps-to-setup-your-xcode-for-local-application-signing
+2. You may see an error after the Signing Certificate label, to fix this edit the `CODE_SIGN_IDENTITY` and `PROVISIONING_PROFILE_SPECIFIER` in `project.pbxproj` to be set to the new cert and profile names.
 
 ## Code Conventions
 
@@ -181,12 +190,14 @@ The FBP System is based on observations of experimental fires and wildfires. The
 - [ ] Add FWI.
 - [ ] FBP: Consider input option without sliders.
 
-### v1.0.10 (future)
+### v1.0.11 (future)
 - [ ] Tech: Automated build (apk + appbundle) in github workflow.
 - [ ] FBP: In B.C. the standard is to use degrees, minutes and seconds for coordinates.
 - [ ] FBP: Consider : decimal places on wind direction and aspect aren't useful, e.g. SSE can be 157 degrees, we don't need 157.5
 
-### v1.0.9 (current)
+### v1.0.10 (current)
+- [x] New cert and profile for signing and distributing app
+### v1.0.9
 - [x] FBP: M3 + M4 should only have dead fir, no conifer slider.
 
 ### v1.0.8

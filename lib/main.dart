@@ -103,18 +103,18 @@ class HomePageState extends State<HomePage> {
     const double edgeInset = 3;
     switch (section) {
       case (Section.about):
-        return SingleChildScrollView(
-            padding: const EdgeInsets.only(left: edgeInset, right: edgeInset),
+        return const SingleChildScrollView(
+            padding: EdgeInsets.only(left: edgeInset, right: edgeInset),
             child: Column(
-              children: const [AboutPage()],
+              children: [AboutPage()],
             ));
       case (Section.fbp):
         return Center(
             child: SingleChildScrollView(
                 padding:
-                    const EdgeInsets.only(left: edgeInset, right: edgeInset),
+                    EdgeInsets.only(left: edgeInset, right: edgeInset),
                 child: Column(
-                  children: const [AdvancedFireBehaviourPredictionForm()],
+                  children: [AdvancedFireBehaviourPredictionForm()],
                 )));
       case (Section.fwi):
         return Center(
@@ -170,7 +170,6 @@ class HomePageState extends State<HomePage> {
 
   void _changeSection(Section section) {
     setState(() {
-      print('changing section...');
       _selectedSection = section;
     });
     Navigator.pop(context);
