@@ -20,6 +20,10 @@ parameters:
   - name: SUFFIX
     description: Deployment suffix, e.g. test, prod
     required: true
+  - name: VERSION
+    description: Output version
+    required: true
+    value: "latest"
   - name: PROJ_TOOLS
     value: e1e498-tools
   - name: REPLICAS
@@ -51,7 +55,7 @@ objects:
         spec:
           containers:
             - name: fbpgo-container
-              image: ${IMAGE_REGISTRY}/${PROJ_TOOLS}/${APP_NAME}-web:april-19-2024
+              image: ${IMAGE_REGISTRY}/${PROJ_TOOLS}/${APP_NAME}-web:${VERSION}
               ports:
                 - containerPort: 3000
                   protocol: TCP

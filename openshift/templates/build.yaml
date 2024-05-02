@@ -2,15 +2,14 @@ apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
   creationTimestamp: null
-  name: flutter-build
+  name: fbpgo-web-build
 labels:
-  app: flutter-build
+  app: ${APP_NAME}
   phase: build
-  app.kubernetes.io/name: flutter-build
-  app.kubernetes.io/managed-by: template
 parameters:
-  - name: NAME
-    value: flutter-build
+  - name: APP_NAME
+    description: Application name
+    value: fbp-go
   - name: VERSION
     description: Output version
     required: true
@@ -24,27 +23,23 @@ parameters:
     required: true
     value: docker/Dockerfile
 objects:
-  #ImageStream is create if it doesn't already exist
+  # create ImageStream if it doesn't already exist
   - apiVersion: v1
     kind: ImageStream
     metadata:
-      annotations:
-        openshift.io/generated-by: OpenShiftNewBuild
       labels:
-        app: flutter-build
+        app: ${APP_NAME}
         common: "true"
-      name: fbp-go-web
+      name: ${APP_NAME}
     spec:
       lookupPolicy:
         local: false
   - apiVersion: v1
     kind: BuildConfig
     metadata:
-      annotations:
-        openshift.io/generated-by: OpenShiftNewBuild
       labels:
-        app: flutter-build
-      name: flutter-build
+        app: ${APP_NAME}
+      name: ${APP_NAME}
     spec:
       resources:
         limits:
@@ -57,7 +52,7 @@ objects:
       output:
         to:
           kind: ImageStreamTag
-          name: fbp-go-web:${VERSION}
+          name: ${APP_NAME}-web:${VERSION}
       source:
         type: Git
         git:
