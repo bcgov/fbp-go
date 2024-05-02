@@ -17,7 +17,7 @@ parameters:
   - name: GIT_URL
     value: https://github.com/bcgov/fbp-go
   - name: GIT_BRANCH
-    value: task/openshift-web-build
+    value: main
   - name: DOCKER_FILE
     description: Dockerfile to use
     required: true
