@@ -1,0 +1,64 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: fbpgo-web-build
+labels:
+  app: ${APP_NAME}
+  phase: build
+parameters:
+  - name: APP_NAME
+    description: Application name
+    value: fbp-go
+  - name: VERSION
+    description: Output version
+    required: true
+    value: "latest"
+  - name: GIT_URL
+    value: https://github.com/bcgov/fbp-go
+  - name: GIT_BRANCH
+    value: main
+  - name: DOCKER_FILE
+    description: Dockerfile to use
+    required: true
+    value: docker/Dockerfile
+objects:
+  # create ImageStream if it doesn't already exist
+  - apiVersion: v1
+    kind: ImageStream
+    metadata:
+      labels:
+        app: ${APP_NAME}
+        common: "true"
+      name: ${APP_NAME}
+    spec:
+      lookupPolicy:
+        local: false
+  - apiVersion: v1
+    kind: BuildConfig
+    metadata:
+      labels:
+        app: ${APP_NAME}
+      name: ${APP_NAME}
+    spec:
+      resources:
+        limits:
+          cpu: "2000m"
+          memory: "1Gi"
+        requests:
+          cpu: "500m"
+          memory: "256Mi"
+      completionDeadlineSeconds: 600 # 10 minutes.
+      output:
+        to:
+          kind: ImageStreamTag
+          name: ${APP_NAME}-web:${VERSION}
+      source:
+        type: Git
+        git:
+          uri: ${GIT_URL}
+          ref: origin/${GIT_BRANCH}
+        contextDir: ./
+      strategy:
+        dockerStrategy:
+          dockerfilePath: ${DOCKER_FILE}

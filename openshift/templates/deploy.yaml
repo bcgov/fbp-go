@@ -1,0 +1,130 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: ${APP_NAME}
+  annotations:
+    openshift.io/display-name: "fbp-go"
+    description: "Wildfire Predictive Services - FBP-Go"
+    openshift.io/long-description: "Wildfire Predictive Services - FBP-Go"
+    tags: "fbp-go"
+    iconClass: icon-js
+    openshift.io/provider-display-name: "Government of British Columbia"
+    openshift.io/documentation-url: "https://github.com/bcgov/fbp-go"
+    openshift.io/support-url: "https://github.com/bcgov/fbp-go"
+  labels:
+    app: ${APP_NAME}-${SUFFIX}
+parameters:
+  - name: APP_NAME
+    description: Application name (fbp-go)
+    value: fbp-go
+  - name: SUFFIX
+    description: Deployment suffix, e.g. test, prod
+    required: true
+  - name: VERSION
+    description: Output version
+    required: true
+    value: "latest"
+  - name: PROJ_TOOLS
+    value: e1e498-tools
+  - name: REPLICAS
+    description: Number of replicas (pods)
+    value: "2"
+  - name: IMAGE_REGISTRY
+    description: Location where images are to be pulled
+    value: image-registry.openshift-image-registry.svc:5000
+    required: true
+  - name: ROUTE_DOMAIN
+    required: True
+    value: fbp-go-test.apps.silver.devops.gov.bc.ca
+objects:
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: ${APP_NAME}-${SUFFIX}
+      labels:
+        app: ${APP_NAME}-${SUFFIX}
+    spec:
+      replicas: ${{REPLICAS}}
+      selector:
+        matchLabels:
+          app: ${APP_NAME}-${SUFFIX}
+      template:
+        metadata:
+          labels:
+            app: ${APP_NAME}-${SUFFIX}
+        spec:
+          containers:
+            - name: fbpgo-container
+              image: ${IMAGE_REGISTRY}/${PROJ_TOOLS}/${APP_NAME}-web:${VERSION}
+              ports:
+                - containerPort: 3000
+                  protocol: TCP
+              resources:
+                limits:
+                  cpu: 75m
+                  memory: 500Mi
+                requests:
+                  cpu: 25m
+                  memory: 50Mi
+              readinessProbe:
+                httpGet:
+                  path: /ready
+                  port: 3000
+                  scheme: HTTP
+                initialDelaySeconds: 10
+                periodSeconds: 120
+                timeoutSeconds: 1
+              livenessProbe:
+                httpGet:
+                  path: /health
+                  port: 3000
+                  scheme: HTTP
+                initialDelaySeconds: 10
+                periodSeconds: 120
+                timeoutSeconds: 1
+    strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxUnavailable: 1
+        maxSurge: 1
+  #####################################################################################
+  # SERVICE
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      labels:
+        app: ${APP_NAME}-${SUFFIX}
+      name: ${APP_NAME}-${SUFFIX}
+    spec:
+      ports:
+        - name: 3000-tcp
+          protocol: TCP
+          port: 3000
+          targetPort: 3000
+      selector:
+        app: ${APP_NAME}-${SUFFIX}
+    ################################################################################
+    # WEB ROUTE
+  - apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      name: ${APP_NAME}-${SUFFIX}
+      labels:
+        app: ${APP_NAME}-${SUFFIX}
+      annotations:
+        # Enable HTTP Strict Transport Security:
+        haproxy.router.openshift.io/hsts_header: max-age=31536000;includeSubDomains;preload
+        # Use roundrobin load balancing strategy
+        haproxy.router.openshift.io/balance: roundrobin
+        haproxy.router.openshift.io/disable_cookies: "true"
+        haproxy.router.openshift.io/rewrite-target: /
+    spec:
+      host: ${ROUTE_DOMAIN}
+      path: /fbp-go
+      port:
+        targetPort: 3000-tcp
+      to:
+        kind: Service
+        name: ${APP_NAME}-${SUFFIX}
+      tls:
+        termination: edge
