@@ -191,12 +191,15 @@ The FBP System is based on observations of experimental fires and wildfires. The
 - [ ] Add FWI.
 - [ ] FBP: Consider input option without sliders.
 
-### v1.0.11 (future)
+### v1.0.12 (future)
 - [ ] Tech: Automated build (apk + appbundle) in github workflow.
 - [ ] FBP: In B.C. the standard is to use degrees, minutes and seconds for coordinates.
 - [ ] FBP: Consider : decimal places on wind direction and aspect aren't useful, e.g. SSE can be 157 degrees, we don't need 157.5
 
-### v1.0.10 (current)
+### v1.0.11 (current)
+- [x] Update minSdkVersion for Android release
+
+### v1.0.10
 - [x] New cert and profile for signing and distributing app
 ### v1.0.9
 - [x] FBP: M3 + M4 should only have dead fir, no conifer slider.
