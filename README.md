@@ -58,6 +58,20 @@ flutter pub get
 
 NOTE: also had to up flutterVersionCode  in android\app\build.gradle
 
+Confirm that the targetSdkVersion is correct.
+
+```bash
+./gradlew printTargetSdkVersion
+```
+
+The default targetSdkVersion is configured in the flutter code base but can be overidden in ./android/local.properties by adding:
+
+```
+flutter.targetSdkVersion={target_version}
+```
+
+NOTE: You may need to update the `distributionUrl` in gradle-wrapper.properties to match you Java versions as per https://docs.gradle.org/current/userguide/compatibility.html.
+
 Make sure you have a way to sign it!
 You need to have your upload-keystore.jks configured in android/key.properties
 
@@ -197,7 +211,7 @@ The FBP System is based on observations of experimental fires and wildfires. The
 - [ ] FBP: Consider : decimal places on wind direction and aspect aren't useful, e.g. SSE can be 157 degrees, we don't need 157.5
 
 ### v1.0.11 (current)
-- [x] Update minSdkVersion for Android release
+- [x] Update targetSdkVersion for Android release
 
 ### v1.0.10
 - [x] New cert and profile for signing and distributing app
