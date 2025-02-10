@@ -84,3 +84,9 @@ dependencies {
 }
 
 android.buildTypes.release.ndk.debugSymbolLevel = 'FULL'
+
+task printTargetSdkVersion {
+    doLast {
+        println("Target SDK Version: ${flutter.targetSdkVersion}")
+    }
+}

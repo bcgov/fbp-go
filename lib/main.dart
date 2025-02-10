@@ -133,7 +133,10 @@ class HomePageState extends State<HomePage> {
       showDisclaimer = false;
     }
     return Scaffold(
-      appBar: AppBar(title: Text(_getSectionText())),
+      appBar: AppBar(
+          backgroundColor: Color.fromARGB(255, 53, 150, 243),
+          foregroundColor: Color.fromARGB(255, 255, 255, 255),
+          title: Text(_getSectionText())),
       body: _getSelectedSection(_selectedSection),
       drawer: Drawer(
           child: ListView(
