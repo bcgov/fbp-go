@@ -2,9 +2,9 @@
 
 Fire behaviour prediction application
 
-Preview latest PWA build on: [https://sybrand.github.io/](https://sybrand.github.io/)
+Preview latest PWA build on: [https://psu.nrs.gov.bc.ca/fbp-go](https://psu.nrs.gov.bc.ca/fbp-go)
 
-[![Lifecycle:Maturing](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](<https://github.com/bcgov/fbp-go>)
+[![Lifecycle:Maturing](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](https://github.com/bcgov/fbp-go)
 
 ## Build for web
 
@@ -56,7 +56,7 @@ Up the version in pubspec.yaml, then run
 flutter pub get
 ```
 
-NOTE: also had to up flutterVersionCode  in android\app\build.gradle
+NOTE: also had to up flutterVersionCode in android\app\build.gradle
 
 Confirm that the targetSdkVersion is correct.
 
@@ -110,6 +110,7 @@ gem install cocoapods
 ```
 
 Sometimes you'll get a build error saying your pods aren't up to date
+
 ```
 gem update --system
 gem update cocoapods
@@ -140,23 +141,25 @@ open ios/Runner.xcworkspace
 
 Make sure you've got the build number correct! Build number must be unique! This can be validated in the below step:
 
-1. Product -> Archive 
+1. Product -> Archive
 2. Open the "Organizer" window, Window -> Organizer
 3. Select your archived build and click "Validate App" and follow the steps.
 4. If it successfully validates, you can then click "Distribute App" in organize, otherwise fix the validation errors and re-archive.
 
 ## Updating signing cert and profile
+
 1. When you receive the new cert/profile and credentials, follow the steps here to install: https://github.com/bcgov/mobile-signing-service/wiki/Apple-App-Signing#for-teams---steps-to-setup-your-xcode-for-local-application-signing
 2. You may see an error after the Signing Certificate label, to fix this edit the `CODE_SIGN_IDENTITY` and `PROVISIONING_PROFILE_SPECIFIER` in `project.pbxproj` to be set to the new cert and profile names.
 
 ## Code Conventions
 
 - Dart naming convention rules are often broken in order to conform with the CFFDRS R library. The R code has been
-manually translated, and in order to debug and stay up to date with changes, it's just easier if the code looks
-similar.
+  manually translated, and in order to debug and stay up to date with changes, it's just easier if the code looks
+  similar.
 - Variable names throughout conform to conventions in [ST-X-3](https://cfs.nrcan.gc.ca/publications/download-pdf/10068) Appendix II and [GLC-X-10](https://cfs.nrcan.gc.ca/publications/download-pdf/31414) Appendix I. E.g. `GFL` instead of `grassFuelLoad` or `minGS` instead of `minGroundSlope`. Validating formulae an math in code can get very confusing if one does not conform to the acronyms used in the related scientific literature.
 
 ## Todo
+
 - Add screenshots for iOS.
 - Localization - implement en-CA and fr-CA.
 - Coordinates - provide user feedback on location button. (e.g. fetching and failed state).
@@ -183,39 +186,45 @@ similar.
 - Reset defaults feature.
 
 Care should be exercised not to apply the system beyond its useful range. FBP Go/ FBP System can be used to make predictions for a fire spreading during one burning period from a point or line source of fire with the following assumptions:
-•	Fuel conditions are representative one of the 18 benchmark fuel types.
-•	The Fire Weather Index (FWI) values used are representative of the site conditions.
-•	Fuels are uniform and continuous; topography is homogenous. and the wind is constant and one direction during the prediction period.
-•	The fire is wind or wind/slope driven, and spread is not affected by a convection column. 
-•	Wind is measured in the open and is corrected to 10 m.
-•	The rate of fire spread levels off at high wind speed and initial spread index (ISI) values.
-•	The fire is unaffected by suppression activities (free burning).
-•	The effect of short-range spotting of firebrands on spread is considered.
-•	A fire starting from a point source will have an elliptical shape under the above conditions.
+• Fuel conditions are representative one of the 18 benchmark fuel types.
+• The Fire Weather Index (FWI) values used are representative of the site conditions.
+• Fuels are uniform and continuous; topography is homogenous. and the wind is constant and one direction during the prediction period.
+• The fire is wind or wind/slope driven, and spread is not affected by a convection column.
+• Wind is measured in the open and is corrected to 10 m.
+• The rate of fire spread levels off at high wind speed and initial spread index (ISI) values.
+• The fire is unaffected by suppression activities (free burning).
+• The effect of short-range spotting of firebrands on spread is considered.
+• A fire starting from a point source will have an elliptical shape under the above conditions.
 
 The FBP System is based on observations of experimental fires and wildfires. There are very few records of sustained fire spread with wind speeds above 60 km and/or ISI > 70. Thus, the largest ROS values in this App roughly correspond to the upper limit of observed spread rates in each fuel type. Higher ROS values may occur with higher wind speeds and during gusts.
 "
+
 - [ ] Consider adding date dialog (important for FMC)
 - [ ] FBP: Incorporate card sort feedback.
-
 
 ## Log of changes & decisions
 
 ### v1.1.0 (next phase)
+
 - [ ] Add FWI.
 - [ ] FBP: Consider input option without sliders.
 
 ### v1.0.12 (future)
+
 - [ ] Tech: Automated build (apk + appbundle) in github workflow.
 - [ ] FBP: In B.C. the standard is to use degrees, minutes and seconds for coordinates.
 - [ ] FBP: Consider : decimal places on wind direction and aspect aren't useful, e.g. SSE can be 157 degrees, we don't need 157.5
 
 ### v1.0.11 (current)
+
 - [x] Update targetSdkVersion for Android release
 
 ### v1.0.10
+
 - [x] New cert and profile for signing and distributing app
+
 ### v1.0.9
+
 - [x] FBP: M3 + M4 should only have dead fir, no conifer slider.
 
 ### v1.0.8
@@ -223,6 +232,7 @@ The FBP System is based on observations of experimental fires and wildfires. The
 #### Summary:
 
 Improved validation on coordinate input, and resolved some crashes related to invalid values. Direction of spread was incorrectly showing the net effective wind direction.
+
 #### Detail:
 
 - [x] Web: About was crashing in web version.
