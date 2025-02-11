@@ -87,59 +87,52 @@ releases overview -> review it
 
 #### Github Workflow
 
-### Build for iOS - on M1 silicon
-
-If you use the default ruby+gem setup that comes out of the box, you'll get errors about
-ffi not being x86_64 - you COULD fix that by running:
-
-```zsh
-# don't do this
-sudo arch -x86_64 gem install ffi
-```
-
-Who wants to run rosetta? That's nuts. Rather get the latest version of ruby and go from there.
-(It's no use trying to run gem update --system with the system ruby, it's just going to break things for you)
-This also solves having to run sudo with gem, everything neatly goes into .rbenv
-
-```zsh
-rbenv install 3.2.2
-rbenv global 3.2.2
-rbenv init
-gem update --system
-gem install cocoapods
-```
-
-Sometimes you'll get a build error saying your pods aren't up to date
-
-```
-gem update --system
-gem update cocoapods
-cd ios
-flutter precache --ios
-pod install
-```
-
-### https://github.com/rbenv/rbenv
-
-For rbenv you need to have the shim in your path.
-
-PATH="/{home}/.rbenv/shims:$PATH
-
-## App store issues
-
-You may receive an email warning: "ITMS-90078: Missing Push Notification Entitlement" from the app store. FBP Go doesn't use push notifications,
-it seems to be a side efffect of some flutter stuff. See: https://github.com/flutter/flutter/issues/9984 ; this issue is unresolved at this point in time.
-
 ## iOS development notes
+
+You can view/test the app in a simulator by running the following
 
 ```zsh
 open -a Simulator
 open ios/Runner.xcworkspace
 ```
 
+Note: Once the simulator is open and before opening the xcworkspace in Xcode, you can also use the VSCode flutter extension to run the app in debug or release mode with hot reloading. This also works for Android simulators
+
+### Build for iOS - on M1 silicon
+
+Navigate to fbp-go/ios and run
+
+```zsh
+pod install
+```
+
+If the app is built with `flutter build ios` or within Xcode, you may see a warning when validating the app:
+
+```
+Uploads Symbols Failed: The archive did not include a dSYM for the Flutter.framework
+```
+
+This is seemingly a new warning in xcode 16 and it's possibly updating flutter would solve the issue in the future.
+
+To solve this, the easiest method is to build the ios release with flutter:
+
+```
+flutter build ipa
+```
+
+This will create an ipa file that can easily be validated and uploaded to the App Store/Testflight using [Apple Transporter](https://apps.apple.com/us/app/transporter/id1450874784?mt=12).
+Creating an ipa file with flutter build tools seems to include the dSYM files, whereas other methods may not at this time.
+
+## App store issues
+
+You may receive an email warning: "ITMS-90078: Missing Push Notification Entitlement" from the app store. FBP Go doesn't use push notifications,
+it seems to be a side efffect of some flutter stuff. See: https://github.com/flutter/flutter/issues/9984 ; this issue is unresolved at this point in time.
+
 ## Deploy to app store
 
 Make sure you've got the build number correct! Build number must be unique! This can be validated in the below step:
+
+Either follow the method above using Apple Transporter or follow the process below:
 
 1. Product -> Archive
 2. Open the "Organizer" window, Window -> Organizer
