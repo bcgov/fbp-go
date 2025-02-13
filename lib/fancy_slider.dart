@@ -41,6 +41,8 @@ class FancySliderState extends State<FancySliderWidget> {
                 Expanded(
                     child: SliderTheme(
                         data: SliderThemeData(
+                            valueIndicatorShape:
+                                const RectangularSliderValueIndicatorShape(),
                             overlayShape: SliderComponentShape.noOverlay),
                         child: Slider(
                           value: widget.value,

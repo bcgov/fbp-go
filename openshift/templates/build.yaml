@@ -2,7 +2,7 @@ apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
   creationTimestamp: null
-  name: fbpgo-web-build
+  name: fbp-go-web
 labels:
   app: ${APP_NAME}
   phase: build

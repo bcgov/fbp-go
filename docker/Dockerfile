@@ -1,9 +1,9 @@
-ARG DOCKER_IMAGE=instrumentisto/flutter:3.13.9
+ARG DOCKER_IMAGE=instrumentisto/flutter:3.22.0
 
 # To build locally, point to a local base image you've already built (see openshift/wps-api-base)
 # e.g. : docker build --build-arg DOCKER_IMAGE=wps-api-base:my-tag .
 
-FROM ${DOCKER_IMAGE} as static
+FROM ${DOCKER_IMAGE} AS static
 
 WORKDIR /opt/app-root/fbp-go/
 
@@ -19,10 +19,10 @@ RUN flutter build web --base-href /fbp-go/
 FROM registry.access.redhat.com/ubi8/nginx-122:1-55
 
 # Add application sources
-ADD ./openshift/nginx.conf "${NGINX_CONF_PATH}"
+COPY ./openshift/nginx.conf "${NGINX_CONF_PATH}"
 
 # Copy the static content:
 COPY --from=static /opt/app-root/fbp-go/build/web .
 
 EXPOSE 3000
-CMD nginx -g "daemon off;"
+CMD ["nginx", "-g", "daemon off;"]
