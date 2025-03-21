@@ -28,49 +28,70 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:math';
+import 'dart:developer' as developer;
 
+double criticalSurfaceIntensity(double FMC, double CBH) {
+  // Eq. 56 (FCFDG 1992) Critical surface intensity
+  return 0.001 * pow(CBH, 1.5) * pow(460 + 25.9 * FMC, 1.5);
+}
+
+double surfaceFireRateOfSpread(double CSI, double SFC) {
+  // Eq. 57 (FCFDG 1992) Surface fire rate of spread (m/min)
+  // if (SFC == 0) {
+  //   return 0;
+  // }
+  return CSI / (300 * SFC);
+}
+
+double crownFractionBurned(double ROS, double RSO) {
+  // Eq. 58 (FCFDG 1992) Crown fraction burned
+  return ROS > RSO ? 1 - exp(-0.23 * (ROS - RSO)) : 0;
+}
+
+/// Calculates Crown Fraction Burned (CFB).
+///
+/// To calculate CFB, we also need to compute:
+/// - Critical Surface Intensity (CSI)
+/// - Surface Fire Rate of Spread (RSO)
+///
+/// This function avoids unnecessary recalculations by returning the requested
+/// variable based on the `option` parameter.
+///
+/// The variable names and equations follow the Forestry Canada Fire
+/// Danger Group (FCFDG) (1992).
+///
+/// Reference:
+/// [Development and Structure of the Canadian Forest Fire Behavior Prediction System](https://cfs.nrcan.gc.ca/publications/download-pdf/10068)
+///
+/// #### Parameters:
+/// - [fuelType] The Fire Behaviour Prediction Fuel Type.
+/// - [FMC] Foliar Moisture Content.
+/// - [SFC] Surface Fuel Consumption.
+/// - [CBH] Crown Base Height.
+/// - [ROS] Rate of Spread.
+/// - [option] Which variable to calculate: `"CSI"`, `"RSO"`, or `"CFB"` (default).
+///
+/// #### Returns:
+/// - Returns `CFB`, `CSI`, or `RSO` based on the selected option.
 double CFBcalc(String FUELTYPE, double FMC, double SFC, double ROS, double CBH,
     {option = "CFB"}) {
-  /**
-  #############################################################################
-  # Description:
-  #   Calculate Calculate Crown Fraction Burned. To calculate CFB, we also
-  #     need to calculate Critical surface intensity (CSI), and Surface fire 
-  #     rate of spread (RSO). The value of each of these equations can be 
-  #     returned to the calling function without unecessary additional
-  #     calculations.
-  #
-  #   All variables names are laid out in the same manner as Forestry Canada 
-  #   Fire Danger Group (FCFDG) (1992). Development and Structure of the 
-  #   Canadian Forest Fire Behavior Prediction System." Technical Report 
-  #   ST-X-3, Forestry Canada, Ottawa, Ontario.
-  #
-  # Args:
-  #   FUELTYPE: The Fire Behaviour Prediction FuelType
-  #   FMC:      Foliar Moisture Content
-  #   SFC:      Surface Fuel Consumption
-  #   CBH:      Crown Base Height
-  #   ROS:      Rate of Spread
-  #   option:   Which variable to calculate(ROS, CFB, RSC, or RSI)
-  
-  # Returns:
-  #   CFB, CSI, RSO depending on which option was selected.
-  #
-  #############################################################################
-  */
-  double CFB = 0;
-  // #Eq. 56 (FCFDG 1992) Critical surface intensity
-  double CSI = 0.001 * pow(CBH, 1.5) * pow((460 + 25.9 * FMC), 1.5);
-  // #Return at this point, if specified by caller
+  double CSI = criticalSurfaceIntensity(FMC, CBH);
+
+  // Return CSI if requested
   if (option == "CSI") {
-    return (CSI);
+    developer.log("Deprecated: Use criticalSurfaceIntensity instead.");
+    return CSI;
   }
-  // #Eq. 57 (FCFDG 1992) Surface fire rate of spread (m/min)
-  double RSO = CSI / (300 * SFC);
-  // #Return at this point, if specified by caller
+
+  double RSO = surfaceFireRateOfSpread(CSI, SFC);
+
+  // Return RSO if requested
   if (option == "RSO") {
-    return (RSO);
+    developer.log("Deprecated: Use surfaceFireRateOfSpread instead.");
+    return RSO;
   }
-  // #Eq. 58 (FCFDG 1992) Crown fraction burned
-  return ROS > RSO ? 1 - exp(-0.23 * (ROS - RSO)) : CFB;
+
+  double CFB = crownFractionBurned(ROS, RSO);
+  developer.log("Deprecated: Use crownFractionBurned instead.");
+  return CFB;
 }

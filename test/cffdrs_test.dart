@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'dart:math';
 import 'dart:convert';
-import 'package:fire_behaviour_app/cffdrs/be_calc.dart';
+import 'package:fire_behaviour_app/cffdrs/buildup_effect.dart';
 import 'package:fire_behaviour_app/cffdrs/cfb_calc.dart';
-import 'package:fire_behaviour_app/cffdrs/isi_calc.dart';
-import 'package:fire_behaviour_app/cffdrs/ros_calc.dart';
+import 'package:fire_behaviour_app/cffdrs/initial_spread_index.dart';
+import 'package:fire_behaviour_app/cffdrs/rate_of_spread.dart';
 import 'package:fire_behaviour_app/cffdrs/slope_calc.dart';
 import 'package:fire_behaviour_app/cffdrs/c6_calc.dart';
 import 'package:test/test.dart';
@@ -98,7 +98,7 @@ double roundDouble(double value) {
 void main() {
   group('ISIcalc', () {
     test('Scenario', () {
-      final result = ISIcalc(57.55481411251054, 0);
+      final result = initialSpreadIndex(57.55481411251054, 0);
       expect(roundDouble(result), roundDouble(0.345473329095927));
     });
   });
@@ -122,7 +122,7 @@ void main() {
 
   group('BEcalc', () {
     test('Scenario', () {
-      final result = BEcalc('C6', -1.0);
+      final result = buildupEffect('C6', -1.0);
       expect(result, 1.0);
     });
   });

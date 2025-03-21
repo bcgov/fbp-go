@@ -28,22 +28,22 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 import 'dart:math';
 
 import '../fire.dart';
-import 'dist_calc.dart';
-import 'ros_t_calc.dart';
-import 'b_ros_calc.dart';
-import 'be_calc.dart';
+import 'distance_at_time.dart';
+import 'rate_of_spread_at_time.dart';
+import 'back_rate_of_spread.dart';
+import 'buildup_effect.dart';
 import 'cfb_calc.dart';
-import 'f_ros_calc.dart';
-import 'fi_calc.dart';
-import 'fmc_calc.dart';
-import 'lb_calc.dart';
-import 'lb_t_calc.dart';
-import 'sfc_calc.dart';
+import 'flank_rate_of_spread.dart';
+import 'fire_intensity.dart';
+import 'foliar_moisture_content.dart';
+import 'length_to_breadth.dart';
+import 'length_to_breadth_at_time.dart';
+import 'surface_fuel_consumption.dart';
 import 'slope_calc.dart';
-import 'isi_calc.dart';
+import 'initial_spread_index.dart';
 import 'c6_calc.dart';
-import 'ros_calc.dart';
-import 'tfc_calc.dart';
+import 'rate_of_spread.dart';
+import 'total_fuel_consumption.dart';
 
 class ValueDescriptionPair {
   final String description;
@@ -472,14 +472,16 @@ FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,
     0
   ];
   CFL = CFL == null || CFL <= 0 || CFL > 2 ? CFLs[fuelTypeIndex] : CFL;
-  FMC = FMC <= 0 || FMC > 120 ? FMCcalc(LAT, LONG, ELV, DJ, D0) : FMC;
+  FMC = FMC <= 0 || FMC > 120
+      ? foliarMoistureContent(LAT, LONG, ELV, DJ, D0)
+      : FMC;
   FMC = ["D1", "S1", "S2", "S3", "O1A", "O1B"].contains(FUELTYPE) ? 0 : FMC;
   // ############################################################################
   // #                         END
   // ############################################################################
 
   // #Calculate Surface fuel consumption (SFC)
-  final SFC = SFCcalc(FUELTYPE, FFMC, BUI, PC, GFL);
+  final SFC = surfaceFuelConsumption(FUELTYPE, FFMC, BUI, PC, GFL);
   // #Disable BUI Effect if necessary
   BUI = BUIEFF ? BUI : 0;
   // #Calculate the net effective windspeed (WSV)
@@ -493,7 +495,7 @@ FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,
       output: "RAZ");
   double RAZ = GS > 0 && FFMC > 0 ? RAZ0 : WAZ;
   // #Calculate or keep Initial Spread Index (ISI)
-  ISI = ISI > 0 ? ISI : ISIcalc(FFMC, WSV, fbpMod: true);
+  ISI = ISI > 0 ? ISI : initialSpreadIndex(FFMC, WSV, fbpMod: true);
   // #Calculate the Rate of Spread (ROS), C6 has different calculations
   ROS = FUELTYPE == "C6"
       ? C6calc(FUELTYPE, ISI, BUI, FMC, SFC, CBH, option: "ROS")
@@ -505,9 +507,9 @@ FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,
           ? CFBcalc(FUELTYPE, FMC, SFC, ROS, CBH)
           : 0;
   // #Calculate Total Fuel Consumption (TFC)
-  TFC = TFCcalc(FUELTYPE, CFL, CFB, SFC, PC, PDF);
+  TFC = totalFuelConsumption(FUELTYPE, CFL, CFB, SFC, PC, PDF);
   // #Calculate Head Fire Intensity(HFI)
-  HFI = FIcalc(TFC, ROS);
+  HFI = fireIntensity(TFC, ROS);
   // #Adjust Crown Fraction Burned
   CFB = HR < 0 ? -CFB : CFB;
   // #Adjust RAZ
@@ -518,7 +520,8 @@ FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,
   FD = CFB < 0.1 ? "S" : FD;
   FD = CFB >= 0.9 ? "C" : FD;
   // #Calculate Crown Fuel Consumption(CFC)
-  double CFC = TFCcalc(FUELTYPE, CFL, CFB, SFC, PC, PDF, option: "CFC");
+  double CFC =
+      totalFuelConsumption(FUELTYPE, CFL, CFB, SFC, PC, PDF, option: "CFC");
 
   FireBehaviourPredictionSecondary? secondary;
   if (output == "SECONDARY" ||
@@ -590,23 +593,26 @@ FireBehaviourPredictionSecondary FBPcalcSecondary(
   //   #Calculate Surface fire rate of spread (m/min)
   double RSO = CFBcalc(FUELTYPE, FMC, SFC, ROS, CBH, option: "RSO");
   //   #Calculate The Buildup Effect
-  double BE = BEcalc(FUELTYPE, BUI);
+  double BE = buildupEffect(FUELTYPE, BUI);
   //   #Calculate length to breadth ratio
-  double LB = LBcalc(FUELTYPE, WSV);
-  double LBt = ACCEL == false ? LB : LBtcalc(FUELTYPE, LB, HR, CFB);
+  double LB = length_to_breadth(FUELTYPE, WSV);
+  double LBt = ACCEL == false ? LB : lengthToBreadAtTime(FUELTYPE, LB, HR, CFB);
   //   #Calculate Back fire rate of spread (BROS)
-  double BROS = BROScalc(FUELTYPE, FFMC, BUI, WSV, FMC, SFC, PC, PDF, CC, CBH);
+  double BROS =
+      backRateOfSpread(FUELTYPE, FFMC, BUI, WSV, FMC, SFC, PC, PDF, CC, CBH);
   //   #Calculate Flank fire rate of spread (FROS)
-  double FROS = FROScalc(ROS, BROS, LB);
+  double FROS = flankRateOfSpread(ROS, BROS, LB);
   //   #Calculate the eccentricity
   double E = sqrt(1 - 1 / LB / LB);
   //   #Calculate the rate of spread towards angle theta (TROS)
   double TROS = ROS * (1 - E) / (1 - E * cos(THETA - RAZ));
   //   #Calculate rate of spread at time t for Flank, Back of fire and at angle
   //   #  theta.
-  double ROSt = ACCEL == false ? ROS : ROStcalc(FUELTYPE, ROS, HR, CFB);
-  double BROSt = ACCEL == false ? BROS : ROStcalc(FUELTYPE, BROS, HR, CFB);
-  double FROSt = ACCEL == false ? FROS : FROScalc(ROSt, BROSt, LBt);
+  double ROSt =
+      ACCEL == false ? ROS : rateOfSpreadAtTime(FUELTYPE, ROS, HR, CFB);
+  double BROSt =
+      ACCEL == false ? BROS : rateOfSpreadAtTime(FUELTYPE, BROS, HR, CFB);
+  double FROSt = ACCEL == false ? FROS : flankRateOfSpread(ROSt, BROSt, LBt);
   //   #Calculate rate of spread towards angle theta at time t (TROSt)
   double TROSt = ACCEL == false
       ? TROS
@@ -631,13 +637,13 @@ FireBehaviourPredictionSecondary FBPcalcSecondary(
           : CFBcalc(FUELTYPE, FMC, SFC, TROS, CBH);
   //   #Calculate Total fuel consumption for the Flank fire, Back fire and at
   //   #  angle theta
-  double FTFC = TFCcalc(FUELTYPE, CFL, FCFB, SFC, PC, PDF);
-  double BTFC = TFCcalc(FUELTYPE, CFL, BCFB, SFC, PC, PDF);
-  double TTFC = TFCcalc(FUELTYPE, CFL, TCFB, SFC, PC, PDF);
+  double FTFC = totalFuelConsumption(FUELTYPE, CFL, FCFB, SFC, PC, PDF);
+  double BTFC = totalFuelConsumption(FUELTYPE, CFL, BCFB, SFC, PC, PDF);
+  double TTFC = totalFuelConsumption(FUELTYPE, CFL, TCFB, SFC, PC, PDF);
   //   #Calculate the Fire Intensity at the Flank, Back and at angle theta fire
-  double FFI = FIcalc(FTFC, FROS);
-  double BFI = FIcalc(BTFC, BROS);
-  double TFI = FIcalc(TTFC, TROS);
+  double FFI = fireIntensity(FTFC, FROS);
+  double BFI = fireIntensity(BTFC, BROS);
+  double TFI = fireIntensity(TTFC, TROS);
   //   #Calculate Rate of spread at time t for the Head, Flank, Back of fire and
   //   #  at angle theta.
   double HROSt = HR < 0 ? -ROSt : ROSt;
@@ -658,8 +664,8 @@ FireBehaviourPredictionSecondary FBPcalcSecondary(
   final TTI = log(1 - RSO / TROS > 0 ? 1 - RSO / TROS : 1) / (-a4);
 
   //   #Fire spread distance for Head, Back, and Flank of fire
-  final DH = ACCEL ? DISTtcalc(FUELTYPE, ROS, HR, CFB) : ROS * HR;
-  final DB = ACCEL ? DISTtcalc(FUELTYPE, BROS, HR, CFB) : BROS * HR;
+  final DH = ACCEL ? distanceAtTime(FUELTYPE, ROS, HR, CFB) : ROS * HR;
+  final DB = ACCEL ? distanceAtTime(FUELTYPE, BROS, HR, CFB) : BROS * HR;
   final DF = ACCEL ? (DH + DB) / (LBt * 2) : (DH + DB) / (LB * 2);
 
   return FireBehaviourPredictionSecondary(

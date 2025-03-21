@@ -28,7 +28,7 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 
 import 'dart:math';
 
-double LBtcalc(String FUELTYPE, double LB, double HR, double CFB) {
+double lengthToBreadAtTime(String FUELTYPE, double LB, double HR, double CFB) {
   /*
   #############################################################################
   # Description:
@@ -62,4 +62,9 @@ double LBtcalc(String FUELTYPE, double LB, double HR, double CFB) {
       : 0.115 - 18.8 * pow(CFB, 2.5) * exp(-8 * CFB);
   // #Eq. 81 (Wotton et.al. 2009) - LB at time since ignition
   return (LB - 1) * (1 - exp(-alpha * HR)) + 1;
+}
+
+@Deprecated('use lengthToBreadAtTime')
+double LBtcalc(String FUELTYPE, double LB, double HR, double CFB) {
+  return lengthToBreadAtTime(FUELTYPE, LB, HR, CFB);
 }

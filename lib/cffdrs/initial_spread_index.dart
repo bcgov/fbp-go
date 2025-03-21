@@ -27,8 +27,9 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:math';
+import 'fine_fuel_moisture_code.dart';
 
-double ISIcalc(ffmc, ws, {fbpMod = false}) {
+double initialSpreadIndex(ffmc, ws, {fbpMod = false}) {
   /*
   #############################################################################
   # Description:
@@ -57,7 +58,7 @@ double ISIcalc(ffmc, ws, {fbpMod = false}) {
   #############################################################################
   */
   // #Eq. 10 - Moisture content
-  double fm = 147.2 * (101 - ffmc) / (59.5 + ffmc);
+  double fm = FFMC_COEFFICIENT * (101 - ffmc) / (59.5 + ffmc);
   // #Eq. 24 - Wind Effect
   // #the ifelse, also takes care of the ISI modification for the fbp functions
   // # This modification is Equation 53a in FCFDG (1992)
@@ -68,4 +69,9 @@ double ISIcalc(ffmc, ws, {fbpMod = false}) {
   double fF = 91.9 * exp(-0.1386 * fm) * (1 + (pow(fm, 5.31)) / 49300000);
   // #Eq. 26 - Spread Index Equation
   return 0.208 * fW * fF;
+}
+
+@Deprecated('use initialSpreadIndex')
+double ISIcalc(ffmc, ws, {fbpMod = false}) {
+  return initialSpreadIndex(ffmc, ws);
 }

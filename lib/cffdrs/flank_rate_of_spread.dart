@@ -26,14 +26,11 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 */
 // ignore_for_file: non_constant_identifier_names
 
-import 'dart:math';
-
-double DISTtcalc(String FUELTYPE, double ROSeq, double HR, double CFB) {
+double flankRateOfSpread(double ROS, double BROS, double LB) {
   /*
   #############################################################################
   # Description:
-  #   Calculate the Head fire spread distance at time t. In the documentation
-  #   this variable is just "D".
+  #   Calculate the Flank Fire Spread Rate. 
   #
   #   All variables names are laid out in the same manner as Forestry Canada 
   #   Fire Danger Group (FCFDG) (1992). Development and Structure of the 
@@ -41,22 +38,21 @@ double DISTtcalc(String FUELTYPE, double ROSeq, double HR, double CFB) {
   #   ST-X-3, Forestry Canada, Ottawa, Ontario.
   #
   # Args:
-  #   FUELTYPE: The Fire Behaviour Prediction FuelType
-  #   ROSeq:    The predicted equilibrium rate of spread (m/min)
-  #   HR (t):   The elapsed time (min)
-  #   CFB:      Crown Fraction Burned
+  #   ROS:    Fire Rate of Spread (m/min)
+  #   BROS:   Back Fire Rate of Spread (m/min)
+  #   LB:     Length to breadth ratio
   #   
+  
   # Returns:
-  #   DISTt:    Head fire spread distance at time t
+  #   FROS:   Flank Fire Spread Rate (m/min)
   #
   #############################################################################
   */
-  // #Eq. 72 (FCFDG 1992)
-  // #Calculate the alpha constant for the DISTt calculation
-  final alpha =
-      (["C1", "O1A", "O1B", "S1", "S2", "S3", "D1"].contains(FUELTYPE))
-          ? 0.115
-          : 0.115 - 18.8 * pow(CFB, 2.5) * exp(-8 * CFB);
-  // #Eq. 71 (FCFDG 1992) Calculate Head fire spread distance
-  return ROSeq * (HR + exp(-alpha * HR) / alpha - 1 / alpha);
+  // #Eq. 89 (FCFDG 1992)
+  return (ROS + BROS) / LB / 2;
+}
+
+@Deprecated('Use flankRateOfSpread instead')
+double FROScalc(double ROS, double BROS, double LB) {
+  return flankRateOfSpread(ROS, BROS, LB);
 }

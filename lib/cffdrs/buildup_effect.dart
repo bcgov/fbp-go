@@ -28,11 +28,11 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 
 import 'dart:math';
 
-double FMCcalc(double LAT, double LONG, double ELV, int DJ, double D0) {
+double buildupEffect(String fuelType, double BUI) {
   /**
   #############################################################################
   # Description:
-  #   Calculate Foliar Moisture Content on a specified day.
+  #   Computes the Buildup Effect on Fire Spread Rate. 
   #
   #   All variables names are laid out in the same manner as Forestry Canada 
   #   Fire Danger Group (FCFDG) (1992). Development and Structure of the 
@@ -40,45 +40,78 @@ double FMCcalc(double LAT, double LONG, double ELV, int DJ, double D0) {
   #   ST-X-3, Forestry Canada, Ottawa, Ontario.
   #
   # Args:
-  #   LAT:    Latitude (decimal degrees)
-  #   LONG:   Longitude (decimal degrees)
-  #   ELV:    Elevation (metres)
-  #   DJ:     Day of year (offeren referred to as julian date)
-  #   D0:     Date of minimum foliar moisture content
-  #   
+  #   FUELTYPE: The Fire Behaviour Prediction FuelType
+  #   BUI:      The Buildup Index value
   # Returns:
-  #   FMC:    Foliar Moisture Content
+  #   BE: The Buildup Effect
   #
   #############################################################################
   */
-  if (LONG < 0) {
-    throw Exception('Longitude must be greater than 0');
-  }
-  double FMC = -1;
-  double LATN = 0;
-  // #Calculate Normalized Latitude
-  // #Eqs. 1 & 3 (FCFDG 1992)
-  if (D0 <= 0) {
-    LATN = ELV <= 0
-        ? 46 + 23.4 * exp(-0.0360 * (150 - LONG))
-        : 43 + 33.7 * exp(-0.0351 * (150 - LONG));
-  }
-  // #Calculate Date of minimum foliar moisture content
-  // #Eqs. 2 & 4 (FCFDG 1992)
-  if (D0 <= 0) {
-    D0 = ELV <= 0 ? 151 * (LAT / LATN) : 142.1 * (LAT / LATN) + 0.0172 * ELV;
-  }
-  // #Round D0 to the nearest integer because it is a date
-  D0 = D0.roundToDouble();
-  // #Number of days between day of year and date of min FMC
-  // #Eq. 5 (FCFDG 1992)
-  double ND = (DJ - D0).abs();
-  // #Calculate final FMC
-  // #Eqs. 6, 7, & 8 (FCFDG 1992)
-  if (ND < 30) {
-    FMC = 85 + 0.0189 * pow(ND, 2);
-  } else {
-    FMC = ND >= 30 && ND < 50 ? 32.9 + 3.17 * ND - 0.0288 * pow(ND, 2) : 120;
-  }
-  return FMC;
+  // #Fuel Type String represenations
+  var d = [
+    "C1",
+    "C2",
+    "C3",
+    "C4",
+    "C5",
+    "C6",
+    "C7",
+    "D1",
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "S1",
+    "S2",
+    "S3",
+    "O1A",
+    "O1B"
+  ];
+  // #The average BUI for the fuel type - as referenced by the "d" list above
+  var BUIo = <double>[
+    72,
+    64,
+    62,
+    66,
+    56,
+    62,
+    106,
+    32,
+    50,
+    50,
+    50,
+    50,
+    38,
+    63,
+    31,
+    01,
+    01
+  ];
+  // #Proportion of maximum possible spread rate that is reached at a standard BUI
+  var Q = <double>[
+    0.9,
+    0.7,
+    0.75,
+    0.8,
+    0.8,
+    0.8,
+    0.85,
+    0.9,
+    0.8,
+    0.8,
+    0.8,
+    0.8,
+    0.75,
+    0.75,
+    0.75,
+    1.0,
+    1.0
+  ];
+
+  final int FUELTYPE = d.indexOf(fuelType);
+
+  // #Eq. 54 (FCFDG 1992) The Buildup Effect
+  return (BUI > 0 && BUIo[FUELTYPE] > 0)
+      ? exp(50 * log(Q[FUELTYPE]) * (1 / BUI - 1 / BUIo[FUELTYPE]))
+      : 1;
 }

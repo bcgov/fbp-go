@@ -26,26 +26,45 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 */
 // ignore_for_file: non_constant_identifier_names
 
-double FIcalc(double FC, double ROS) {
-/**
+import 'dart:math';
+
+double length_to_breadth(String FUELTYPE, double WSV) {
+  /*
   #############################################################################
   # Description:
-  #   Calculate the Predicted Fire Intensity
+  #   Computes the Length to Breadth ratio of an elliptically shaped fire. 
+  #   Equations are from listed FCFDG (1992) except for errata 80 from 
+  #   Wotton et. al. (2009).
   #
   #   All variables names are laid out in the same manner as Forestry Canada 
   #   Fire Danger Group (FCFDG) (1992). Development and Structure of the 
   #   Canadian Forest Fire Behavior Prediction System." Technical Report 
   #   ST-X-3, Forestry Canada, Ottawa, Ontario.
   #
+  #   Wotton, B.M., Alexander, M.E., Taylor, S.W. 2009. Updates and revisions to
+  #   the 1992 Canadian forest fire behavior prediction system. Nat. Resour. 
+  #   Can., Can. For. Serv., Great Lakes For. Cent., Sault Ste. Marie, Ontario, 
+  #   Canada. Information Report GLC-X-10, 45p.
+  #
   # Args:
-  #   FC:   Fuel Consumption (kg/m^2)
-  #   ROS:  Rate of Spread (m/min)
-  #   
+  #   FUELTYPE: The Fire Behaviour Prediction FuelType
+  #        WSV: The Wind Speed (km/h)
   # Returns:
-  #   FI:   Fire Intensity (kW/m)
+  #   LB: Length to Breadth ratio
   #
   #############################################################################
   */
-  // #Eq. 69 (FCFDG 1992) Fire Intensity (kW/m)
-  return 300 * FC * ROS;
+  // #calculation is depending on if fuel type is grass (O1) or other fueltype
+  if (["O1A", "O1B"].contains(FUELTYPE)) {
+    // #Correction to orginal Equation 80 is made here
+    // #Eq. 80a / 80b from Wotton 2009
+    return WSV >= 1.0 ? 1.1 * pow(WSV, 0.464) : 1.0; // #Eq. 80/81
+  } else {
+    return 1.0 + 8.729 * pow((1 - exp(-0.030 * WSV)), (2.155)); // #Eq. 79
+  }
+}
+
+@Deprecated('use length_to_breadth')
+double LBcalc(String FUELTYPE, double WSV) {
+  return length_to_breadth(FUELTYPE, WSV);
 }

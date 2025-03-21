@@ -19,8 +19,8 @@ import 'dart:math';
 
 import 'package:fire_behaviour_app/global.dart';
 
-import 'cffdrs/dist_calc.dart';
-import 'cffdrs/lb_t_calc.dart';
+import 'cffdrs/distance_at_time.dart';
+import 'cffdrs/length_to_breadth_at_time.dart';
 
 enum FuelType {
   // ignore: constant_identifier_names
@@ -169,8 +169,9 @@ double getFireSize(String fuelType, double ros, double bros,
     */
   // Using acceleration:
   final fireSpreadDistance =
-      DISTtcalc(fuelType, ros + bros, elapsedMinutes, cfb);
-  final lengthToBreadthAtTime = LBtcalc(fuelType, lbRatio, elapsedMinutes, cfb);
+      distanceAtTime(fuelType, ros + bros, elapsedMinutes, cfb);
+  final lengthToBreadthAtTime =
+      lengthToBreadAtTime(fuelType, lbRatio, elapsedMinutes, cfb);
   // Not using acceleration:
   // fros = cffdrs.flank_rate_of_spread(ros, bros, lb_ratio)
   // # Flank Fire Spread Distance a.k.a. DF in R/FBPcalc.r

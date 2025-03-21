@@ -27,8 +27,8 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:math';
-import 'isi_calc.dart';
-import 'ros_calc.dart';
+import 'initial_spread_index.dart';
+import 'rate_of_spread.dart';
 
 double Slopecalc(
     String fuelType,
@@ -95,7 +95,7 @@ double Slopecalc(
   // #Eq. 39 (FCFDG 1992) - Calculate Spread Factor
   double SF = GS >= 70 ? 10 : exp(3.533 * pow((GS / 100), 1.2));
   // #ISI with 0 wind on level grounds
-  double ISZ = ISIcalc(FFMC, 0);
+  double ISZ = initialSpreadIndex(FFMC, 0);
   // #Surface spread rate with 0 wind on level ground
   double RSZ = ROScalc(fuelType, ISZ, NoBUI, FMC, SFC, PC, PDF, CC, CBH);
   // #Eq. 40 (FCFDG 1992) - Surface spread rate with 0 wind upslope
