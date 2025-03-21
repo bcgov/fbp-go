@@ -485,12 +485,12 @@ FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,
   // #Disable BUI Effect if necessary
   BUI = BUIEFF ? BUI : 0;
   // #Calculate the net effective windspeed (WSV)
-  final WSV0 = Slopecalc(
+  final WSV0 = slopeAdjustment(
       FUELTYPE, FFMC, BUI, WS, WAZ, GS, SAZ, FMC, SFC, PC, PDF, CC, CBH, ISI,
       output: "WSV");
   final WSV = GS > 0 && FFMC > 0 ? WSV0 : WS;
   // #Calculate the net effective wind direction (RAZ)
-  final RAZ0 = Slopecalc(
+  final RAZ0 = slopeAdjustment(
       FUELTYPE, FFMC, BUI, WS, WAZ, GS, SAZ, FMC, SFC, PC, PDF, CC, CBH, ISI,
       output: "RAZ");
   double RAZ = GS > 0 && FFMC > 0 ? RAZ0 : WAZ;
@@ -499,7 +499,7 @@ FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,
   // #Calculate the Rate of Spread (ROS), C6 has different calculations
   ROS = FUELTYPE == "C6"
       ? C6calc(FUELTYPE, ISI, BUI, FMC, SFC, CBH, option: "ROS")
-      : ROScalc(FUELTYPE, ISI, BUI, FMC, SFC, PC, PDF, CC, CBH);
+      : rateOfSpread(FUELTYPE, ISI, BUI, FMC, SFC, PC, PDF, CC, CBH);
   // #Calculate Crown Fraction Burned (CFB), C6 has different calculations
   CFB = FUELTYPE == "C6"
       ? C6calc(FUELTYPE, ISI, BUI, FMC, SFC, CBH, option: "CFB")

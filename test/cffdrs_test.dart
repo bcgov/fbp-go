@@ -9,7 +9,7 @@ import 'package:fire_behaviour_app/cffdrs/slope_calc.dart';
 import 'package:fire_behaviour_app/cffdrs/c6_calc.dart';
 import 'package:test/test.dart';
 
-import 'package:fire_behaviour_app/cffdrs/fbp_calc.dart';
+import 'package:fire_behaviour_app/cffdrs/fire_behaviour_prediction.dart';
 
 FireBehaviourPredictionInput loadInput(dynamic inputJson) {
   return FireBehaviourPredictionInput(
@@ -145,7 +145,7 @@ void main() {
   });
   group('Slopecalc', () {
     test('C6 Scenario', () {
-      final result = Slopecalc(
+      final result = slopeAdjustment(
           'C6',
           57.55481411251054,
           133.63769408909872,
@@ -164,7 +164,7 @@ void main() {
       expect(result, 16.604545444707842);
     });
     test('M2 Scenario', () {
-      final result = Slopecalc(
+      final result = slopeAdjustment(
           'M2',
           98.90994700887234,
           0.0,
