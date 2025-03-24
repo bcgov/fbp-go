@@ -7,14 +7,14 @@ product_external_dependencies:
 product_information:
   api_specifications: []
   ministry:
-    - Water, Land and Resource Stewardship
+    - Ministry of Forests
   product_acronym: FBPGo
   product_description: "A mobile application for calculating fire behaviour in the field."
   product_name: Fire Behaviour Prediction Go
   product_status: active
   product_urls:
     - https://psu.nrs.gov.bc.ca/fbp-go
-  program_area: NRIDS
+  program_area: BC Wildfire Service
 product_technology_information:
   backend_frameworks: []
   backend_languages_version: []
