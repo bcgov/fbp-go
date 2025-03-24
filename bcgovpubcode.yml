@@ -1,0 +1,30 @@
+---
+data_management_roles:
+  data_custodian: N/A
+  product_owner: Neal McLoughlin
+product_external_dependencies:
+  notification_standard: []
+product_information:
+  api_specifications: []
+  ministry:
+    - Water, Land and Resource Stewardship
+  product_acronym: FBPGo
+  product_description: "A mobile application for calculating fire behaviour in the field."
+  product_name: Fire Behaviour Prediction Go
+  product_status: active
+  product_urls:
+    - https://psu.nrs.gov.bc.ca/fbp-go
+  program_area: NRIDS
+product_technology_information:
+  backend_frameworks: []
+  backend_languages_version: []
+  frontend_frameworks:
+    - name: Other
+      version: ">=3.7.0"
+  frontend_languages:
+    - name: Dart
+      version: ">=3.1.0-185.0.dev <4.0.0"
+  hosting_platforms:
+    - Private-Cloud-Openshift
+  other_tools: Flutter mobile framework
+version: 1
