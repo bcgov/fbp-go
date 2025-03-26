@@ -27,6 +27,9 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 // ignore_for_file: non_constant_identifier_names
 import 'dart:math';
 
+import 'package:fire_behaviour_app/cffdrs/crown_base_height.dart';
+import 'package:fire_behaviour_app/cffdrs/crown_fuel_load.dart';
+
 import '../fire.dart';
 import 'distance_at_time.dart';
 import 'rate_of_spread_at_time.dart';
@@ -425,53 +428,10 @@ FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,
   // # Initializing variables
   // ############################################################################
   double TFC, HFI, CFB, ROS = 0.0;
-  final CBHs = <double>[2, 3, 8, 4, 18, 7, 10, 0, 6, 6, 6, 6, 0, 0, 0, 0, 0];
-  final d = [
-    "C1",
-    "C2",
-    "C3",
-    "C4",
-    "C5",
-    "C6",
-    "C7",
-    "D1",
-    "M1",
-    "M2",
-    "M3",
-    "M4",
-    "S1",
-    "S2",
-    "S3",
-    "O1A",
-    "O1B"
-  ];
-  final int fuelTypeIndex = d.indexOf(FUELTYPE);
-  if (CBH == null || CBH <= 0.0 || CBH > 50) {
-    CBH = FUELTYPE == "C6" && SD > 0 && SH > 0
-        ? -11.2 + 1.06 * SH + 0.0017 * SD
-        : CBHs[fuelTypeIndex];
-    CBH = CBH < 0 ? 1e-07 : CBH;
-  }
-  final CFLs = <double>[
-    0.75,
-    0.8,
-    1.15,
-    1.2,
-    1.2,
-    1.8,
-    0.5,
-    0,
-    0.8,
-    0.8,
-    0.8,
-    0.8,
-    0,
-    0,
-    0,
-    0,
-    0
-  ];
-  CFL = CFL == null || CFL <= 0 || CFL > 2 ? CFLs[fuelTypeIndex] : CFL;
+  CBH ??= 0.0;
+  CBH = crownBaseHeight(FUELTYPE, CBH, SD, SH);
+  CFL = crownFuelLoad(FUELTYPE, CFL);
+
   FMC = FMC <= 0 || FMC > 120
       ? foliarMoistureContent(LAT, LONG, ELV, DJ, D0)
       : FMC;
@@ -497,15 +457,14 @@ FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,
   // #Calculate or keep Initial Spread Index (ISI)
   ISI = ISI > 0 ? ISI : initialSpreadIndex(FFMC, WSV, fbpMod: true);
   // #Calculate the Rate of Spread (ROS), C6 has different calculations
-  ROS = FUELTYPE == "C6"
-      ? C6calc(FUELTYPE, ISI, BUI, FMC, SFC, CBH, option: "ROS")
-      : rateOfSpread(FUELTYPE, ISI, BUI, FMC, SFC, PC, PDF, CC, CBH);
-  // #Calculate Crown Fraction Burned (CFB), C6 has different calculations
-  CFB = FUELTYPE == "C6"
-      ? C6calc(FUELTYPE, ISI, BUI, FMC, SFC, CBH, option: "CFB")
-      : CFL > 0
-          ? CFBcalc(FUELTYPE, FMC, SFC, ROS, CBH)
-          : 0;
+  final rosVars =
+      rateOfSpreadExtended(FUELTYPE, ISI, BUI, FMC, SFC, PC, PDF, CC, CBH);
+
+  ROS = rosVars['ROS'];
+  CFB = CFL > 0 ? rosVars['CFB'] : 0;
+  // double CSI = rosVars['CSI'];
+  // double RSO = rosVars['RSO'];
+
   // #Calculate Total Fuel Consumption (TFC)
   TFC = totalFuelConsumption(FUELTYPE, CFL, CFB, SFC, PC, PDF);
   // #Calculate Head Fire Intensity(HFI)
@@ -589,9 +548,9 @@ FireBehaviourPredictionSecondary FBPcalcSecondary(
   //   #Eq. 39 (FCFDG 1992) Calculate Spread Factor (GS is group slope)
   double SF = GS >= 70 ? 10 : exp(3.533 * pow((GS / 100), 1.2));
   //   #Calculate Critical Surface Intensity
-  double CSI = CFBcalc(FUELTYPE, FMC, SFC, ROS, CBH, option: "CSI");
+  double CSI = criticalSurfaceIntensity(FMC, CBH);
   //   #Calculate Surface fire rate of spread (m/min)
-  double RSO = CFBcalc(FUELTYPE, FMC, SFC, ROS, CBH, option: "RSO");
+  double RSO = surfaceFireRateOfSpread(CSI, SFC);
   //   #Calculate The Buildup Effect
   double BE = buildupEffect(FUELTYPE, BUI);
   //   #Calculate length to breadth ratio
@@ -624,17 +583,17 @@ FireBehaviourPredictionSecondary FBPcalcSecondary(
       ? 0
       : FUELTYPE == "C6"
           ? 0
-          : CFBcalc(FUELTYPE, FMC, SFC, FROS, CBH);
+          : crownFractionBurned(FROS, RSO);
   double BCFB = CFL == 0
       ? 0
       : FUELTYPE == "C6"
           ? 0
-          : CFBcalc(FUELTYPE, FMC, SFC, BROS, CBH);
+          : crownFractionBurned(BROS, RSO);
   double TCFB = CFL == 0
       ? 0
       : FUELTYPE == "C6"
           ? 0
-          : CFBcalc(FUELTYPE, FMC, SFC, TROS, CBH);
+          : crownFractionBurned(TROS, RSO);
   //   #Calculate Total fuel consumption for the Flank fire, Back fire and at
   //   #  angle theta
   double FTFC = totalFuelConsumption(FUELTYPE, CFL, FCFB, SFC, PC, PDF);

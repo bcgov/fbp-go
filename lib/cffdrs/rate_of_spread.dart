@@ -33,7 +33,7 @@ import 'package:fire_behaviour_app/cffdrs/cfb_calc.dart';
 import 'c6_calc.dart';
 import 'buildup_effect.dart';
 
-Map<String, dynamic> _rateOfSpreadExtended(
+Map<String, dynamic> rateOfSpreadExtended(
     String fuelType,
     double ISI,
     double BUI,
@@ -260,7 +260,7 @@ Map<String, dynamic> _rateOfSpreadExtended(
 double rateOfSpread(String fuelType, double ISI, double BUI, double FMC,
     double SFC, double? PC, double? PDF, double? CC, double? CBH) {
   final rosVars =
-      _rateOfSpreadExtended(fuelType, ISI, BUI, FMC, SFC, PC, PDF, CC, CBH);
+      rateOfSpreadExtended(fuelType, ISI, BUI, FMC, SFC, PC, PDF, CC, CBH);
   return rosVars['ROS'];
 }
 
