@@ -1,6 +1,6 @@
 double crownBaseHeight(String fuelType, double cbh, double sd, double sh) {
   // Mapping of fuel types to CBH values
-  final Map<String, double> cbhs = {
+  const Map<String, double> cbhs = {
     "C1": 2,
     "C2": 3,
     "C3": 8,

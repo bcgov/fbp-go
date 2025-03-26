@@ -322,8 +322,8 @@ FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,
   bool ACCEL = input.ACCEL;
   double ASPECT = input.ASPECT;
   bool BUIEFF = input.BUIEFF;
-  double? CBH = input.CBH;
-  double? CFL = input.CFL;
+  double? CBH = input.CBH ?? 0.0;
+  double? CFL = input.CFL ?? 0.0;
   double ISI = input.ISI ?? 0.0;
   // ############################################################################
   // #                         BEGIN
@@ -428,7 +428,6 @@ FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,
   // # Initializing variables
   // ############################################################################
   double TFC, HFI, CFB, ROS = 0.0;
-  CBH ??= 0.0;
   CBH = crownBaseHeight(FUELTYPE, CBH, SD, SH);
   CFL = crownFuelLoad(FUELTYPE, CFL);
 

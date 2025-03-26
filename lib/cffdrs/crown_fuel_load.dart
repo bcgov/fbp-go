@@ -7,9 +7,9 @@
 /// - [CFL]: A nullable double representing the Crown Fuel Load.
 ///
 /// Returns the corrected CFL value as a `double`.
-double crownFuelLoad(String fuelType, double? CFL) {
+double crownFuelLoad(String fuelType, [double? CFL]) {
   // Predefined CFL values for each fuel type
-  final Map<String, double> CFLs = {
+  const Map<String, double> CFLs = {
     "C1": 0.75,
     "C2": 0.8,
     "C3": 1.15,

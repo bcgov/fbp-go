@@ -21,6 +21,7 @@ import 'package:fire_behaviour_app/global.dart';
 
 import 'cffdrs/distance_at_time.dart';
 import 'cffdrs/length_to_breadth_at_time.dart';
+import 'cffdrs/crown_fuel_load.dart';
 
 enum FuelType {
   // ignore: constant_identifier_names
@@ -65,14 +66,14 @@ class FuelTypePreset {
   final int id;
   final FuelType code;
   final String description;
-  final double cfl;
+  final double? cfl;
   final double? pc;
   final double? pdf;
   final double? cbh;
   final double? gfl;
   final double averageBUI;
   FuelTypePreset(this.id, this.code, this.description,
-      {required this.cfl,
+      {this.cfl,
       this.pc,
       this.pdf,
       this.cbh,
@@ -85,76 +86,91 @@ class FuelTypePreset {
   }
 }
 
+FuelTypePreset createPreset(int id, FuelType fuelType, String name,
+    {double? pc,
+    required double averageBUI,
+    double? cbh,
+    double? pdf,
+    double? gfl}) {
+  return FuelTypePreset(id, fuelType, name,
+      cfl: crownFuelLoad(fuelType.name),
+      pc: pc,
+      cbh: cbh,
+      pdf: pdf,
+      gfl: gfl,
+      averageBUI: averageBUI);
+}
+
 FuelTypePreset getC2BorealSpruce() {
-  return FuelTypePreset(1, FuelType.C2, 'C-2 boreal spruce',
-      cfl: 0.8, pc: 100, cbh: 3, averageBUI: 70);
+  return createPreset(1, FuelType.C2, 'C-2 boreal spruce',
+      pc: 100, averageBUI: 70);
 }
 
 List<FuelTypePreset> getFuelTypePresets() {
+  // We're only including CBH (Crown Base height) if we want specific settings for a predefined fuel type.
+  // ie. C6 7m & C6 2m. If CBH is otherwise null, the CFFDRS library handles setting it correctly (see crown_base_height.dart)
+  // crownFuelLoad also handles setting the CFL correctly for the fuel type
   int id = 0;
   return [
-    FuelTypePreset(id++, FuelType.C1, 'C-1 spruce-lichen woodland',
-        cfl: 0.75, pc: 100, cbh: 2, averageBUI: 50),
+    createPreset(id++, FuelType.C1, 'C-1 spruce-lichen woodland',
+        pc: 100, averageBUI: 50),
     getC2BorealSpruce(),
-    FuelTypePreset(++id, FuelType.C3, 'C-3 mature jack or lodgepole pine',
-        cfl: 1.15, pc: 100, cbh: 3, averageBUI: 70),
-    FuelTypePreset(++id, FuelType.C4, 'C-4 immature jack or lodgepole pine',
-        cfl: 1.2, pc: 100, cbh: 4, averageBUI: 70),
-    FuelTypePreset(++id, FuelType.C5, 'C-5 red and white pine',
-        cfl: 1.2, pc: 100, cbh: 18, averageBUI: 50),
-    FuelTypePreset(++id, FuelType.C6, 'C-6 conifer plantation, 7-m CBH',
-        cfl: 1.8, pc: 100, cbh: 7, averageBUI: 70),
-    FuelTypePreset(++id, FuelType.C6, 'C-6 conifer plantation, 2-m CBH',
-        cfl: 1.8, pc: 100, cbh: 7, averageBUI: 70),
-    FuelTypePreset(++id, FuelType.C7, 'C-7 ponderosa pine/Douglas-far',
-        cfl: 0.5, pc: 100, cbh: 10, averageBUI: 100),
-    FuelTypePreset(++id, FuelType.D1, 'D-1 leafless aspen',
-        cfl: 1.0, averageBUI: 35),
+    createPreset(++id, FuelType.C3, 'C-3 mature jack or lodgepole pine',
+        pc: 100, averageBUI: 70),
+    createPreset(++id, FuelType.C4, 'C-4 immature jack or lodgepole pine',
+        pc: 100, averageBUI: 70),
+    createPreset(++id, FuelType.C5, 'C-5 red and white pine',
+        pc: 100, averageBUI: 50),
+    createPreset(++id, FuelType.C6, 'C-6 conifer plantation, 7-m CBH',
+        pc: 100, cbh: 7, averageBUI: 70),
+    createPreset(++id, FuelType.C6, 'C-6 conifer plantation, 2-m CBH',
+        pc: 100, cbh: 2, averageBUI: 70),
+    createPreset(++id, FuelType.C7, 'C-7 ponderosa pine/Douglas-far',
+        pc: 100, averageBUI: 100),
+    createPreset(++id, FuelType.D1, 'D-1 leafless aspen', averageBUI: 35),
     // D2 is not implemented in FBPCalc.r
-    // FuelTypePreset(FuelType.D2, 'D-2 green aspen', cfl: 1.0),
-    FuelTypePreset(++id, FuelType.M1, 'M-1 boreal mixed-leafless, 75% conifer',
-        cfl: 0.8, pc: 75, cbh: 6, averageBUI: 50),
-    FuelTypePreset(++id, FuelType.M1, 'M-1 boreal mixed-leafless, 50% conifer',
-        cfl: 0.8, pc: 50, cbh: 6, averageBUI: 50),
-    FuelTypePreset(++id, FuelType.M1, 'M-1 boreal mixed-leafless, 25% conifer',
-        cfl: 0.8, pc: 25, cbh: 6, averageBUI: 50),
-    FuelTypePreset(++id, FuelType.M2, 'M-2 boreal mixed-green, 75% conifer',
-        cfl: 0.8, pc: 75, cbh: 6, averageBUI: 50),
-    FuelTypePreset(++id, FuelType.M2, 'M-2 boreal mixed-green, 50% conifer',
-        cfl: 0.8, pc: 50, cbh: 6, averageBUI: 50),
-    FuelTypePreset(++id, FuelType.M2, 'M-2 boreal mixed-green, 25% conifer',
-        cfl: 0.8, pc: 25, cbh: 6, averageBUI: 50),
-    FuelTypePreset(
+    // createPreset(FuelType.D2, 'D-2 green aspen',
+    createPreset(++id, FuelType.M1, 'M-1 boreal mixed-leafless, 75% conifer',
+        pc: 75, averageBUI: 50),
+    createPreset(++id, FuelType.M1, 'M-1 boreal mixed-leafless, 50% conifer',
+        pc: 50, averageBUI: 50),
+    createPreset(++id, FuelType.M1, 'M-1 boreal mixed-leafless, 25% conifer',
+        pc: 25, averageBUI: 50),
+    createPreset(++id, FuelType.M2, 'M-2 boreal mixed-green, 75% conifer',
+        pc: 75, averageBUI: 50),
+    createPreset(++id, FuelType.M2, 'M-2 boreal mixed-green, 50% conifer',
+        pc: 50, averageBUI: 50),
+    createPreset(++id, FuelType.M2, 'M-2 boreal mixed-green, 25% conifer',
+        pc: 25, averageBUI: 50),
+    createPreset(
         ++id, FuelType.M3, 'M-3 dead balsam mixed-leafless, 30% dead fir',
-        cfl: 0.8, pdf: 30, cbh: 6, averageBUI: 50),
-    FuelTypePreset(
+        pdf: 30, averageBUI: 50),
+    createPreset(
         ++id, FuelType.M3, 'M-3 dead balsam mixed-leafless, 60% dead fir',
-        cfl: 0.8, pdf: 60, cbh: 6, averageBUI: 50),
-    FuelTypePreset(
+        pdf: 60, averageBUI: 50),
+    createPreset(
         ++id, FuelType.M3, 'M-3 dead balsam mixed-leafless, 100% dead fir',
-        cfl: 0.8, pdf: 100, cbh: 6, averageBUI: 50),
-    FuelTypePreset(
-        ++id, FuelType.M4, 'M-4 dead balsam mixed-green, 30% dead fir',
-        cfl: 0.8, pdf: 30, cbh: 6, averageBUI: 50),
-    FuelTypePreset(
-        ++id, FuelType.M4, 'M-4 dead balsam mixed-green, 60% dead fir',
-        cfl: 0.8, pdf: 60, cbh: 6, averageBUI: 50),
-    FuelTypePreset(
+        pdf: 100, averageBUI: 50),
+    createPreset(++id, FuelType.M4, 'M-4 dead balsam mixed-green, 30% dead fir',
+        pdf: 30, averageBUI: 50),
+    createPreset(++id, FuelType.M4, 'M-4 dead balsam mixed-green, 60% dead fir',
+        pdf: 60, averageBUI: 50),
+    createPreset(
         ++id, FuelType.M4, 'M-4 dead balsam mixed-green, 100% dead fir',
-        cfl: 0.8, pdf: 100, cbh: 6, averageBUI: 50),
+        pdf: 100, averageBUI: 50),
     // Taking some liberties here - O1A and O1B don't  have an average
     // BUI a.f.a.i.k.
-    FuelTypePreset(++id, FuelType.O1A, 'O-1a matted grass',
-        cfl: 0.0, gfl: 0.35, averageBUI: 50),
-    FuelTypePreset(++id, FuelType.O1B, 'O-1b standing grass',
-        cfl: 0.0, gfl: 0.35, averageBUI: 50),
-    FuelTypePreset(++id, FuelType.S1, 'S-1 jack or lodgepole pine slash',
-        cfl: 0.0, averageBUI: 35),
-    FuelTypePreset(++id, FuelType.S2, 'S-2 white spruce/balsam slash',
-        cfl: 0.0, averageBUI: 70),
-    FuelTypePreset(
+    createPreset(++id, FuelType.O1A, 'O-1a matted grass',
+        gfl: 0.35, averageBUI: 50),
+    createPreset(++id, FuelType.O1B, 'O-1b standing grass',
+        gfl: 0.35, averageBUI: 50),
+    createPreset(++id, FuelType.S1, 'S-1 jack or lodgepole pine slash',
+        averageBUI: 35),
+    createPreset(++id, FuelType.S2, 'S-2 white spruce/balsam slash',
+        averageBUI: 70),
+    createPreset(
         ++id, FuelType.S3, 'S-3 coastal cedar/hemlock/Douglas-fir slash',
-        cfl: 0.0, averageBUI: 35),
+        averageBUI: 35),
   ];
 }
 

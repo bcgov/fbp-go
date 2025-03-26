@@ -61,7 +61,7 @@ class AdvancedFireBehaviourPredictionFormState
   double? _pc = 0;
   double? _pdf = 0;
   double? _cbh = 0;
-  double _cfl = 0;
+  double? _cfl = 0;
   double _minutes = 60;
   double _gfl = defaultGFL;
 
