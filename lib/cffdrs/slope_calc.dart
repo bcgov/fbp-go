@@ -31,7 +31,7 @@ import 'initial_spread_index.dart';
 import 'rate_of_spread.dart';
 import 'fine_fuel_moisture_code.dart';
 
-double slopeAdjustment(
+Map<String, dynamic> slopeAdjustment(
     String fuelType,
     double FFMC,
     double? BUI,
@@ -45,8 +45,7 @@ double slopeAdjustment(
     double? PDF,
     double? CC,
     double? CBH,
-    double ISI,
-    {String output = "RAZ"}) {
+    double ISI) {
   /*
   # output options include: RAZ and WSV
   #############################################################################
@@ -88,10 +87,6 @@ double slopeAdjustment(
   #
   #############################################################################
   */
-  // #check for valid output types
-  if (!["RAZ", "WAZ", "WSV"].contains(output)) {
-    throw Exception("In 'slopecalc()', '$output' is an invalid 'output' type.");
-  }
   double NoBUI = -1;
   // #Eq. 39 (FCFDG 1992) - Calculate Spread Factor
   double SF = GS >= 70 ? 10 : exp(3.533 * pow((GS / 100), 1.2));
@@ -361,16 +356,17 @@ double slopeAdjustment(
   double WSY = WS * cos(WAZ) + WSE * cos(SAZ);
   // #Eq. 49 (FCFDG 1992) - the net effective wind speed
   double WSV = sqrt(WSX * WSX + WSY * WSY);
-  // #stop execution here and return WSV if requested
-  if (output == "WSV") {
-    return WSV;
-  }
   // #Eq. 50 (FCFDG 1992) - the net effective wind direction (radians)
   double RAZ = acos(WSY / WSV);
   // #Eq. 51 (FCFDG 1992) - convert possible negative RAZ into more understandable
   // # directions
   RAZ = WSX < 0 ? 2 * pi - RAZ : RAZ;
-  return RAZ;
+
+  final Map<String, dynamic> slopeValues = {};
+  slopeValues['WSV'] = WSV;
+  slopeValues['RAZ'] = RAZ;
+
+  return slopeValues;
 }
 
 @Deprecated('use slopeAdjustment')
@@ -390,6 +386,11 @@ double Slopecalc(
     double? CBH,
     double ISI,
     {String output = "RAZ"}) {
-  return slopeAdjustment(
+  // #check for valid output types
+  if (!["RAZ", "WAZ", "WSV"].contains(output)) {
+    throw Exception("In 'slopecalc()', '$output' is an invalid 'output' type.");
+  }
+  Map<String, dynamic> slopeVals = slopeAdjustment(
       fuelType, FFMC, BUI, WS, WAZ, GS, SAZ, FMC, SFC, PC, PDF, CC, CBH, ISI);
+  return slopeVals[output];
 }
