@@ -7,6 +7,8 @@ import 'package:fire_behaviour_app/cffdrs/initial_spread_index.dart';
 import 'package:fire_behaviour_app/cffdrs/rate_of_spread.dart';
 import 'package:fire_behaviour_app/cffdrs/slope_calc.dart';
 import 'package:fire_behaviour_app/cffdrs/c6_calc.dart';
+import 'package:fire_behaviour_app/cffdrs/surface_fuel_consumption.dart';
+import 'package:fire_behaviour_app/cffdrs/total_fuel_consumption.dart';
 import 'package:test/test.dart';
 
 import 'package:fire_behaviour_app/cffdrs/fire_behaviour_prediction.dart';
@@ -165,6 +167,20 @@ void main() {
     test('buildupEffect', () {
       final result = buildupEffect('M1', 288.9);
       expect(result, closeTo(1.203, .01));
+    });
+  });
+
+  group('total_fuel_consumption', () {
+    test('Scenario', () {
+      final result = totalFuelConsumption('C3', 200.6, 0.62, 13122, 81, 27);
+      expect(result, closeTo(13246.37, 0.01));
+    });
+  });
+
+  group('surface_fuel_consumption', () {
+    test('Scenario', () {
+      final result = surfaceFuelConsumption('M2', 91.2, 656.1, 81, 54);
+      expect(result, closeTo(4.335, 0.01));
     });
   });
 
