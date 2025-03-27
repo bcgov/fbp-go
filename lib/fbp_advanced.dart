@@ -250,7 +250,7 @@ class AdvancedFireBehaviourPredictionFormState
     String? errorMessage;
 
     try {
-      prediction = FBPcalc(input, output: "ALL");
+      prediction = fireBehaviourPrediction(input, output: "ALL");
       if (prediction.secondary != null) {
         fireSize = getFireSize(
             _fuelTypePreset!.code.name,

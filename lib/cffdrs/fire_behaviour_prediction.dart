@@ -277,7 +277,8 @@ class FireBehaviourPredictionPrimary {
       this.secondary});
 }
 
-FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,
+FireBehaviourPredictionPrimary fireBehaviourPrediction(
+    FireBehaviourPredictionInput input,
     {String output = "Primary"}) {
   /*
   #############################################################################
@@ -444,14 +445,12 @@ FireBehaviourPredictionPrimary FBPcalc(FireBehaviourPredictionInput input,
   // #Disable BUI Effect if necessary
   BUI = BUIEFF ? BUI : 0;
   // #Calculate the net effective windspeed (WSV)
-  final WSV0 = slopeAdjustment(
-      FUELTYPE, FFMC, BUI, WS, WAZ, GS, SAZ, FMC, SFC, PC, PDF, CC, CBH, ISI,
-      output: "WSV");
+  final slopeVals = slopeAdjustment(
+      FUELTYPE, FFMC, BUI, WS, WAZ, GS, SAZ, FMC, SFC, PC, PDF, CC, CBH, ISI);
+  double WSV0 = slopeVals['WSV'];
   final WSV = GS > 0 && FFMC > 0 ? WSV0 : WS;
   // #Calculate the net effective wind direction (RAZ)
-  final RAZ0 = slopeAdjustment(
-      FUELTYPE, FFMC, BUI, WS, WAZ, GS, SAZ, FMC, SFC, PC, PDF, CC, CBH, ISI,
-      output: "RAZ");
+  final RAZ0 = slopeVals['RAZ'];
   double RAZ = GS > 0 && FFMC > 0 ? RAZ0 : WAZ;
   // #Calculate or keep Initial Spread Index (ISI)
   ISI = ISI > 0 ? ISI : initialSpreadIndex(FFMC, WSV, fbpMod: true);
