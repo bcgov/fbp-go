@@ -73,5 +73,5 @@ double backRateOfSpread(String FUELTYPE, double FFMC, double BUI, double WSV,
   final BISI = 0.208 * BfW * fF;
   // #Eq. 77 (FCFDG 1992)
   // #Calculate final Back fire spread rate
-  return ROScalc(FUELTYPE, BISI, BUI, FMC, SFC, PC, PDF, CC, CBH);
+  return rateOfSpread(FUELTYPE, BISI, BUI, FMC, SFC, PC, PDF, CC, CBH);
 }

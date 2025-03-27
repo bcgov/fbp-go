@@ -44,7 +44,6 @@ import 'length_to_breadth_at_time.dart';
 import 'surface_fuel_consumption.dart';
 import 'slope_calc.dart';
 import 'initial_spread_index.dart';
-import 'c6_calc.dart';
 import 'rate_of_spread.dart';
 import 'total_fuel_consumption.dart';
 
