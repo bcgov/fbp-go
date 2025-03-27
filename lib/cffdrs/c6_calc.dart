@@ -46,11 +46,12 @@ double surfaceRateOfSpreadC6(double RSI, double BUI) {
 /// Eq. 64 (FCFDG 1992) - Crown fire spread rate (m/min)
 double crownRateOfSpreadC6(double ISI, double FMC) {
   double FMEavg = 0.778;
-  double tt = 1500 - 2.75 * FMC; // Eq. 59 - Crown flame temperature
-  double H = 460 + 25.9 * FMC; // Eq. 60 - Head of ignition energy
+  double tt = 1500 -
+      2.75 * FMC; // Eq. 59 (FCFDG 1992) Crown flame temperature (degrees K)
+  double H = 460 + 25.9 * FMC; // Eq. 60 (FCFDG 1992) Head of ignition (kJ/kg)
   double FME = (pow((1.5 - 0.00275 * FMC), 4) / (460 + 25.9 * FMC)) *
-      1000; // Eq. 61 - Average foliar moisture effect
-
+      1000; // Eq. 61 (FCFDG 1992) Average foliar moisture effect
+// Eq. 64 (FCFDG 1992) Crown fire spread rate (m/min)
   return 60 * (1 - exp(-0.0497 * ISI)) * FME / FMEavg;
 }
 
@@ -100,6 +101,7 @@ double C6calc(
     throw ArgumentError("The fuel type must be 'C6'.");
   }
 
+  // feels like this should make sense, but fails when called from fbp() and not all C6
   // Intermediate Surface Rate of Spread
   double RSI = intermediateSurfaceRateOfSpreadC6(ISI);
 
