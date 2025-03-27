@@ -82,10 +82,3 @@ double totalFuelConsumption(String fuelType, double cfl, double cfb, double sfc,
   // Eq. 67 (FCFDG 1992) - Total Fuel Consumption
   return sfc + cfc;
 }
-
-@Deprecated('use totalFuelConsumption')
-double TFCcalc(String fuelType, double cfl, double cfb, double sfc, double? pc,
-    double? pdf,
-    {String option = "TFC"}) {
-  return totalFuelConsumption(fuelType, cfl, cfb, sfc, pc, pdf);
-}

@@ -60,8 +60,3 @@ double distanceAtTime(String FUELTYPE, double ROSeq, double HR, double CFB) {
   // #Eq. 71 (FCFDG 1992) Calculate Head fire spread distance
   return ROSeq * (HR + exp(-alpha * HR) / alpha - 1 / alpha);
 }
-
-@Deprecated("Use 'distanceAtTime' instead.")
-double DISTtcalc(String fuelType, double roSeq, double hr, double cfb) {
-  return distanceAtTime(fuelType, roSeq, hr, cfb);
-}

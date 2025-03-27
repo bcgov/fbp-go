@@ -63,8 +63,3 @@ double lengthToBreadAtTime(String FUELTYPE, double LB, double HR, double CFB) {
   // #Eq. 81 (Wotton et.al. 2009) - LB at time since ignition
   return (LB - 1) * (1 - exp(-alpha * HR)) + 1;
 }
-
-@Deprecated('use lengthToBreadAtTime')
-double LBtcalc(String FUELTYPE, double LB, double HR, double CFB) {
-  return lengthToBreadAtTime(FUELTYPE, LB, HR, CFB);
-}

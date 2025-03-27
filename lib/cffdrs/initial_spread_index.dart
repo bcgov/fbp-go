@@ -70,8 +70,3 @@ double initialSpreadIndex(ffmc, ws, {fbpMod = false}) {
   // #Eq. 26 - Spread Index Equation
   return 0.208 * fW * fF;
 }
-
-@Deprecated('use initialSpreadIndex')
-double ISIcalc(ffmc, ws, {fbpMod = false}) {
-  return initialSpreadIndex(ffmc, ws);
-}

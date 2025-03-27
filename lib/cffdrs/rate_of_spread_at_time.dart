@@ -59,8 +59,3 @@ double rateOfSpreadAtTime(
   // #Eq. 70 - Rate of Spread at time since ignition
   return ROSeq * (1 - exp(-alpha * HR));
 }
-
-@Deprecated('use rateOfSpreadAtTime')
-double ROStcalc(String FUELTYPE, double ROSeq, double HR, double CFB) {
-  return rateOfSpreadAtTime(FUELTYPE, ROSeq, HR, CFB);
-}

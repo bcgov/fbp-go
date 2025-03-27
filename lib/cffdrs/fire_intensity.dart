@@ -49,8 +49,3 @@ double fireIntensity(double FC, double ROS) {
   // #Eq. 69 (FCFDG 1992) Fire Intensity (kW/m)
   return 300 * FC * ROS;
 }
-
-@Deprecated('use fireIntensity')
-double FIcalc(double FC, double ROS) {
-  return fireIntensity(FC, ROS);
-}

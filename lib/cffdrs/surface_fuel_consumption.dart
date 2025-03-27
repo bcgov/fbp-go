@@ -143,9 +143,3 @@ double surfaceFuelConsumption(
   // #Constrain SFC value
   return SFC < 0 ? 0.000001 : SFC;
 }
-
-@Deprecated('use surfaceFuelConsumption')
-double SFCcalc(
-    String FUELTYPE, double FFMC, double? BUI, double? PC, double? GFL) {
-  return surfaceFuelConsumption(FUELTYPE, FFMC, BUI, PC, GFL);
-}

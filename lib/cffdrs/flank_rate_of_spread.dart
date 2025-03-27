@@ -51,8 +51,3 @@ double flankRateOfSpread(double ROS, double BROS, double LB) {
   // #Eq. 89 (FCFDG 1992)
   return (ROS + BROS) / LB / 2;
 }
-
-@Deprecated('Use flankRateOfSpread instead')
-double FROScalc(double ROS, double BROS, double LB) {
-  return flankRateOfSpread(ROS, BROS, LB);
-}

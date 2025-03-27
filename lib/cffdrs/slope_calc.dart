@@ -368,29 +368,3 @@ Map<String, dynamic> slopeAdjustment(
 
   return slopeValues;
 }
-
-@Deprecated('use slopeAdjustment')
-double Slopecalc(
-    String fuelType,
-    double FFMC,
-    double? BUI,
-    double WS,
-    double WAZ,
-    double GS,
-    double SAZ,
-    double FMC,
-    double SFC,
-    double? PC,
-    double? PDF,
-    double? CC,
-    double? CBH,
-    double ISI,
-    {String output = "RAZ"}) {
-  // #check for valid output types
-  if (!["RAZ", "WAZ", "WSV"].contains(output)) {
-    throw Exception("In 'slopecalc()', '$output' is an invalid 'output' type.");
-  }
-  Map<String, dynamic> slopeVals = slopeAdjustment(
-      fuelType, FFMC, BUI, WS, WAZ, GS, SAZ, FMC, SFC, PC, PDF, CC, CBH, ISI);
-  return slopeVals[output];
-}

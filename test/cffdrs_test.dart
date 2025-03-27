@@ -111,11 +111,6 @@ void main() {
   });
 
   group('cfb_calc', () {
-    test('CFBCalc', () {
-      final result = CFBcalc('C6', 109.69520000000001, 3.4742543847234075,
-          0.0006076755997436044, 7.0);
-      expect(result, 0.0);
-    });
     test('crownFractionBurned', () {
       double FMC = 323.1;
       double SFC = 13122;
@@ -131,12 +126,6 @@ void main() {
   });
 
   group('C6calc', () {
-    test('C6calc', () {
-      final result = C6calc('C6', 0.3454733290959275, -1.0, 109.69520000000001,
-          3.4742543847234075, 7.0,
-          option: "ROS");
-      expect(roundDouble(result), roundDouble(0.0006076756));
-    });
     test('crownFractionBurnedC6', () {
       double ISI = 10;
       double BUI = 437.4;

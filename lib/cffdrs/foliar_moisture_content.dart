@@ -83,8 +83,3 @@ double foliarMoistureContent(
   }
   return FMC;
 }
-
-@Deprecated('use foliarMoistureContent')
-double FMCcalc(double LAT, double LONG, double ELV, int DJ, double D0) {
-  return foliarMoistureContent(LAT, LONG, ELV, DJ, D0);
-}

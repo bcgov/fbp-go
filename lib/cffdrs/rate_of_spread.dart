@@ -263,9 +263,3 @@ double rateOfSpread(String fuelType, double ISI, double BUI, double FMC,
       rateOfSpreadExtended(fuelType, ISI, BUI, FMC, SFC, PC, PDF, CC, CBH);
   return rosVars['ROS'];
 }
-
-@Deprecated("Use rateOfSpread instead.")
-double ROScalc(String fuelType, double ISI, double BUI, double FMC, double SFC,
-    double? PC, double? PDF, double? CC, double? CBH) {
-  return rateOfSpread(fuelType, ISI, BUI, FMC, SFC, PC, PDF, CC, CBH);
-}

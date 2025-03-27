@@ -63,8 +63,3 @@ double length_to_breadth(String FUELTYPE, double WSV) {
     return 1.0 + 8.729 * pow((1 - exp(-0.030 * WSV)), (2.155)); // #Eq. 79
   }
 }
-
-@Deprecated('use length_to_breadth')
-double LBcalc(String FUELTYPE, double WSV) {
-  return length_to_breadth(FUELTYPE, WSV);
-}
