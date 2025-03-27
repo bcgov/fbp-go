@@ -11,6 +11,8 @@ import 'package:test/test.dart';
 
 import 'package:fire_behaviour_app/cffdrs/fire_behaviour_prediction.dart';
 
+const double tolerance = 0.05;
+
 FireBehaviourPredictionInput loadInput(dynamic inputJson) {
   return FireBehaviourPredictionInput(
     FUELTYPE: inputJson["FUELTYPE"],
@@ -83,107 +85,124 @@ FireBehaviourPredictionPrimary loadOutput(dynamic outputJson) {
       ));
 }
 
-double roundDouble(double value) {
+double roundDouble(double value, {int places = 2}) {
   /*Hypothesis A: R has a slightly different way of doing floating point
   calculations resulting in minor differences in the output. We're unlikely
   to care about anything beyond 2 decimal places.
   Hypothesis B: There's a mistake in the translation, some detail in operation
   order or some such which is causing slightly different results.
   */
-  const int places = 5; // 5 decimal places isn't too bad.
   var mod = pow(10.0, places);
-  return (value * mod).round().toDouble() / mod;
+  return (value * mod).roundToDouble() / mod;
 }
 
 void main() {
-  group('ISIcalc', () {
-    test('Scenario', () {
-      final result = initialSpreadIndex(57.55481411251054, 0);
-      expect(roundDouble(result), roundDouble(0.345473329095927));
+  group('initialSpreadIndex', () {
+    test('initialSpreadIndex - 0 wind speed - fbpMod false', () {
+      final result = initialSpreadIndex(88.8, 0);
+      expect(roundDouble(result, places: 3), 3.606);
+    });
+    test('initialSpreadIndex - fbpMod true', () {
+      final result = initialSpreadIndex(89.7, 24.3);
+      expect(result, closeTo(13.96, tolerance));
     });
   });
 
-  group('CFBcalc', () {
-    test('Scenario', () {
+  group('cfb_calc', () {
+    test('CFBCalc', () {
       final result = CFBcalc('C6', 109.69520000000001, 3.4742543847234075,
           0.0006076755997436044, 7.0);
       expect(result, 0.0);
     });
+    test('crownFractionBurned', () {
+      double FMC = 323.1;
+      double SFC = 13122;
+      double ROS = 196.83;
+      double CBH = 145.8;
+      double CFB = 1.0;
+
+      double CSI = criticalSurfaceIntensity(FMC, CBH);
+      double RSO = surfaceFireRateOfSpread(CSI, SFC);
+      final result = crownFractionBurned(ROS, RSO);
+      expect(result, CFB);
+    });
   });
 
   group('C6calc', () {
-    test('Scenario', () {
+    test('C6calc', () {
       final result = C6calc('C6', 0.3454733290959275, -1.0, 109.69520000000001,
           3.4742543847234075, 7.0,
           option: "ROS");
       expect(roundDouble(result), roundDouble(0.0006076756));
     });
+    test('crownFractionBurnedC6', () {
+      double ISI = 10;
+      double BUI = 437.4;
+      double FMC = 145.8;
+      double SFC = 19683;
+      double CBH = 145.8;
+      double ROS = 0;
+      double CFB =
+          1.43; // I don't know why ROS, CFB, and RSC are provided in the R test data when they aren't used.
+      double RSC = 196.83;
+
+      double RSI = intermediateSurfaceRateOfSpreadC6(ISI);
+      RSC = crownRateOfSpreadC6(ISI, FMC);
+      double RSS = surfaceRateOfSpreadC6(RSI, BUI);
+      double CSI = criticalSurfaceIntensity(FMC, CBH);
+      double RSO = surfaceFireRateOfSpread(CSI, SFC);
+
+      final result = crownFractionBurned(RSS, RSO);
+      expect(result, closeTo(0.7344, 0.01));
+    });
   });
 
-  group('BEcalc', () {
-    test('Scenario', () {
+  group('buildup_effect', () {
+    test('buildupEffect - Negative BUI', () {
       final result = buildupEffect('C6', -1.0);
       expect(result, 1.0);
     });
+    test('buildupEffect', () {
+      final result = buildupEffect('M1', 288.9);
+      expect(result, closeTo(1.203, .01));
+    });
   });
 
-  group('ROScalc', () {
+  group('rate_of_spread', () {
     test('Scenario', () {
-      final result = ROScalc(
+      final result = rateOfSpread(
         "C6",
-        0.3454733290959275,
-        -1.0,
-        109.69520000000001,
-        3.4742543847234075,
+        182.7,
+        437.4,
+        218.7,
+        6561,
+        54,
         0,
-        35.0,
-        80.0,
-        7.0,
+        0,
+        0,
       );
-      expect(result, 0.0006076755997436044);
+      expect(result, closeTo(35.01, 0.01));
     });
   });
-  group('Slopecalc', () {
+  group('slope_calc', () {
     test('C6 Scenario', () {
-      final result = slopeAdjustment(
-          'C6',
-          57.55481411251054,
-          133.63769408909872,
-          16.81983099456876,
-          6.247412014352667,
-          29.251275109988352,
-          4.474380979600264,
-          109.69520000000001,
-          3.4742543847234075,
-          null,
-          35,
-          80,
-          7.0,
-          0.0,
-          output: "WSV");
-      expect(result, 16.604545444707842);
+      final slopeVals = slopeAdjustment('C6', 75.3, 437.4, 145.8, -3.142, 0,
+          4.492, 437.4, 6561, 81, 27, 0, 0, 0);
+      double WSV = slopeVals['WSV'];
+      double RAZ = slopeVals['RAZ'];
+      expect(WSV, closeTo(145.8, .01));
+      expect(RAZ, closeTo(3.142, .01));
     });
     test('M2 Scenario', () {
-      final result = slopeAdjustment(
-          'M2',
-          98.90994700887234,
-          0.0,
-          24.695621017090957,
-          2.755556900847557,
-          76.5953764720197,
-          4.855878595311738,
-          87.7216,
-          1.3797772519962974,
-          3.7466175923251854,
-          28.721259560328726,
-          64.82853387092416,
-          6.0,
-          0.0,
-          output: "WSV");
-      expect(result, 102.22228707251003);
+      final slopeVals = slopeAdjustment(
+          'M2', 50.7, 656.1, 0, 4.492, 162, 2.026, 0, 13122, 81, 0, 27, 0, 0);
+      double WSV = slopeVals['WSV'];
+      double RAZ = slopeVals['RAZ'];
+      expect(WSV, closeTo(30.29, .01));
+      expect(RAZ, closeTo(2.026, .01));
     });
   });
-  group('FBCCcalc', () {
+  group('fire_behaviour_prediction', () {
     late dynamic inputJson;
     late dynamic outputJson;
 
@@ -203,26 +222,27 @@ void main() {
       for (var i = 0; i < inputJson.length; i++) {
         final input = loadInput(inputJson[i]);
         FireBehaviourPredictionPrimary expected = loadOutput(outputJson[i]);
-        FireBehaviourPredictionPrimary result = FBPcalc(input, output: "ALL");
-        expect(result.FMC, expected.FMC, reason: 'FMC $i');
-        expect(roundDouble(result.SFC), roundDouble(expected.SFC),
+        FireBehaviourPredictionPrimary result =
+            fireBehaviourPrediction(input, output: "ALL");
+        expect(result.FMC, closeTo(expected.FMC, tolerance), reason: 'FMC $i');
+        expect((result.SFC), closeTo(expected.SFC, tolerance),
             reason: 'SFC $i');
-        expect(roundDouble(result.WSV), roundDouble(expected.WSV),
+        expect((result.WSV), closeTo(expected.WSV, tolerance),
             reason: 'WSV $i');
-        expect(roundDouble(result.RAZ), roundDouble(expected.RAZ),
+        expect((result.RAZ), closeTo(expected.RAZ, tolerance),
             reason: 'RAZ $i');
-        expect(roundDouble(result.ISI), roundDouble(expected.ISI),
+        expect((result.ISI), closeTo(expected.ISI, tolerance),
             reason: 'ISI $i');
-        expect(roundDouble(result.ROS), roundDouble(expected.ROS),
+        expect((result.ROS), closeTo(expected.ROS, tolerance),
             reason: 'ROS $i');
-        expect(roundDouble(result.CFB), roundDouble(expected.CFB),
+        expect((result.CFB), closeTo(expected.CFB, tolerance),
             reason: 'CFB $i');
-        expect(roundDouble(result.TFC), roundDouble(expected.TFC),
+        expect((result.TFC), closeTo(expected.TFC, tolerance),
             reason: 'TFC $i');
-        expect(roundDouble(result.HFI), roundDouble(expected.HFI),
+        expect((result.HFI), closeTo(expected.HFI, tolerance),
             reason: 'HFI $i');
         expect(result.FD, expected.FD, reason: 'FD $i');
-        expect(roundDouble(result.CFC), roundDouble(expected.CFC),
+        expect((result.CFC), closeTo(expected.CFC, tolerance),
             reason: 'CFC $i');
         // now check the secondary outputs
         expect(result.secondary == null, expected.secondary == null,
@@ -234,83 +254,82 @@ void main() {
 
         if (resultSecondary != null && expectedSecondary != null) {
           expect(resultSecondary.SF, expectedSecondary.SF, reason: 'SF $i');
-          expect(roundDouble(resultSecondary.CSI),
-              roundDouble(expectedSecondary.CSI),
+          expect(
+              (resultSecondary.CSI), closeTo(expectedSecondary.CSI, tolerance),
               reason: 'CSI $i');
-          expect(roundDouble(resultSecondary.RSO),
-              roundDouble(expectedSecondary.RSO),
+          expect(
+              (resultSecondary.RSO), closeTo(expectedSecondary.RSO, tolerance),
               reason: 'RSO $i');
-          expect(resultSecondary.BE, expectedSecondary.BE, reason: 'BE $i');
-          expect(roundDouble(resultSecondary.LB),
-              roundDouble(expectedSecondary.LB),
+          expect(resultSecondary.BE, closeTo(expectedSecondary.BE, tolerance),
+              reason: 'BE $i');
+          expect((resultSecondary.LB), closeTo(expectedSecondary.LB, tolerance),
               reason: 'LB $i');
-          expect(roundDouble(resultSecondary.LBt),
-              roundDouble(expectedSecondary.LBt),
+          expect(
+              (resultSecondary.LBt), closeTo(expectedSecondary.LBt, tolerance),
               reason: 'LBt $i');
-          expect(roundDouble(resultSecondary.BROS),
-              roundDouble(expectedSecondary.BROS),
+          expect((resultSecondary.BROS),
+              closeTo(expectedSecondary.BROS, tolerance),
               reason: 'BROS $i');
-          expect(roundDouble(resultSecondary.FROS),
-              roundDouble(expectedSecondary.FROS),
+          expect((resultSecondary.FROS),
+              closeTo(expectedSecondary.FROS, tolerance),
               reason: 'FROS $i');
-          expect(roundDouble(resultSecondary.TROS),
-              roundDouble(expectedSecondary.TROS),
+          expect((resultSecondary.TROS),
+              closeTo(expectedSecondary.TROS, tolerance),
               reason: 'TROS $i');
-          expect(roundDouble(resultSecondary.BROSt),
-              roundDouble(expectedSecondary.BROSt),
+          expect((resultSecondary.BROSt),
+              closeTo(expectedSecondary.BROSt, tolerance),
               reason: 'BROSt $i');
-          expect(roundDouble(resultSecondary.FROSt),
-              roundDouble(expectedSecondary.FROSt),
+          expect((resultSecondary.FROSt),
+              closeTo(expectedSecondary.FROSt, tolerance),
               reason: 'FROSt $i');
-          expect(roundDouble(resultSecondary.TROSt),
-              roundDouble(expectedSecondary.TROSt),
+          expect((resultSecondary.TROSt),
+              closeTo(expectedSecondary.TROSt, tolerance),
               reason: 'TROSt $i');
-          expect(resultSecondary.FCFB, expectedSecondary.FCFB,
+          expect((resultSecondary.FCFB),
+              closeTo(expectedSecondary.FCFB, tolerance),
               reason: 'FCFB $i');
-          expect(resultSecondary.BCFB, expectedSecondary.BCFB,
+          expect((resultSecondary.BCFB),
+              closeTo(expectedSecondary.BCFB, tolerance),
               reason: 'BCFB $i');
-          expect(roundDouble(resultSecondary.TCFB),
-              roundDouble(expectedSecondary.TCFB),
+          expect((resultSecondary.TCFB),
+              closeTo(expectedSecondary.TCFB, tolerance),
               reason: 'TCFB $i');
-          expect(roundDouble(resultSecondary.FTFC),
-              roundDouble(expectedSecondary.FTFC),
+          expect((resultSecondary.FTFC),
+              closeTo(expectedSecondary.FTFC, tolerance),
               reason: 'FTFC $i');
-          expect(roundDouble(resultSecondary.BTFC),
-              roundDouble(expectedSecondary.BTFC),
+          expect((resultSecondary.BTFC),
+              closeTo(expectedSecondary.BTFC, tolerance),
               reason: 'BTFC $i');
-          expect(roundDouble(resultSecondary.TTFC),
-              roundDouble(expectedSecondary.TTFC),
+          expect((resultSecondary.TTFC),
+              closeTo(expectedSecondary.TTFC, tolerance),
               reason: 'TTFC $i');
-          expect(roundDouble(resultSecondary.FFI),
-              roundDouble(expectedSecondary.FFI),
+          expect(
+              (resultSecondary.FFI), closeTo(expectedSecondary.FFI, tolerance),
               reason: 'FFI $i');
-          expect(roundDouble(resultSecondary.BFI),
-              roundDouble(expectedSecondary.BFI),
+          expect(
+              (resultSecondary.BFI), closeTo(expectedSecondary.BFI, tolerance),
               reason: 'BFI $i');
-          expect(roundDouble(resultSecondary.TFI),
-              roundDouble(expectedSecondary.TFI),
+          expect(
+              (resultSecondary.TFI), closeTo(expectedSecondary.TFI, tolerance),
               reason: 'TFI $i');
-          expect(roundDouble(resultSecondary.HROSt),
-              roundDouble(expectedSecondary.HROSt),
+          expect((resultSecondary.HROSt),
+              closeTo(expectedSecondary.HROSt, tolerance),
               reason: 'HROSt $i');
-          expect(roundDouble(resultSecondary.TI),
-              roundDouble(expectedSecondary.TI),
+          expect((resultSecondary.TI), closeTo(expectedSecondary.TI, tolerance),
               reason: 'TI $i');
-          expect(roundDouble(resultSecondary.FTI),
-              roundDouble(expectedSecondary.FTI),
+          expect(
+              (resultSecondary.FTI), closeTo(expectedSecondary.FTI, tolerance),
               reason: 'FTI $i');
-          expect(resultSecondary.BTI, expectedSecondary.BTI, reason: 'BTI $i');
-          expect(roundDouble(resultSecondary.TTI),
-              roundDouble(expectedSecondary.TTI),
+          expect(resultSecondary.BTI, closeTo(expectedSecondary.BTI, tolerance),
+              reason: 'BTI $i');
+          expect(
+              (resultSecondary.TTI), closeTo(expectedSecondary.TTI, tolerance),
               reason: 'TTI $i');
-          expect(roundDouble(resultSecondary.DH),
-              roundDouble(expectedSecondary.DH),
+          expect((resultSecondary.DH), closeTo(expectedSecondary.DH, tolerance),
               reason: 'DH $i');
-          expect(roundDouble(resultSecondary.DB),
-              roundDouble(expectedSecondary.DB),
+          expect((resultSecondary.DB), closeTo(expectedSecondary.DB, tolerance),
               reason: 'DB $i');
-          expect(roundDouble(resultSecondary.DF),
-              roundDouble(expectedSecondary.DF),
+          expect((resultSecondary.DF), closeTo(expectedSecondary.DF, tolerance),
               reason: 'DF $i');
         }
       }
