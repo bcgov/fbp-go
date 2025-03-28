@@ -15,7 +15,7 @@ A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with 
 FBP Go. If not, see <https://www.gnu.org/licenses/>.
 */
-import 'package:fire_behaviour_app/cffdrs/fmc_calc.dart';
+import 'package:fire_behaviour_app/cffdrs/foliar_moisture_content.dart';
 import 'package:fire_behaviour_app/global.dart';
 import 'package:flutter/material.dart';
 
@@ -60,8 +60,8 @@ class FoliarMoistureContentState extends State<FoliarMoistureContent> {
 
   @override
   Widget build(BuildContext context) {
-    double fmc = FMCcalc(latitude, longitude.abs(), elevation, dayOfYear,
-        dateOfMinimumFoliarMoistureContent.toDouble());
+    double fmc = foliarMoistureContent(latitude, longitude.abs(), elevation,
+        dayOfYear, dateOfMinimumFoliarMoistureContent.toDouble());
     return Column(
       children: [
         Row(children: [

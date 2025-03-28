@@ -28,13 +28,13 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 
 import 'dart:math';
 
-double LBtcalc(String FUELTYPE, double LB, double HR, double CFB) {
+double length_to_breadth(String FUELTYPE, double WSV) {
   /*
   #############################################################################
   # Description:
-  #   Computes the Length to Breadth ratio of an elliptically shaped fire at
-  #   elapsed time since ignition. Equations are from listed FCFDG (1992) and
-  #   Wotton et. al. (2009), and are marked as such.
+  #   Computes the Length to Breadth ratio of an elliptically shaped fire. 
+  #   Equations are from listed FCFDG (1992) except for errata 80 from 
+  #   Wotton et. al. (2009).
   #
   #   All variables names are laid out in the same manner as Forestry Canada 
   #   Fire Danger Group (FCFDG) (1992). Development and Structure of the 
@@ -48,18 +48,18 @@ double LBtcalc(String FUELTYPE, double LB, double HR, double CFB) {
   #
   # Args:
   #   FUELTYPE: The Fire Behaviour Prediction FuelType
-  #         LB: Length to Breadth ratio
-  #         HR: Time since ignition (hours)
-  #        CFB: Crown Fraction Burned
+  #        WSV: The Wind Speed (km/h)
   # Returns:
-  #   LBt: Length to Breadth ratio at time since ignition
+  #   LB: Length to Breadth ratio
   #
   #############################################################################
   */
-  // #Eq. 72 (FCFDG 1992) - alpha constant value, dependent on fuel type
-  final alpha = ["C1", "O1A", "O1B", "S1", "S2", "S3", "D1"].contains(FUELTYPE)
-      ? 0.115
-      : 0.115 - 18.8 * pow(CFB, 2.5) * exp(-8 * CFB);
-  // #Eq. 81 (Wotton et.al. 2009) - LB at time since ignition
-  return (LB - 1) * (1 - exp(-alpha * HR)) + 1;
+  // #calculation is depending on if fuel type is grass (O1) or other fueltype
+  if (["O1A", "O1B"].contains(FUELTYPE)) {
+    // #Correction to orginal Equation 80 is made here
+    // #Eq. 80a / 80b from Wotton 2009
+    return WSV >= 1.0 ? 1.1 * pow(WSV, 0.464) : 1.0; // #Eq. 80/81
+  } else {
+    return 1.0 + 8.729 * pow((1 - exp(-0.030 * WSV)), (2.155)); // #Eq. 79
+  }
 }

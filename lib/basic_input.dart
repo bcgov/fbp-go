@@ -19,7 +19,7 @@ import 'package:fire_behaviour_app/beaufort.dart';
 import 'package:fire_behaviour_app/persist.dart';
 import 'package:flutter/material.dart';
 
-import 'cffdrs/fbp_calc.dart';
+import 'cffdrs/fire_behaviour_prediction.dart';
 import 'fancy_slider.dart';
 import 'fire.dart';
 import 'coordinate_picker.dart';

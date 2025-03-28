@@ -28,7 +28,8 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 
 import 'dart:math';
 
-double ROStcalc(String FUELTYPE, double ROSeq, double HR, double CFB) {
+double rateOfSpreadAtTime(
+    String FUELTYPE, double ROSeq, double HR, double CFB) {
   /*
   #############################################################################
   # Description:

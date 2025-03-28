@@ -28,7 +28,7 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 
 import 'dart:math';
 
-double SFCcalc(
+double surfaceFuelConsumption(
     String FUELTYPE, double FFMC, double? BUI, double? PC, double? GFL) {
   /**
   #############################################################################

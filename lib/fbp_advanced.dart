@@ -19,7 +19,7 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 import 'package:fire_behaviour_app/persist.dart';
 import 'package:flutter/material.dart';
 
-import 'cffdrs/fbp_calc.dart';
+import 'cffdrs/fire_behaviour_prediction.dart';
 import 'fancy_slider.dart';
 import 'fbp_results.dart';
 import 'fire.dart';
@@ -61,7 +61,7 @@ class AdvancedFireBehaviourPredictionFormState
   double? _pc = 0;
   double? _pdf = 0;
   double? _cbh = 0;
-  double _cfl = 0;
+  double? _cfl = 0;
   double _minutes = 60;
   double _gfl = defaultGFL;
 
@@ -250,7 +250,7 @@ class AdvancedFireBehaviourPredictionFormState
     String? errorMessage;
 
     try {
-      prediction = FBPcalc(input, output: "ALL");
+      prediction = fireBehaviourPrediction(input, output: "ALL");
       if (prediction.secondary != null) {
         fireSize = getFireSize(
             _fuelTypePreset!.code.name,

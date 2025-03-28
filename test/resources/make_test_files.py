@@ -92,13 +92,14 @@ def generate_input_data() -> dict:
             )
     return data
 
+
 def main():
     # assumes you've installed the cffdrs R package.
     cffdrs = importr("cffdrs")
 
-    data = generate_input_data()
-    with open("./FBCCalc_input.json", "w") as f:
-        json.dump(data, f, indent=4)
+    # data = generate_input_data()
+    with open("./test/resources/FBCCalc_input.json", "r") as f:
+        data = json.load(f)
     results = []
 
     for item in data:

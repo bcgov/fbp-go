@@ -27,10 +27,11 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:math';
-import 'isi_calc.dart';
-import 'ros_calc.dart';
+import 'initial_spread_index.dart';
+import 'rate_of_spread.dart';
+import 'fine_fuel_moisture_code.dart';
 
-double Slopecalc(
+Map<String, dynamic> slopeAdjustment(
     String fuelType,
     double FFMC,
     double? BUI,
@@ -44,8 +45,7 @@ double Slopecalc(
     double? PDF,
     double? CC,
     double? CBH,
-    double ISI,
-    {String output = "RAZ"}) {
+    double ISI) {
   /*
   # output options include: RAZ and WSV
   #############################################################################
@@ -87,17 +87,13 @@ double Slopecalc(
   #
   #############################################################################
   */
-  // #check for valid output types
-  if (!["RAZ", "WAZ", "WSV"].contains(output)) {
-    throw Exception("In 'slopecalc()', '$output' is an invalid 'output' type.");
-  }
   double NoBUI = -1;
   // #Eq. 39 (FCFDG 1992) - Calculate Spread Factor
   double SF = GS >= 70 ? 10 : exp(3.533 * pow((GS / 100), 1.2));
   // #ISI with 0 wind on level grounds
-  double ISZ = ISIcalc(FFMC, 0);
+  double ISZ = initialSpreadIndex(FFMC, 0);
   // #Surface spread rate with 0 wind on level ground
-  double RSZ = ROScalc(fuelType, ISZ, NoBUI, FMC, SFC, PC, PDF, CC, CBH);
+  double RSZ = rateOfSpread(fuelType, ISZ, NoBUI, FMC, SFC, PC, PDF, CC, CBH);
   // #Eq. 40 (FCFDG 1992) - Surface spread rate with 0 wind upslope
   double RSF = RSZ * SF;
 
@@ -205,10 +201,10 @@ double Slopecalc(
   // # and D1 types, and combine
   // #Surface spread rate with 0 wind on level ground
   else if (["M1", "M2"].contains(fuelType)) {
-    RSZ = ROScalc("C2", ISZ, NoBUI, FMC, SFC, PC, PDF, CC, CBH);
+    RSZ = rateOfSpread("C2", ISZ, NoBUI, FMC, SFC, PC, PDF, CC, CBH);
     // #Eq. 40 (FCFDG 1992) - Surface spread rate with 0 wind upslope for C2
     RSF_C2 = RSZ * SF;
-    RSZ = ROScalc("D1", ISZ, NoBUI, FMC, SFC, PC, PDF, CC, CBH);
+    RSZ = rateOfSpread("D1", ISZ, NoBUI, FMC, SFC, PC, PDF, CC, CBH);
     // #Eq. 40 (FCFDG 1992) - Surface spread rate with 0 wind upslope for D1
     RSF_D1 = RSZ * SF;
   }
@@ -246,11 +242,12 @@ double Slopecalc(
   double PDF100 = 100;
   // #Surface spread rate with 0 wind on level ground
   if (fuelType == "M3") {
-    RSZ = ROScalc("M3", ISI = ISZ, BUI = NoBUI, FMC, SFC, PC, PDF100, CC, CBH);
+    RSZ = rateOfSpread(
+        "M3", ISI = ISZ, BUI = NoBUI, FMC, SFC, PC, PDF100, CC, CBH);
     // #Eq. 40 (FCFDG 1992) - Surface spread rate with 0 wind upslope for M3
     RSF_M3 = RSZ * SF;
     // #Surface spread rate with 0 wind on level ground, using D1
-    RSZ = ROScalc("D1", ISZ, BUI = NoBUI, FMC, SFC, PC, PDF100, CC, CBH);
+    RSZ = rateOfSpread("D1", ISZ, BUI = NoBUI, FMC, SFC, PC, PDF100, CC, CBH);
     // #Eq. 40 (FCFDG 1992) - Surface spread rate with 0 wind upslope for M3
     RSF_D1 = RSZ * SF;
   }
@@ -288,11 +285,12 @@ double Slopecalc(
   }
   // #Surface spread rate with 0 wind on level ground, using M4
   if (fuelType == 'M4') {
-    RSZ = ROScalc("M4", ISI = ISZ, BUI = NoBUI, FMC, SFC, PC, PDF100, CC, CBH);
+    RSZ = rateOfSpread(
+        "M4", ISI = ISZ, BUI = NoBUI, FMC, SFC, PC, PDF100, CC, CBH);
     // #Eq. 40 (FCFDG 1992) - Surface spread rate with 0 wind upslope for M4
     RSF_M4 = RSZ * SF;
     // #Surface spread rate with 0 wind on level ground, using D1
-    RSZ = ROScalc("D1", ISZ, BUI = NoBUI, FMC, SFC, PC, PDF100, CC, CBH);
+    RSZ = rateOfSpread("D1", ISZ, BUI = NoBUI, FMC, SFC, PC, PDF100, CC, CBH);
     // #Eq. 40 (FCFDG 1992) - Surface spread rate with 0 wind upslope for D1
     RSF_D1 = RSZ * SF;
   }
@@ -340,7 +338,7 @@ double Slopecalc(
         : log(0.01) / (-b[FUELTYPE]);
   }
   // #Eq. 46 (FCFDG 1992)
-  double m = 147.2 * (101 - FFMC) / (59.5 + FFMC);
+  double m = FFMC_COEFFICIENT * (101 - FFMC) / (59.5 + FFMC);
   // #Eq. 45 (FCFDG 1992) - FFMC function from the ISI equation
   double fF = 91.9 * exp(-.1386 * m) * (1 + (pow(m, 5.31)) / 4.93e7);
   // #Eqs. 44a, 44d (Wotton 2009) - Slope equivalent wind speed
@@ -358,14 +356,15 @@ double Slopecalc(
   double WSY = WS * cos(WAZ) + WSE * cos(SAZ);
   // #Eq. 49 (FCFDG 1992) - the net effective wind speed
   double WSV = sqrt(WSX * WSX + WSY * WSY);
-  // #stop execution here and return WSV if requested
-  if (output == "WSV") {
-    return WSV;
-  }
   // #Eq. 50 (FCFDG 1992) - the net effective wind direction (radians)
   double RAZ = acos(WSY / WSV);
   // #Eq. 51 (FCFDG 1992) - convert possible negative RAZ into more understandable
   // # directions
   RAZ = WSX < 0 ? 2 * pi - RAZ : RAZ;
-  return RAZ;
+
+  final Map<String, dynamic> slopeValues = {};
+  slopeValues['WSV'] = WSV;
+  slopeValues['RAZ'] = RAZ;
+
+  return slopeValues;
 }
