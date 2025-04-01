@@ -28,11 +28,12 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 
 import 'dart:math';
 
-double BEcalc(String fuelType, double BUI) {
-  /**
+double distanceAtTime(String FUELTYPE, double ROSeq, double HR, double CFB) {
+  /*
   #############################################################################
   # Description:
-  #   Computes the Buildup Effect on Fire Spread Rate. 
+  #   Calculate the Head fire spread distance at time t. In the documentation
+  #   this variable is just "D".
   #
   #   All variables names are laid out in the same manner as Forestry Canada 
   #   Fire Danger Group (FCFDG) (1992). Development and Structure of the 
@@ -41,77 +42,21 @@ double BEcalc(String fuelType, double BUI) {
   #
   # Args:
   #   FUELTYPE: The Fire Behaviour Prediction FuelType
-  #   BUI:      The Buildup Index value
+  #   ROSeq:    The predicted equilibrium rate of spread (m/min)
+  #   HR (t):   The elapsed time (min)
+  #   CFB:      Crown Fraction Burned
+  #   
   # Returns:
-  #   BE: The Buildup Effect
+  #   DISTt:    Head fire spread distance at time t
   #
   #############################################################################
   */
-  // #Fuel Type String represenations
-  var d = [
-    "C1",
-    "C2",
-    "C3",
-    "C4",
-    "C5",
-    "C6",
-    "C7",
-    "D1",
-    "M1",
-    "M2",
-    "M3",
-    "M4",
-    "S1",
-    "S2",
-    "S3",
-    "O1A",
-    "O1B"
-  ];
-  // #The average BUI for the fuel type - as referenced by the "d" list above
-  var BUIo = <double>[
-    72,
-    64,
-    62,
-    66,
-    56,
-    62,
-    106,
-    32,
-    50,
-    50,
-    50,
-    50,
-    38,
-    63,
-    31,
-    01,
-    01
-  ];
-  // #Proportion of maximum possible spread rate that is reached at a standard BUI
-  var Q = <double>[
-    0.9,
-    0.7,
-    0.75,
-    0.8,
-    0.8,
-    0.8,
-    0.85,
-    0.9,
-    0.8,
-    0.8,
-    0.8,
-    0.8,
-    0.75,
-    0.75,
-    0.75,
-    1.0,
-    1.0
-  ];
-
-  final int FUELTYPE = d.indexOf(fuelType);
-
-  // #Eq. 54 (FCFDG 1992) The Buildup Effect
-  return (BUI > 0 && BUIo[FUELTYPE] > 0)
-      ? exp(50 * log(Q[FUELTYPE]) * (1 / BUI - 1 / BUIo[FUELTYPE]))
-      : 1;
+  // #Eq. 72 (FCFDG 1992)
+  // #Calculate the alpha constant for the DISTt calculation
+  final alpha =
+      (["C1", "O1A", "O1B", "S1", "S2", "S3", "D1"].contains(FUELTYPE))
+          ? 0.115
+          : 0.115 - 18.8 * pow(CFB, 2.5) * exp(-8 * CFB);
+  // #Eq. 71 (FCFDG 1992) Calculate Head fire spread distance
+  return ROSeq * (HR + exp(-alpha * HR) / alpha - 1 / alpha);
 }

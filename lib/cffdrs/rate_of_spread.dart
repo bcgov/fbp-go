@@ -28,11 +28,21 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 
 import 'dart:math';
 
-import 'c6_calc.dart';
-import 'be_calc.dart';
+import 'package:fire_behaviour_app/cffdrs/cfb_calc.dart';
 
-double ROScalc(String fuelType, double ISI, double BUI, double FMC, double SFC,
-    double? PC, double? PDF, double? CC, double? CBH) {
+import 'c6_calc.dart';
+import 'buildup_effect.dart';
+
+Map<String, dynamic> rateOfSpreadExtended(
+    String fuelType,
+    double ISI,
+    double BUI,
+    double FMC,
+    double SFC,
+    double? PC,
+    double? PDF,
+    double? CC,
+    double? CBH) {
   /**
   #############################################################################
   # Description:
@@ -146,6 +156,8 @@ double ROScalc(String fuelType, double ISI, double BUI, double FMC, double SFC,
 
   final int FUELTYPE = d.indexOf(fuelType);
 
+  final Map<String, dynamic> rosValues = {};
+
   // #Calculate RSI (set up data vectors first)
   // #Eq. 26 (FCFDG 1992) - Initial Rate of Spread for Conifer and Slash types
   double RSI = -1;
@@ -158,21 +170,23 @@ double ROScalc(String fuelType, double ISI, double BUI, double FMC, double SFC,
     if (PC == null) {
       throw Exception("PC is required for M1 fuel type");
     }
-    RSI = PC / 100 * ROScalc("C2", ISI, NoBUI, FMC, SFC, PC, PDF, CC, CBH) +
-        (100 - PC) /
-            100 *
-            ROScalc("D1", ISI, NoBUI, FMC, SFC, PC, PDF, CC, CBH);
+    RSI =
+        PC / 100 * rateOfSpread("C2", ISI, NoBUI, FMC, SFC, PC, PDF, CC, CBH) +
+            (100 - PC) /
+                100 *
+                rateOfSpread("D1", ISI, NoBUI, FMC, SFC, PC, PDF, CC, CBH);
   }
   // #Eq. 27 (FCFDG 1992) - Initial Rate of Spread for M2 Mixedwood type
   else if (fuelType == 'M2') {
     if (PC == null) {
       throw Exception("PC is required for M2 fuel type");
     }
-    RSI = PC / 100 * ROScalc("C2", ISI, NoBUI, FMC, SFC, PC, PDF, CC, CBH) +
-        0.2 *
-            (100 - PC) /
-            100 *
-            ROScalc("D1", ISI, NoBUI, FMC, SFC, PC, PDF, CC, CBH);
+    RSI =
+        PC / 100 * rateOfSpread("C2", ISI, NoBUI, FMC, SFC, PC, PDF, CC, CBH) +
+            0.2 *
+                (100 - PC) /
+                100 *
+                rateOfSpread("D1", ISI, NoBUI, FMC, SFC, PC, PDF, CC, CBH);
   }
   // #Initial Rate of Spread for M3 Mixedwood
   else if (fuelType == 'M3') {
@@ -184,7 +198,8 @@ double ROScalc(String fuelType, double ISI, double BUI, double FMC, double SFC,
         a[FUELTYPE] * (pow((1 - exp(-b[FUELTYPE] * ISI)), c0[FUELTYPE]));
     // #Eq. 29 (Wotton et. al 2009)
     RSI = PDF / 100 * RSI_m3 +
-        (1 - PDF / 100) * ROScalc("D1", ISI, NoBUI, FMC, SFC, PC, PDF, CC, CBH);
+        (1 - PDF / 100) *
+            rateOfSpread("D1", ISI, NoBUI, FMC, SFC, PC, PDF, CC, CBH);
   }
   // #Initial Rate of Spread for M4 Mixedwood
   else if (fuelType == 'M4') {
@@ -198,7 +213,7 @@ double ROScalc(String fuelType, double ISI, double BUI, double FMC, double SFC,
     RSI = PDF / 100 * RSI_m4 +
         0.2 *
             (1 - PDF / 100) *
-            ROScalc("D1", ISI, NoBUI, FMC, SFC, PC, PDF, CC, CBH);
+            rateOfSpread("D1", ISI, NoBUI, FMC, SFC, PC, PDF, CC, CBH);
   } else if (["O1A", "O1B"].contains(fuelType)) {
     if (CC == null) {
       throw Exception("CC is null");
@@ -209,16 +224,42 @@ double ROScalc(String fuelType, double ISI, double BUI, double FMC, double SFC,
     // #Eq. 36 (FCFDG 1992) - Calculate Initial Rate of Spread for Grass
     RSI = a[FUELTYPE] * (pow((1 - exp(-b[FUELTYPE] * ISI)), c0[FUELTYPE])) * CF;
   }
-  // #Calculate C6 separately
+
+  // Calculate Critical Surface Intensity
+  double CSI = criticalSurfaceIntensity(FMC, CBH!);
+  // Calculate Surface fire rate of spread (m/min)
+  double RSO = surfaceFireRateOfSpread(CSI, SFC);
   double ROS;
-  if (fuelType == 'C6') {
-    if (CBH == null) {
-      throw Exception("C6 requires CBH");
-    }
-    ROS = C6calc(fuelType, ISI, BUI, FMC, SFC, CBH, option: "ROS");
-  } else {
-    ROS = BEcalc(fuelType, BUI) * RSI;
-  }
+
+  // #Calculate C6 separately because ROS depends on CFB (opposite of other fuels)
+  RSI = fuelType == 'C6' ? intermediateSurfaceRateOfSpreadC6(ISI) : RSI;
+  final RSC = fuelType == "C6" ? crownRateOfSpreadC6(ISI, FMC) : null;
+
+  // HACK: need ROS first for non-C6 this is RSS for C6 and ROS otherwise
+  final RSS = fuelType == "C6"
+      ? surfaceRateOfSpreadC6(RSI, BUI)
+      : buildupEffect(fuelType, BUI) * RSI;
+
+  // Calculate Crown Fraction Burned (CFB), C6 has different calculations
+  final CFB = fuelType == "C6"
+      ? crownFractionBurnedC6(RSC!, RSS, RSO)
+      : crownFractionBurned(RSS, RSO);
+  ROS = fuelType == "C6" ? rateOfSpreadC6(RSC!, RSS, CFB) : RSS;
+
   // #add a constraint
-  return ROS <= 0 ? 0.000001 : ROS;
+  ROS = ROS <= 0 ? 0.000001 : ROS;
+
+  rosValues['ROS'] = ROS;
+  rosValues['CFB'] = CFB;
+  rosValues['CSI'] = CSI;
+  rosValues['RSO'] = RSO;
+
+  return rosValues;
+}
+
+double rateOfSpread(String fuelType, double ISI, double BUI, double FMC,
+    double SFC, double? PC, double? PDF, double? CC, double? CBH) {
+  final rosVars =
+      rateOfSpreadExtended(fuelType, ISI, BUI, FMC, SFC, PC, PDF, CC, CBH);
+  return rosVars['ROS'];
 }
