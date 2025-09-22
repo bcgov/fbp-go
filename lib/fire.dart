@@ -328,9 +328,8 @@ String degreesToCompassPoint(double azimuth) {
   return values[(azimuth / 22.5).floor()];
 }
 
-int getDayOfYear() {
-  final now = DateTime.now();
-  final diff = now.difference(DateTime(now.year, 1, 1, 0, 0));
+int getDayOfYear(DateTime currentDate) {
+  final diff = currentDate.difference(DateTime(currentDate.year, 1, 1, 0, 0));
   return diff.inDays;
 }
 
