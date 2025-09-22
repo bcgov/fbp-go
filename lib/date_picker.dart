@@ -1,5 +1,6 @@
 import 'package:fire_behaviour_app/global.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class DatePicker extends StatefulWidget {
   const DatePicker(
@@ -18,7 +19,7 @@ class _DatePickerState extends State<DatePicker> {
       context: context,
       initialDate: widget.initialValue,
       firstDate: DateTime(2021),
-      lastDate: DateTime.now(),
+      lastDate: DateTime(DateTime.now().year + 1, 12, 31),
     );
 
     setState(() {
@@ -57,7 +58,7 @@ class _DatePickerState extends State<DatePicker> {
               children: [
                 const Icon(Icons.calendar_today),
                 const SizedBox(width: 8),
-                Text('${date.day}/${date.month}/${date.year}'),
+                Text(DateFormat('yyyy/MM/dd').format(date)),
               ],
             ),
           ),

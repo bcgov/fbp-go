@@ -287,15 +287,18 @@ class AdvancedFireBehaviourPredictionFormState
         key: _formKey,
         child: Column(
           children: <Widget>[
-            Row(children: [
-              Expanded(
-                  child: DatePicker(
-                onChanged: (DateTime? value) {
-                  _onDateChanged(value);
-                },
-                initialValue: _currentDate,
-              ))
-            ]),
+            Padding(
+                padding: const EdgeInsets.only(
+                    bottom: 8.0), // Adjust the value as needed
+                child: Row(children: [
+                  Expanded(
+                      child: DatePicker(
+                    onChanged: (DateTime? value) {
+                      _onDateChanged(value);
+                    },
+                    initialValue: _currentDate,
+                  ))
+                ])),
             // Presets
             Row(children: [
               Expanded(
