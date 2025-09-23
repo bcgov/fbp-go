@@ -26,8 +26,7 @@ import 'fire.dart';
 import 'fire_widgets.dart';
 import 'basic_input.dart';
 import 'global.dart';
-
-enum IgnitionType { point, line }
+import 'ignition_type.dart';
 
 bool ignitionTypeToBool(IgnitionType type) {
   // Point ignition should set ACCEL true
@@ -145,6 +144,7 @@ class AdvancedFireBehaviourPredictionFormState
     setState(() {
       _ignitionType = type;
     });
+    persistIgnition('ignitionType', type);
   }
 
   final ccController = TextEditingController();
@@ -168,6 +168,7 @@ class AdvancedFireBehaviourPredictionFormState
         _gfl = defaultGFL;
         _gflController.text = _gfl.toString();
         _minutes = settings.t;
+        _ignitionType = settings.ignitionType;
       });
     });
 

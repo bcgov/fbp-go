@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'basic_input.dart';
 import 'global.dart';
+import 'ignition_type.dart';
 
 class BasicSettings {
   BasicInput basicInput;
@@ -14,11 +15,13 @@ class BasicSettings {
 
 class AdvancedSettings extends BasicSettings {
   double t;
+  IgnitionType ignitionType;
 
   AdvancedSettings(
       {required BasicInput basicInput,
       required FuelTypePreset fuelTypePreset,
-      required this.t})
+      required this.t,
+      required this.ignitionType})
       : super(basicInput: basicInput, fuelTypePreset: fuelTypePreset);
 }
 
@@ -31,6 +34,12 @@ void persistSetting(String key, double value) {
 void persistFuelTypePreset(FuelTypePreset value) {
   SharedPreferences.getInstance().then((prefs) {
     prefs.setInt('fuelTypePreset', value.id);
+  });
+}
+
+void persistIgnition(String key, IgnitionType value) {
+  SharedPreferences.getInstance().then((prefs) {
+    prefs.setString(key, value.name);
   });
 }
 
@@ -63,6 +72,14 @@ BasicSettings _loadBasic(SharedPreferences prefs) {
   return BasicSettings(basicInput: basicInput, fuelTypePreset: fuelTypePreset);
 }
 
+IgnitionType loadIgnitionType(SharedPreferences prefs) {
+  final value = prefs.getString('ignitionType');
+  return IgnitionType.values.firstWhere(
+    (e) => e.name == value,
+    orElse: () => IgnitionType.point,
+  );
+}
+
 Future<BasicSettings> loadBasic() async {
   final prefs = await SharedPreferences.getInstance();
   return _loadBasic(prefs);
@@ -72,9 +89,11 @@ AdvancedSettings _loadAdvanced(SharedPreferences prefs) {
   var basicSettings = _loadBasic(prefs);
 
   var t = prefs.getDouble('t') ?? 60;
+  var ignitionType = loadIgnitionType(prefs);
 
   return AdvancedSettings(
       t: t,
+      ignitionType: ignitionType,
       basicInput: basicSettings.basicInput,
       fuelTypePreset: basicSettings.fuelTypePreset);
 }
