@@ -404,7 +404,10 @@ class AdvancedFireBehaviourPredictionFormState
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: Row(
                             children: [
-                              Radio<IgnitionType>(value: type),
+                              Radio<IgnitionType>(
+                                  value: type,
+                                  fillColor:
+                                      WidgetStateProperty.all(Colors.black)),
                               Text(label),
                             ],
                           ),
