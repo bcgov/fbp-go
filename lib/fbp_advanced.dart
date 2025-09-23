@@ -397,6 +397,7 @@ class AdvancedFireBehaviourPredictionFormState
                       final label =
                           type == IgnitionType.point ? 'Point' : 'Line';
                       return InkWell(
+                        // InkWell allows the text to be clickable
                         onTap: () {
                           _onIgnitionTypeChanged(type);
                         },
