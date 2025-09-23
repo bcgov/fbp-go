@@ -27,6 +27,12 @@ import 'fire_widgets.dart';
 import 'basic_input.dart';
 import 'global.dart';
 
+enum IgnitionType { point, line }
+
+bool ignitionTypeToBool(IgnitionType type) {
+  return type == IgnitionType.point;
+}
+
 class AdvancedFireBehaviourPredictionForm extends StatefulWidget {
   const AdvancedFireBehaviourPredictionForm({Key? key}) : super(key: key);
 
@@ -64,6 +70,7 @@ class AdvancedFireBehaviourPredictionFormState
   double? _cfl = 0;
   double _minutes = 60;
   double _gfl = defaultGFL;
+  IgnitionType _ignitionType = IgnitionType.point;
 
   // bool _expanded = false;
 
@@ -130,6 +137,12 @@ class AdvancedFireBehaviourPredictionFormState
     persistSetting('t', t);
     setState(() {
       _minutes = t;
+    });
+  }
+
+  void _onIgnitionTypeChanged(IgnitionType type) {
+    setState(() {
+      _ignitionType = type;
     });
   }
 
@@ -237,7 +250,7 @@ class AdvancedFireBehaviourPredictionFormState
         GFL: _gfl,
         CC: _basicInput!.cc,
         THETA: 0, // we don't use THETA - so just default to 0
-        ACCEL: false,
+        ACCEL: ignitionTypeToBool(_ignitionType),
         ASPECT: _basicInput!.aspect,
         BUIEFF: true,
         CBH: _cbh,
@@ -364,6 +377,44 @@ class AdvancedFireBehaviourPredictionFormState
                     },
                   )),
             ]),
+            // Ignition type
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  "Ignition Type:",
+                  style: TextStyle(fontSize: fontSize),
+                ),
+                const SizedBox(width: 16),
+                RadioGroup<IgnitionType>(
+                  groupValue: _ignitionType,
+                  onChanged: (IgnitionType? value) {
+                    if (value != null) _onIgnitionTypeChanged(value);
+                  },
+                  child: Row(
+                    children: IgnitionType.values.map((type) {
+                      final label =
+                          type == IgnitionType.point ? 'Point' : 'Line';
+                      return InkWell(
+                        onTap: () {
+                          _onIgnitionTypeChanged(type);
+                        },
+                        borderRadius: BorderRadius.circular(8),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Row(
+                            children: [
+                              Radio<IgnitionType>(value: type),
+                              Text(label),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
+            ),
             Row(
               children: [
                 Expanded(
