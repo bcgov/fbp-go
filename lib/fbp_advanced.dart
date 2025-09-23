@@ -30,6 +30,7 @@ import 'global.dart';
 enum IgnitionType { point, line }
 
 bool ignitionTypeToBool(IgnitionType type) {
+  // Point ignition should set ACCEL true
   return type == IgnitionType.point;
 }
 
