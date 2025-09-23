@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License along with
 FBP Go. If not, see <https://www.gnu.org/licenses/>.
 */
 // Define a custom Form widget.
+import 'package:fire_behaviour_app/date_picker.dart';
 import 'package:fire_behaviour_app/persist.dart';
 import 'package:flutter/material.dart';
 
@@ -62,6 +63,7 @@ class AdvancedFireBehaviourPredictionFormState
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
   // FuelType _fuelType = FuelType.C2;
+  DateTime _currentDate = DateTime.now();
   FuelTypePreset? _fuelTypePreset = getC2BorealSpruce();
   BasicInput? _basicInput;
   double? _pc = 0;
@@ -98,6 +100,14 @@ class AdvancedFireBehaviourPredictionFormState
     if (preset != null) {
       setPreset(preset);
       persistFuelTypePreset(preset);
+    }
+  }
+
+  void _onDateChanged(DateTime? newDate) {
+    if (newDate != null) {
+      setState(() {
+        _currentDate = newDate;
+      });
     }
   }
 
@@ -233,7 +243,7 @@ class AdvancedFireBehaviourPredictionFormState
       return const Text('Loading...');
     }
     double? fireSize;
-    final dayOfYear = getDayOfYear();
+    final dayOfYear = getDayOfYear(_currentDate);
     final input = FireBehaviourPredictionInput(
         FUELTYPE: _fuelTypePreset!.code.name,
         LAT: _basicInput!.coordinate.latitude,
@@ -292,6 +302,18 @@ class AdvancedFireBehaviourPredictionFormState
         key: _formKey,
         child: Column(
           children: <Widget>[
+            Padding(
+                padding: const EdgeInsets.only(
+                    bottom: 8.0), // Adjust the value as needed
+                child: Row(children: [
+                  Expanded(
+                      child: DatePicker(
+                    onChanged: (DateTime? value) {
+                      _onDateChanged(value);
+                    },
+                    initialValue: _currentDate,
+                  ))
+                ])),
             // Presets
             Row(children: [
               Expanded(

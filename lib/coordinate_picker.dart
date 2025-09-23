@@ -22,7 +22,6 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import 'fancy_slider.dart';
 import 'fire.dart';
 import 'global.dart';
 
