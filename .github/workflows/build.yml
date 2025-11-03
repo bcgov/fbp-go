@@ -21,7 +21,7 @@ jobs:
       - name: Get latest stable version of Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.x'
+          flutter-version-file: pubspec.yaml
           channel: stable
           cache: true
           cache-key: flutter-3.x # optional, change this to force refresh cache
@@ -62,7 +62,7 @@ jobs:
       - name: Get latest stable version of Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.x'
+          flutter-version-file: pubspec.yaml
           channel: stable
           cache: true
           cache-key: flutter-3.x # optional, change this to force refresh cache
