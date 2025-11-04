@@ -285,7 +285,8 @@ class PrimaryFireBehaviourGroup extends Group {
             ]
           : []),
       _buildRow(
-        ((prediction.ROS).toStringAsFixed(0)),
+        //  Using HROSt for primary rate of spread as it reflects head ROS at time differences when ACCEL is true or false
+        ((prediction.secondary!.HROSt).toStringAsFixed(0)),
         ' (m/min)',
         'Rate of spread',
         textStyle.color,
