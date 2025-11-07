@@ -12,6 +12,8 @@ jobs:
     name: Build android
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
       # Set up Flutter.      
       - name: Install OpenJDK
         uses: actions/setup-java@v3
@@ -21,14 +23,12 @@ jobs:
       - name: Get latest stable version of Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.x'
+          flutter-version-file: pubspec.yaml
           channel: stable
           cache: true
           cache-key: flutter-3.x # optional, change this to force refresh cache
       - run: flutter --version
       - run: flutter doctor -v
-      - name: Checkout code
-        uses: actions/checkout@v3
       - run: flutter pub get -v
       # tests failing here but not locally?
       # - run: flutter test
@@ -59,18 +59,19 @@ jobs:
     name: Build web + macos-latest
     runs-on: macos-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Get latest stable version of Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.x'
+          flutter-version-file: pubspec.yaml
           channel: stable
           cache: true
           cache-key: flutter-3.x # optional, change this to force refresh cache
       - run: flutter --version
       - run: flutter config --enable-macos-desktop
       - run: flutter doctor -v
-      - name: Checkout code
-        uses: actions/checkout@v3
       - run: flutter pub get -v
       # tests failing here but not locally?
       - run: flutter test

@@ -59,7 +59,7 @@ enum FuelType {
   // ignore: constant_identifier_names
   S2,
   // ignore: constant_identifier_names
-  S3
+  S3,
 }
 
 class FuelTypePreset {
@@ -72,13 +72,17 @@ class FuelTypePreset {
   final double? cbh;
   final double? gfl;
   final double averageBUI;
-  FuelTypePreset(this.id, this.code, this.description,
-      {this.cfl,
-      this.pc,
-      this.pdf,
-      this.cbh,
-      this.gfl,
-      required this.averageBUI});
+  FuelTypePreset(
+    this.id,
+    this.code,
+    this.description, {
+    this.cfl,
+    this.pc,
+    this.pdf,
+    this.cbh,
+    this.gfl,
+    required this.averageBUI,
+  });
 
   @override
   String toString() {
@@ -86,24 +90,37 @@ class FuelTypePreset {
   }
 }
 
-FuelTypePreset createPreset(int id, FuelType fuelType, String name,
-    {double? pc,
-    required double averageBUI,
-    double? cbh,
-    double? pdf,
-    double? gfl}) {
-  return FuelTypePreset(id, fuelType, name,
-      cfl: crownFuelLoad(fuelType.name),
-      pc: pc,
-      cbh: cbh,
-      pdf: pdf,
-      gfl: gfl,
-      averageBUI: averageBUI);
+FuelTypePreset createPreset(
+  int id,
+  FuelType fuelType,
+  String name, {
+  double? pc,
+  required double averageBUI,
+  double? cbh,
+  double? pdf,
+  double? gfl,
+}) {
+  return FuelTypePreset(
+    id,
+    fuelType,
+    name,
+    cfl: crownFuelLoad(fuelType.name),
+    pc: pc,
+    cbh: cbh,
+    pdf: pdf,
+    gfl: gfl,
+    averageBUI: averageBUI,
+  );
 }
 
 FuelTypePreset getC2BorealSpruce() {
-  return createPreset(1, FuelType.C2, 'C-2 boreal spruce',
-      pc: 100, averageBUI: 70);
+  return createPreset(
+    1,
+    FuelType.C2,
+    'C-2 boreal spruce',
+    pc: 100,
+    averageBUI: 70,
+  );
 }
 
 List<FuelTypePreset> getFuelTypePresets() {
@@ -112,70 +129,190 @@ List<FuelTypePreset> getFuelTypePresets() {
   // crownFuelLoad also handles setting the CFL correctly for the fuel type
   int id = 0;
   return [
-    createPreset(id++, FuelType.C1, 'C-1 spruce-lichen woodland',
-        pc: 100, averageBUI: 50),
+    createPreset(
+      id++,
+      FuelType.C1,
+      'C-1 spruce-lichen woodland',
+      pc: 100,
+      averageBUI: 50,
+    ),
     getC2BorealSpruce(),
-    createPreset(++id, FuelType.C3, 'C-3 mature jack or lodgepole pine',
-        pc: 100, averageBUI: 70),
-    createPreset(++id, FuelType.C4, 'C-4 immature jack or lodgepole pine',
-        pc: 100, averageBUI: 70),
-    createPreset(++id, FuelType.C5, 'C-5 red and white pine',
-        pc: 100, averageBUI: 50),
-    createPreset(++id, FuelType.C6, 'C-6 conifer plantation, 7-m CBH',
-        pc: 100, cbh: 7, averageBUI: 70),
-    createPreset(++id, FuelType.C6, 'C-6 conifer plantation, 2-m CBH',
-        pc: 100, cbh: 2, averageBUI: 70),
-    createPreset(++id, FuelType.C7, 'C-7 ponderosa pine/Douglas-far',
-        pc: 100, averageBUI: 100),
+    createPreset(
+      ++id,
+      FuelType.C3,
+      'C-3 mature jack or lodgepole pine',
+      pc: 100,
+      averageBUI: 70,
+    ),
+    createPreset(
+      ++id,
+      FuelType.C4,
+      'C-4 immature jack or lodgepole pine',
+      pc: 100,
+      averageBUI: 70,
+    ),
+    createPreset(
+      ++id,
+      FuelType.C5,
+      'C-5 red and white pine',
+      pc: 100,
+      averageBUI: 50,
+    ),
+    createPreset(
+      ++id,
+      FuelType.C6,
+      'C-6 conifer plantation, 7-m CBH',
+      pc: 100,
+      cbh: 7,
+      averageBUI: 70,
+    ),
+    createPreset(
+      ++id,
+      FuelType.C6,
+      'C-6 conifer plantation, 2-m CBH',
+      pc: 100,
+      cbh: 2,
+      averageBUI: 70,
+    ),
+    createPreset(
+      ++id,
+      FuelType.C7,
+      'C-7 ponderosa pine/Douglas-far',
+      pc: 100,
+      averageBUI: 100,
+    ),
     createPreset(++id, FuelType.D1, 'D-1 leafless aspen', averageBUI: 35),
     // D2 is not implemented in FBPCalc.r
     // createPreset(FuelType.D2, 'D-2 green aspen',
-    createPreset(++id, FuelType.M1, 'M-1 boreal mixed-leafless, 75% conifer',
-        pc: 75, averageBUI: 50),
-    createPreset(++id, FuelType.M1, 'M-1 boreal mixed-leafless, 50% conifer',
-        pc: 50, averageBUI: 50),
-    createPreset(++id, FuelType.M1, 'M-1 boreal mixed-leafless, 25% conifer',
-        pc: 25, averageBUI: 50),
-    createPreset(++id, FuelType.M2, 'M-2 boreal mixed-green, 75% conifer',
-        pc: 75, averageBUI: 50),
-    createPreset(++id, FuelType.M2, 'M-2 boreal mixed-green, 50% conifer',
-        pc: 50, averageBUI: 50),
-    createPreset(++id, FuelType.M2, 'M-2 boreal mixed-green, 25% conifer',
-        pc: 25, averageBUI: 50),
     createPreset(
-        ++id, FuelType.M3, 'M-3 dead balsam mixed-leafless, 30% dead fir',
-        pdf: 30, averageBUI: 50),
+      ++id,
+      FuelType.M1,
+      'M-1 boreal mixed-leafless, 75% conifer',
+      pc: 75,
+      averageBUI: 50,
+    ),
     createPreset(
-        ++id, FuelType.M3, 'M-3 dead balsam mixed-leafless, 60% dead fir',
-        pdf: 60, averageBUI: 50),
+      ++id,
+      FuelType.M1,
+      'M-1 boreal mixed-leafless, 50% conifer',
+      pc: 50,
+      averageBUI: 50,
+    ),
     createPreset(
-        ++id, FuelType.M3, 'M-3 dead balsam mixed-leafless, 100% dead fir',
-        pdf: 100, averageBUI: 50),
-    createPreset(++id, FuelType.M4, 'M-4 dead balsam mixed-green, 30% dead fir',
-        pdf: 30, averageBUI: 50),
-    createPreset(++id, FuelType.M4, 'M-4 dead balsam mixed-green, 60% dead fir',
-        pdf: 60, averageBUI: 50),
+      ++id,
+      FuelType.M1,
+      'M-1 boreal mixed-leafless, 25% conifer',
+      pc: 25,
+      averageBUI: 50,
+    ),
     createPreset(
-        ++id, FuelType.M4, 'M-4 dead balsam mixed-green, 100% dead fir',
-        pdf: 100, averageBUI: 50),
+      ++id,
+      FuelType.M2,
+      'M-2 boreal mixed-green, 75% conifer',
+      pc: 75,
+      averageBUI: 50,
+    ),
+    createPreset(
+      ++id,
+      FuelType.M2,
+      'M-2 boreal mixed-green, 50% conifer',
+      pc: 50,
+      averageBUI: 50,
+    ),
+    createPreset(
+      ++id,
+      FuelType.M2,
+      'M-2 boreal mixed-green, 25% conifer',
+      pc: 25,
+      averageBUI: 50,
+    ),
+    createPreset(
+      ++id,
+      FuelType.M3,
+      'M-3 dead balsam mixed-leafless, 30% dead fir',
+      pdf: 30,
+      averageBUI: 50,
+    ),
+    createPreset(
+      ++id,
+      FuelType.M3,
+      'M-3 dead balsam mixed-leafless, 60% dead fir',
+      pdf: 60,
+      averageBUI: 50,
+    ),
+    createPreset(
+      ++id,
+      FuelType.M3,
+      'M-3 dead balsam mixed-leafless, 100% dead fir',
+      pdf: 100,
+      averageBUI: 50,
+    ),
+    createPreset(
+      ++id,
+      FuelType.M4,
+      'M-4 dead balsam mixed-green, 30% dead fir',
+      pdf: 30,
+      averageBUI: 50,
+    ),
+    createPreset(
+      ++id,
+      FuelType.M4,
+      'M-4 dead balsam mixed-green, 60% dead fir',
+      pdf: 60,
+      averageBUI: 50,
+    ),
+    createPreset(
+      ++id,
+      FuelType.M4,
+      'M-4 dead balsam mixed-green, 100% dead fir',
+      pdf: 100,
+      averageBUI: 50,
+    ),
     // Taking some liberties here - O1A and O1B don't  have an average
     // BUI a.f.a.i.k.
-    createPreset(++id, FuelType.O1A, 'O-1a matted grass',
-        gfl: 0.35, averageBUI: 50),
-    createPreset(++id, FuelType.O1B, 'O-1b standing grass',
-        gfl: 0.35, averageBUI: 50),
-    createPreset(++id, FuelType.S1, 'S-1 jack or lodgepole pine slash',
-        averageBUI: 35),
-    createPreset(++id, FuelType.S2, 'S-2 white spruce/balsam slash',
-        averageBUI: 70),
     createPreset(
-        ++id, FuelType.S3, 'S-3 coastal cedar/hemlock/Douglas-fir slash',
-        averageBUI: 35),
+      ++id,
+      FuelType.O1A,
+      'O-1a matted grass',
+      gfl: 0.35,
+      averageBUI: 50,
+    ),
+    createPreset(
+      ++id,
+      FuelType.O1B,
+      'O-1b standing grass',
+      gfl: 0.35,
+      averageBUI: 50,
+    ),
+    createPreset(
+      ++id,
+      FuelType.S1,
+      'S-1 jack or lodgepole pine slash',
+      averageBUI: 35,
+    ),
+    createPreset(
+      ++id,
+      FuelType.S2,
+      'S-2 white spruce/balsam slash',
+      averageBUI: 70,
+    ),
+    createPreset(
+      ++id,
+      FuelType.S3,
+      'S-3 coastal cedar/hemlock/Douglas-fir slash',
+      averageBUI: 35,
+    ),
   ];
 }
 
-double getFireSize(String fuelType, double ros, double bros,
-    double elapsedMinutes, double cfb, double lbRatio) {
+double getFireSize(
+  String fuelType,
+  double ros,
+  double bros,
+  double elapsedMinutes,
+  double cfb,
+  double lbRatio,
+) {
   /*
     Fire size based on Eq. 8 (Alexander, M.E. 1985. Estimating the
     length-to-breadth ratio of elliptical
@@ -184,10 +321,18 @@ double getFireSize(String fuelType, double ros, double bros,
     Code adapted from from http://github.com/bcgov/wps
     */
   // Using acceleration:
-  final fireSpreadDistance =
-      distanceAtTime(fuelType, ros + bros, elapsedMinutes, cfb);
-  final lengthToBreadthAtTime =
-      lengthToBreadAtTime(fuelType, lbRatio, elapsedMinutes, cfb);
+  final fireSpreadDistance = distanceAtTime(
+    fuelType,
+    ros + bros,
+    elapsedMinutes,
+    cfb,
+  );
+  final lengthToBreadthAtTime = lengthToBreadAtTime(
+    fuelType,
+    lbRatio,
+    elapsedMinutes,
+    cfb,
+  );
   // Not using acceleration:
   // fros = cffdrs.flank_rate_of_spread(ros, bros, lb_ratio)
   // # Flank Fire Spread Distance a.k.a. DF in R/FBPcalc.r
@@ -202,6 +347,10 @@ double getFireSize(String fuelType, double ros, double bros,
       (4.0 * lengthToBreadthAtTime) *
       pow(fireSpreadDistance, 2.0) /
       10000.0;
+}
+
+double calculateFireArea(double lengthToBreadthAtTime, double distanceAtTime) {
+  return (pi / (4 * lengthToBreadthAtTime) * pow(distanceAtTime, 2)) / 10000;
 }
 
 bool isSlashFuelType(FuelType fuelType) {
@@ -294,7 +443,8 @@ String getFireType(String fuelType, double crownFractionBurned) {
     return "Continuous crown fire";
   }
   throw Exception(
-      "Cannot calculate fire type. Invalid Crown Fraction Burned percentage received.");
+    "Cannot calculate fire type. Invalid Crown Fraction Burned percentage received.",
+  );
 }
 
 double razToNetEffectiveWindDirection(double raz) {
@@ -323,7 +473,7 @@ String degreesToCompassPoint(double azimuth) {
     'WNW',
     'NW',
     'NNW',
-    'N'
+    'N',
   ];
   return values[(azimuth / 22.5).floor()];
 }
