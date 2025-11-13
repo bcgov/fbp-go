@@ -126,6 +126,12 @@ class AdvancedFireBehaviourPredictionFormState
     });
   }
 
+  void _onCBHChanged(double cbh) {
+    setState(() {
+      _cbh = cbh;
+    });
+  }
+
   void _onPDFChanged(double pdf) {
     setState(() {
       _pdf = pdf;
@@ -443,6 +449,32 @@ class AdvancedFireBehaviourPredictionFormState
                   ],
                 ),
               // Elapsed time
+              if (canAdjustCBH(_fuelTypePreset!.code))
+                Row(
+                  children: [
+                    makeInputLabel(
+                      'CBH',
+                      _cbh?.toStringAsFixed(1) ?? '0.0',
+                      ' m',
+                      textStyle,
+                      textStyleBold,
+                    ),
+                    Expanded(
+                      flex: sliderFlex,
+                      child: FancySliderWidget(
+                        value: _cbh ?? 0,
+                        min: 2,
+                        max: 15,
+                        divisions: 13,
+                        activeColor: intensityClassColour,
+                        label: (_cbh ?? 0).toStringAsFixed(0),
+                        onChanged: (value) {
+                          _onCBHChanged(value.roundToDouble());
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               Row(
                 children: [
                   makeInputLabel(

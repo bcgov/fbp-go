@@ -161,15 +161,7 @@ List<FuelTypePreset> getFuelTypePresets() {
     createPreset(
       ++id,
       FuelType.C6,
-      'C-6 conifer plantation, 7-m CBH',
-      pc: 100,
-      cbh: 7,
-      averageBUI: 70,
-    ),
-    createPreset(
-      ++id,
-      FuelType.C6,
-      'C-6 conifer plantation, 2-m CBH',
+      'C-6 conifer plantation',
       pc: 100,
       cbh: 2,
       averageBUI: 70,
@@ -177,7 +169,7 @@ List<FuelTypePreset> getFuelTypePresets() {
     createPreset(
       ++id,
       FuelType.C7,
-      'C-7 ponderosa pine/Douglas-far',
+      'C-7 ponderosa pine/Douglas-fir',
       pc: 100,
       averageBUI: 100,
     ),
@@ -187,85 +179,29 @@ List<FuelTypePreset> getFuelTypePresets() {
     createPreset(
       ++id,
       FuelType.M1,
-      'M-1 boreal mixed-leafless, 75% conifer',
-      pc: 75,
-      averageBUI: 50,
-    ),
-    createPreset(
-      ++id,
-      FuelType.M1,
-      'M-1 boreal mixed-leafless, 50% conifer',
-      pc: 50,
-      averageBUI: 50,
-    ),
-    createPreset(
-      ++id,
-      FuelType.M1,
-      'M-1 boreal mixed-leafless, 25% conifer',
-      pc: 25,
-      averageBUI: 50,
-    ),
-    createPreset(
-      ++id,
-      FuelType.M2,
-      'M-2 boreal mixed-green, 75% conifer',
-      pc: 75,
-      averageBUI: 50,
-    ),
-    createPreset(
-      ++id,
-      FuelType.M2,
-      'M-2 boreal mixed-green, 50% conifer',
+      'M-1 boreal mixedwood - leafless',
       pc: 50,
       averageBUI: 50,
     ),
     createPreset(
       ++id,
       FuelType.M2,
-      'M-2 boreal mixed-green, 25% conifer',
-      pc: 25,
+      'M-2 boreal mixedwood - green',
+      pc: 50,
       averageBUI: 50,
     ),
     createPreset(
       ++id,
       FuelType.M3,
-      'M-3 dead balsam mixed-leafless, 30% dead fir',
-      pdf: 30,
-      averageBUI: 50,
-    ),
-    createPreset(
-      ++id,
-      FuelType.M3,
-      'M-3 dead balsam mixed-leafless, 60% dead fir',
-      pdf: 60,
-      averageBUI: 50,
-    ),
-    createPreset(
-      ++id,
-      FuelType.M3,
-      'M-3 dead balsam mixed-leafless, 100% dead fir',
-      pdf: 100,
-      averageBUI: 50,
-    ),
-    createPreset(
-      ++id,
-      FuelType.M4,
-      'M-4 dead balsam mixed-green, 30% dead fir',
-      pdf: 30,
-      averageBUI: 50,
-    ),
-    createPreset(
-      ++id,
-      FuelType.M4,
-      'M-4 dead balsam mixed-green, 60% dead fir',
+      'M-3 dead balsam mixedwood - leafless',
       pdf: 60,
       averageBUI: 50,
     ),
     createPreset(
       ++id,
       FuelType.M4,
-      'M-4 dead balsam mixed-green, 100% dead fir',
-      pdf: 100,
+      'M-4 dead balsam mixedwood - green',
+      pdf: 60,
       averageBUI: 50,
     ),
     // Taking some liberties here - O1A and O1B don't  have an average
@@ -369,6 +305,10 @@ bool canAdjustDeadFir(FuelType fuelType) {
 
 bool canAdjustConifer(FuelType fuelType) {
   return fuelType == FuelType.M1 || fuelType == FuelType.M2;
+}
+
+bool canAdjustCBH(FuelType fuelType) {
+  return fuelType == FuelType.C6;
 }
 
 int getHeadFireIntensityClass(double headFireIntensity) {
