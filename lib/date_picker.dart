@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class DatePicker extends StatefulWidget {
-  const DatePicker(
-      {Key? key, required this.onChanged, required this.initialValue})
-      : super(key: key);
+  const DatePicker({
+    super.key,
+    required this.onChanged,
+    required this.initialValue,
+  });
   final Function onChanged;
   final DateTime initialValue;
 
@@ -36,13 +38,17 @@ class _DatePickerState extends State<DatePicker> {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         // "Date:" label
-        const Row(children: [
-          Text(
-            "Date",
-            style: TextStyle(
-                fontSize: fontSize, color: Color.fromARGB(255, 53, 150, 243)),
-          ),
-        ]),
+        const Row(
+          children: [
+            Text(
+              "Date",
+              style: TextStyle(
+                fontSize: fontSize,
+                color: Color.fromARGB(255, 53, 150, 243),
+              ),
+            ),
+          ],
+        ),
         // Clickable date picker BELOW the label
         InkWell(
           onTap: _selectDate,

@@ -17,12 +17,12 @@ class AdvancedSettings extends BasicSettings {
   double t;
   IgnitionType ignitionType;
 
-  AdvancedSettings(
-      {required BasicInput basicInput,
-      required FuelTypePreset fuelTypePreset,
-      required this.t,
-      required this.ignitionType})
-      : super(basicInput: basicInput, fuelTypePreset: fuelTypePreset);
+  AdvancedSettings({
+    required super.basicInput,
+    required super.fuelTypePreset,
+    required this.t,
+    required this.ignitionType,
+  });
 }
 
 void persistSetting(String key, double value) {
@@ -48,18 +48,19 @@ BasicSettings _loadBasic(SharedPreferences prefs) {
 
   var fuelTypePresets = getFuelTypePresets();
   var fuelTypePreset = fuelTypePresets.firstWhere(
-      (element) => element.id == (prefs.getInt('fuelTypePreset') ?? c2.id));
+    (element) => element.id == (prefs.getInt('fuelTypePreset') ?? c2.id),
+  );
 
   BasicInput basicInput = BasicInput(
-      ws: prefs.getDouble('ws') ?? 5,
-      bui: prefs.getDouble('bui') ?? fuelTypePreset.averageBUI,
-      // We pin coordinate values to avoid loading bad data.
-      coordinate: Coordinate(
-          latitude: pinLatitude(prefs.getDouble('latitude') ?? defaultLatitude),
-          longitude:
-              pinLongitude(prefs.getDouble('longitude') ?? defaultLongitude),
-          altitude:
-              pinAltitude(prefs.getDouble('altitude') ?? defaultAltitude)));
+    ws: prefs.getDouble('ws') ?? 5,
+    bui: prefs.getDouble('bui') ?? fuelTypePreset.averageBUI,
+    // We pin coordinate values to avoid loading bad data.
+    coordinate: Coordinate(
+      latitude: pinLatitude(prefs.getDouble('latitude') ?? defaultLatitude),
+      longitude: pinLongitude(prefs.getDouble('longitude') ?? defaultLongitude),
+      altitude: pinAltitude(prefs.getDouble('altitude') ?? defaultAltitude),
+    ),
+  );
 
   basicInput.waz = prefs.getDouble('waz') ?? 0;
   // we need to pin the ground slope, because the input range has been changed,
@@ -92,10 +93,11 @@ AdvancedSettings _loadAdvanced(SharedPreferences prefs) {
   var ignitionType = loadIgnitionType(prefs);
 
   return AdvancedSettings(
-      t: t,
-      ignitionType: ignitionType,
-      basicInput: basicSettings.basicInput,
-      fuelTypePreset: basicSettings.fuelTypePreset);
+    t: t,
+    ignitionType: ignitionType,
+    basicInput: basicSettings.basicInput,
+    fuelTypePreset: basicSettings.fuelTypePreset,
+  );
 }
 
 Future<AdvancedSettings> loadAdvanced() async {

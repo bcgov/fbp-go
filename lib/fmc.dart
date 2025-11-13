@@ -51,7 +51,8 @@ class FoliarMoistureContentState extends State<FoliarMoistureContent> {
   }
 
   void _onDateOfMinimumFoliarMoistureContentChanged(
-      double dateOfMinimumFoliarMoistureContent) {
+    double dateOfMinimumFoliarMoistureContent,
+  ) {
     setState(() {
       this.dateOfMinimumFoliarMoistureContent =
           dateOfMinimumFoliarMoistureContent.floor();
@@ -60,77 +61,106 @@ class FoliarMoistureContentState extends State<FoliarMoistureContent> {
 
   @override
   Widget build(BuildContext context) {
-    double fmc = foliarMoistureContent(latitude, longitude.abs(), elevation,
-        dayOfYear, dateOfMinimumFoliarMoistureContent.toDouble());
+    double fmc = foliarMoistureContent(
+      latitude,
+      longitude.abs(),
+      elevation,
+      dayOfYear,
+      dateOfMinimumFoliarMoistureContent.toDouble(),
+    );
     return Column(
       children: [
-        Row(children: [
-          Expanded(child: Text('Latitude ${latitude.toStringAsFixed(2)}')),
-          Expanded(
+        Row(
+          children: [
+            Expanded(child: Text('Latitude ${latitude.toStringAsFixed(2)}')),
+            Expanded(
               child: Slider(
-                  value: latitude,
-                  onChanged: _onLatitudeChanged,
-                  label: latitude.toStringAsFixed(2),
-                  divisions: 89,
-                  min: 1,
-                  max: 90)),
-        ]),
-        Row(children: [
-          Expanded(child: Text('Longitude ${longitude.toStringAsFixed(2)}')),
-          Expanded(
+                value: latitude,
+                onChanged: _onLatitudeChanged,
+                label: latitude.toStringAsFixed(2),
+                divisions: 89,
+                min: 1,
+                max: 90,
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(child: Text('Longitude ${longitude.toStringAsFixed(2)}')),
+            Expanded(
               child: Slider(
-                  value: longitude,
-                  onChanged: _onLongitudeChanged,
-                  label: longitude.toStringAsFixed(2),
-                  divisions: 179,
-                  min: -180,
-                  max: -1)),
-        ]),
-        Row(children: [
-          Expanded(child: Text('Elevation ${elevation.toStringAsFixed(2)}')),
-          Expanded(
+                value: longitude,
+                onChanged: _onLongitudeChanged,
+                label: longitude.toStringAsFixed(2),
+                divisions: 179,
+                min: -180,
+                max: -1,
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(child: Text('Elevation ${elevation.toStringAsFixed(2)}')),
+            Expanded(
               child: Slider(
-                  value: elevation,
-                  onChanged: _onElevationChanged,
-                  label: elevation.toStringAsFixed(2),
-                  min: 0,
-                  divisions: 5000,
-                  max: 5000)),
-        ]),
-        Row(children: [
-          Expanded(child: Text('Day of year $dayOfYear')),
-          Expanded(
+                value: elevation,
+                onChanged: _onElevationChanged,
+                label: elevation.toStringAsFixed(2),
+                min: 0,
+                divisions: 5000,
+                max: 5000,
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(child: Text('Day of year $dayOfYear')),
+            Expanded(
               child: Slider(
-                  value: dayOfYear.toDouble(),
-                  onChanged: _onDayOfYearChanged,
-                  label: dayOfYear.toString(),
-                  divisions: 365,
-                  min: 0,
-                  max: 365)),
-        ]),
-        Row(children: [
-          Expanded(
+                value: dayOfYear.toDouble(),
+                onChanged: _onDayOfYearChanged,
+                label: dayOfYear.toString(),
+                divisions: 365,
+                min: 0,
+                max: 365,
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(
               child: Text(
-                  'Date of minimum foliar moisture content $dateOfMinimumFoliarMoistureContent')),
-          Expanded(
+                'Date of minimum foliar moisture content $dateOfMinimumFoliarMoistureContent',
+              ),
+            ),
+            Expanded(
               child: Slider(
-                  value: dateOfMinimumFoliarMoistureContent.toDouble(),
-                  onChanged: _onDateOfMinimumFoliarMoistureContentChanged,
-                  label: dateOfMinimumFoliarMoistureContent.toString(),
-                  divisions: 365,
-                  min: -1,
-                  max: 365)),
-        ]),
-        Row(children: [
-          Expanded(child: Text('Foliar Moisture Content (FMC): $fmc'))
-        ]),
+                value: dateOfMinimumFoliarMoistureContent.toDouble(),
+                onChanged: _onDateOfMinimumFoliarMoistureContentChanged,
+                label: dateOfMinimumFoliarMoistureContent.toString(),
+                divisions: 365,
+                min: -1,
+                max: 365,
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(child: Text('Foliar Moisture Content (FMC): $fmc')),
+          ],
+        ),
       ],
     );
   }
 }
 
 class FoliarMoistureContent extends StatefulWidget {
-  const FoliarMoistureContent({Key? key}) : super(key: key);
+  const FoliarMoistureContent({super.key});
 
   @override
   FoliarMoistureContentState createState() => FoliarMoistureContentState();

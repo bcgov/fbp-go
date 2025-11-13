@@ -23,52 +23,56 @@ class FancySliderState extends State<FancySliderWidget> {
     const iconSize = 25.0;
     double step = (widget.max - widget.min) / widget.divisions;
     return Padding(
-        padding: const EdgeInsets.only(top: 13, bottom: 13),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                IconButton(
-                  constraints: const BoxConstraints(),
-                  padding: const EdgeInsets.only(right: 10),
-                  icon: const Icon(Icons.remove_circle_outline, size: iconSize),
-                  onPressed: () {
-                    if (widget.value > widget.min) {
-                      widget.onChanged(widget.value - step);
-                    }
-                  },
+      padding: const EdgeInsets.only(top: 13, bottom: 13),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              IconButton(
+                constraints: const BoxConstraints(),
+                padding: const EdgeInsets.only(right: 10),
+                icon: const Icon(Icons.remove_circle_outline, size: iconSize),
+                onPressed: () {
+                  if (widget.value > widget.min) {
+                    widget.onChanged(widget.value - step);
+                  }
+                },
+              ),
+              Expanded(
+                child: SliderTheme(
+                  data: SliderThemeData(
+                    valueIndicatorShape:
+                        const RectangularSliderValueIndicatorShape(),
+                    overlayShape: SliderComponentShape.noOverlay,
+                  ),
+                  child: Slider(
+                    value: widget.value,
+                    min: widget.min,
+                    max: widget.max,
+                    divisions: widget.divisions,
+                    activeColor: widget.activeColor,
+                    label: widget.label,
+                    onChanged: (double value) {
+                      widget.onChanged(value);
+                    },
+                  ),
                 ),
-                Expanded(
-                    child: SliderTheme(
-                        data: SliderThemeData(
-                            valueIndicatorShape:
-                                const RectangularSliderValueIndicatorShape(),
-                            overlayShape: SliderComponentShape.noOverlay),
-                        child: Slider(
-                          value: widget.value,
-                          min: widget.min,
-                          max: widget.max,
-                          divisions: widget.divisions,
-                          activeColor: widget.activeColor,
-                          label: widget.label,
-                          onChanged: (double value) {
-                            widget.onChanged(value);
-                          },
-                        ))),
-                IconButton(
-                  constraints: const BoxConstraints(),
-                  padding: const EdgeInsets.only(left: 10, right: 5),
-                  icon: const Icon(Icons.add_circle_outline, size: iconSize),
-                  onPressed: () {
-                    if (widget.value < widget.max) {
-                      widget.onChanged(widget.value + step);
-                    }
-                  },
-                )
-              ],
-            )
-          ],
-        ));
+              ),
+              IconButton(
+                constraints: const BoxConstraints(),
+                padding: const EdgeInsets.only(left: 10, right: 5),
+                icon: const Icon(Icons.add_circle_outline, size: iconSize),
+                onPressed: () {
+                  if (widget.value < widget.max) {
+                    widget.onChanged(widget.value + step);
+                  }
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -81,16 +85,16 @@ class FancySliderWidget extends StatefulWidget {
   final String label;
   final Function onChanged;
 
-  const FancySliderWidget(
-      {Key? key,
-      required this.value,
-      required this.min,
-      required this.max,
-      required this.divisions,
-      required this.activeColor,
-      required this.label,
-      required this.onChanged})
-      : super(key: key);
+  const FancySliderWidget({
+    super.key,
+    required this.value,
+    required this.min,
+    required this.max,
+    required this.divisions,
+    required this.activeColor,
+    required this.label,
+    required this.onChanged,
+  });
   @override
   State<StatefulWidget> createState() {
     return FancySliderState();

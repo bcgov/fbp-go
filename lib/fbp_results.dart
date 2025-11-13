@@ -103,8 +103,7 @@ abstract class Group {
 }
 
 class SecondaryFireBehaviourGroup extends Group {
-  SecondaryFireBehaviourGroup({required String heading})
-    : super(heading: heading);
+  SecondaryFireBehaviourGroup({required super.heading});
 
   @override
   Widget buildBody(
@@ -249,8 +248,8 @@ class SecondaryFireBehaviourGroup extends Group {
 }
 
 class PrimaryFireBehaviourGroup extends Group {
-  PrimaryFireBehaviourGroup({required String heading, isExpanded = false})
-    : super(heading: heading, isExpanded: isExpanded);
+  PrimaryFireBehaviourGroup({required super.heading, isExpanded = false})
+    : super(isExpanded: isExpanded);
 
   @override
   Widget buildBody(
@@ -452,8 +451,8 @@ class ResultsStateWidget extends StatefulWidget {
     required this.intensityClassColour,
     required this.intensityClassTextColor,
     required this.surfaceFlameLength,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<ResultsStateWidget> createState() => ResultsState();

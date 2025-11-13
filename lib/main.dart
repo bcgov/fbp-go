@@ -26,14 +26,17 @@ import 'fmc.dart';
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Semantics(
-        label: 'FBP Go (Fire Behaviour Prediction) App',
-        child: const MaterialApp(
-            title: 'FBP Go (Fire Behaviour Prediction)', home: HomePage()));
+      label: 'FBP Go (Fire Behaviour Prediction) App',
+      child: const MaterialApp(
+        title: 'FBP Go (Fire Behaviour Prediction)',
+        home: HomePage(),
+      ),
+    );
   }
 }
 
@@ -47,7 +50,7 @@ String getSecondaryText(FireBehaviourPredictionPrimary? prediction) {
 enum Section { advanced, fwi, about, fmc }
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -77,51 +80,53 @@ class HomePageState extends State<HomePage> {
   Future<void> _showDisclaimer(BuildContext context) async {
     String disclaimer = await rootBundle.loadString('assets/DISCLAIMER.txt');
     return showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return Semantics(
-              label: 'Disclaimer dialog',
-              child: AlertDialog(
-                title: const Text('Disclaimer'),
-                content: SingleChildScrollView(
-                  child: Text(disclaimer),
-                ),
-                actions: <Widget>[
-                  TextButton(
-                      child: const Text('OK'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      })
-                ],
-              ));
-        });
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Semantics(
+          label: 'Disclaimer dialog',
+          child: AlertDialog(
+            title: const Text('Disclaimer'),
+            content: SingleChildScrollView(child: Text(disclaimer)),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
-  _getSelectedSection(Section section) {
+  Widget _getSelectedSection(Section section) {
     const double edgeInset = 3;
     switch (section) {
       case (Section.about):
         return const SingleChildScrollView(
-            padding: EdgeInsets.only(left: edgeInset, right: edgeInset),
-            child: Column(
-              children: [AboutPage()],
-            ));
+          padding: EdgeInsets.only(left: edgeInset, right: edgeInset),
+          child: Column(children: [AboutPage()]),
+        );
       case (Section.advanced):
         return const Center(
-            child: SingleChildScrollView(
-                padding: EdgeInsets.only(left: edgeInset, right: edgeInset),
-                child: Column(
-                  children: [AdvancedFireBehaviourPredictionForm()],
-                )));
+          child: SingleChildScrollView(
+            padding: EdgeInsets.only(left: edgeInset, right: edgeInset),
+            child: Column(children: [AdvancedFireBehaviourPredictionForm()]),
+          ),
+        );
       case (Section.fwi):
         return Container(
-            padding: const EdgeInsets.only(left: edgeInset, right: edgeInset),
-            child: const Text('FWI'));
+          padding: const EdgeInsets.only(left: edgeInset, right: edgeInset),
+          child: const Text('FWI'),
+        );
       case (Section.fmc):
         return Container(
-            padding: const EdgeInsets.only(left: edgeInset, right: edgeInset),
-            child: const FoliarMoistureContent());
+          padding: const EdgeInsets.only(left: edgeInset, right: edgeInset),
+          child: const FoliarMoistureContent(),
+        );
     }
   }
 
@@ -133,36 +138,40 @@ class HomePageState extends State<HomePage> {
     }
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Color.fromARGB(255, 53, 150, 243),
-          foregroundColor: Color.fromARGB(255, 255, 255, 255),
-          title: Text(_getSectionText())),
+        backgroundColor: Color.fromARGB(255, 53, 150, 243),
+        foregroundColor: Color.fromARGB(255, 255, 255, 255),
+        title: Text(_getSectionText()),
+      ),
       body: _getSelectedSection(_selectedSection),
       drawer: Drawer(
-          child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(color: Colors.blue),
-            child: Text('FBP Go\n\nFire Behaviour Prediction on the go'),
-          ),
-          ListTile(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(color: Colors.blue),
+              child: Text('FBP Go\n\nFire Behaviour Prediction on the go'),
+            ),
+            ListTile(
               title: const Text('Fire Behaviour Prediction'),
               onTap: () {
                 _changeSection(Section.advanced);
-              }),
-          // TODO: Would be nice to have FWI
-          // ListTile(
-          //     title: const Text('Fire Weather Index (FWI)'),
-          //     onTap: () {
-          //       _changeSection(Section.fwi);
-          //     }),
-          ListTile(
+              },
+            ),
+            // TODO: Would be nice to have FWI
+            // ListTile(
+            //     title: const Text('Fire Weather Index (FWI)'),
+            //     onTap: () {
+            //       _changeSection(Section.fwi);
+            //     }),
+            ListTile(
               title: const Text('About'),
               onTap: () {
                 _changeSection(Section.about);
-              })
-        ],
-      )),
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 
