@@ -56,13 +56,6 @@ class BasicInputState extends State<BasicInputWidget> {
     persistSetting('ws', ws);
   }
 
-  void _onCoordinateChanged(coordinate) {
-    setState(() {
-      _input.coordinate = coordinate;
-    });
-    widget.onChanged(_input);
-  }
-
   void _onWAZChanged(double waz) {
     setState(() {
       _input.waz = waz;
@@ -193,13 +186,6 @@ class BasicInputState extends State<BasicInputWidget> {
     );
     return Column(
       children: [
-        // lat, long, elevation
-        CoordinatePicker(
-          coordinate: _input.coordinate,
-          onChanged: (coordinate) {
-            _onCoordinateChanged(coordinate);
-          },
-        ),
         // Wind Speed
         Row(
           children: [
