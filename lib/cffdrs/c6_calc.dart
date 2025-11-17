@@ -28,7 +28,6 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:math';
-import 'dart:developer' as developer;
 
 import 'buildup_effect.dart';
 import 'cfb_calc.dart';

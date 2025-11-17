@@ -119,10 +119,16 @@ class BasicInputState extends State<BasicInputWidget> {
   }
 
   Row _buildCuringRow(textStyle, textStyleBold, sliderFlex, activeColor) {
-    return Row(children: [
-      makeLabel(
-          'Curing', '${_input.cc.toInt()}', '%', textStyle, textStyleBold),
-      Expanded(
+    return Row(
+      children: [
+        makeLabel(
+          'Curing',
+          '${_input.cc.toInt()}',
+          '%',
+          textStyle,
+          textStyleBold,
+        ),
+        Expanded(
           flex: sliderFlex,
           child: FancySliderWidget(
             value: _input.cc,
@@ -137,77 +143,104 @@ class BasicInputState extends State<BasicInputWidget> {
               // that.
               _onCCChanged(value.roundToDouble());
             },
-          )),
-    ]);
+          ),
+        ),
+      ],
+    );
   }
 
-  Expanded makeLabel(String heading, String value, String unitOfMeasure,
-      TextStyle textStyle, TextStyle textStyleBold) {
+  Expanded makeLabel(
+    String heading,
+    String value,
+    String unitOfMeasure,
+    TextStyle textStyle,
+    TextStyle textStyleBold,
+  ) {
     const labelFlex = 5;
     return Expanded(
-        flex: labelFlex,
-        child: Column(children: [
-          Row(children: [
-            Text(heading, style: textStyle),
-            Text(':', style: textStyle)
-          ]),
-          Row(children: [
-            Text(value, style: textStyleBold),
-            Text(unitOfMeasure, style: textStyle)
-          ])
-        ]));
+      flex: labelFlex,
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Text(heading, style: textStyle),
+              Text(':', style: textStyle),
+            ],
+          ),
+          Row(
+            children: [
+              Text(value, style: textStyleBold),
+              Text(unitOfMeasure, style: textStyle),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     const sliderFlex = 10;
     final beaufortScale = getBeaufortScale(_input.ws);
-    final intensityClass =
-        getHeadFireIntensityClass(widget.prediction?.HFI ?? 0);
+    final intensityClass = getHeadFireIntensityClass(
+      widget.prediction?.HFI ?? 0,
+    );
     final activeColor = getIntensityClassColor(intensityClass);
     const TextStyle textStyle = TextStyle(fontSize: fontSize);
-    const TextStyle textStyleBold =
-        TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold);
+    const TextStyle textStyleBold = TextStyle(
+      fontSize: fontSize,
+      fontWeight: FontWeight.bold,
+    );
     return Column(
       children: [
         // lat, long, elevation
         CoordinatePicker(
-            coordinate: _input.coordinate,
-            onChanged: (coordinate) {
-              _onCoordinateChanged(coordinate);
-            }),
+          coordinate: _input.coordinate,
+          onChanged: (coordinate) {
+            _onCoordinateChanged(coordinate);
+          },
+        ),
         // Wind Speed
         Row(
           children: [
-            makeLabel('Wind Speed', '${_input.ws.toInt()}', ' (km/h)',
-                textStyle, textStyleBold),
+            makeLabel(
+              'Wind Speed',
+              '${_input.ws.toInt()}',
+              ' (km/h)',
+              textStyle,
+              textStyleBold,
+            ),
             Expanded(
-                flex: sliderFlex,
-                child: FancySliderWidget(
-                    value: _input.ws,
-                    min: 0,
-                    max: 50,
-                    divisions: 50,
-                    activeColor: activeColor,
-                    label:
-                        '${_input.ws.toInt()} km/h\nBeaufort scale:\n${beaufortScale.range}\n${beaufortScale.description}\n${beaufortScale.effects}',
-                    onChanged: (value) {
-                      // We need to round the wind speed. The slider doesn't give
-                      // us nice clean whole numbers! This way we ensure we get
-                      // that.
-                      _onWSChanged(value.roundToDouble());
-                    })),
+              flex: sliderFlex,
+              child: FancySliderWidget(
+                value: _input.ws,
+                min: 0,
+                max: 50,
+                divisions: 50,
+                activeColor: activeColor,
+                label:
+                    '${_input.ws.toInt()} km/h\nBeaufort scale:\n${beaufortScale.range}\n${beaufortScale.description}\n${beaufortScale.effects}',
+                onChanged: (value) {
+                  // We need to round the wind speed. The slider doesn't give
+                  // us nice clean whole numbers! This way we ensure we get
+                  // that.
+                  _onWSChanged(value.roundToDouble());
+                },
+              ),
+            ),
           ],
         ),
         // Wind Azimuth
-        Row(children: [
-          makeLabel(
+        Row(
+          children: [
+            makeLabel(
               'Wind Direction',
               '${degreesToCompassPoint(_input.waz)} ${_input.waz.toString()}',
               '\u00B0',
               textStyle,
-              textStyleBold),
-          Expanded(
+              textStyleBold,
+            ),
+            Expanded(
               flex: sliderFlex,
               child: FancySliderWidget(
                 value: _input.waz,
@@ -218,16 +251,24 @@ class BasicInputState extends State<BasicInputWidget> {
                 label:
                     '${degreesToCompassPoint(_input.waz)} ${_input.waz}\u00B0',
                 onChanged: (value) {
-                  print('_onWAZChanged: ${value}');
+                  print('_onWAZChanged: $value');
                   _onWAZChanged(value);
                 },
-              )),
-        ]),
+              ),
+            ),
+          ],
+        ),
         // Ground Slope
-        Row(children: [
-          makeLabel('Ground Slope', '${_input.gs.toInt()}', '%', textStyle,
-              textStyleBold),
-          Expanded(
+        Row(
+          children: [
+            makeLabel(
+              'Ground Slope',
+              '${_input.gs.toInt()}',
+              '%',
+              textStyle,
+              textStyleBold,
+            ),
+            Expanded(
               flex: sliderFlex,
               child: FancySliderWidget(
                 value: _input.gs,
@@ -242,17 +283,21 @@ class BasicInputState extends State<BasicInputWidget> {
                   // that.
                   _onGSChanged(value.roundToDouble());
                 },
-              )),
-        ]),
+              ),
+            ),
+          ],
+        ),
         // Aspect
-        Row(children: [
-          makeLabel(
+        Row(
+          children: [
+            makeLabel(
               'Aspect',
               '${degreesToCompassPoint(_input.aspect)} ${_input.aspect.toString()}',
               '\u00B0',
               textStyle,
-              textStyleBold),
-          Expanded(
+              textStyleBold,
+            ),
+            Expanded(
               flex: sliderFlex,
               child: FancySliderWidget(
                 value: _input.aspect,
@@ -265,13 +310,21 @@ class BasicInputState extends State<BasicInputWidget> {
                 onChanged: (value) {
                   _onAspectChanged(roundDouble(value, 2));
                 },
-              )),
-        ]),
+              ),
+            ),
+          ],
+        ),
         // BUI
-        Row(children: [
-          makeLabel('Buildup Index', '${_input.bui.toInt()}', '', textStyle,
-              textStyleBold),
-          Expanded(
+        Row(
+          children: [
+            makeLabel(
+              'Buildup Index',
+              '${_input.bui.toInt()}',
+              '',
+              textStyle,
+              textStyleBold,
+            ),
+            Expanded(
               flex: sliderFlex,
               child: FancySliderWidget(
                 value: _input.bui,
@@ -286,17 +339,26 @@ class BasicInputState extends State<BasicInputWidget> {
                   // that.
                   _onBUIChanged(value.roundToDouble());
                 },
-              )),
-        ]),
+              ),
+            ),
+          ],
+        ),
         // FFMC
-        Row(children: [
-          makeLabel(
-              'FFMC', '${_input.ffmc.toInt()}', '', textStyle, textStyleBold),
-          Expanded(
+        Row(
+          children: [
+            makeLabel(
+              'FFMC',
+              '${_input.ffmc.toInt()}',
+              '',
+              textStyle,
+              textStyleBold,
+            ),
+            Expanded(
               flex: sliderFlex,
               child: FancySliderWidget(
-                value:
-                    _input.ffmc >= 80 && _input.ffmc <= 100 ? _input.ffmc : 80,
+                value: _input.ffmc >= 80 && _input.ffmc <= 100
+                    ? _input.ffmc
+                    : 80,
                 min: 80,
                 max: 100,
                 divisions: 20,
@@ -308,11 +370,13 @@ class BasicInputState extends State<BasicInputWidget> {
                   // that.
                   _onFFMCChanged(value.roundToDouble());
                 },
-              )),
-        ]),
+              ),
+            ),
+          ],
+        ),
         // Curing
         if (isGrassFuelType(widget.fuelTypePreset.code))
-          _buildCuringRow(textStyle, textStyleBold, sliderFlex, activeColor)
+          _buildCuringRow(textStyle, textStyleBold, sliderFlex, activeColor),
       ],
     );
   }
@@ -324,13 +388,13 @@ class BasicInputWidget extends StatefulWidget {
   final FireBehaviourPredictionPrimary? prediction;
   final FuelTypePreset fuelTypePreset;
 
-  const BasicInputWidget(
-      {Key? key,
-      required this.onChanged,
-      required this.basicInput,
-      required this.prediction,
-      required this.fuelTypePreset})
-      : super(key: key);
+  const BasicInputWidget({
+    super.key,
+    required this.onChanged,
+    required this.basicInput,
+    required this.prediction,
+    required this.fuelTypePreset,
+  });
 
   @override
   State<StatefulWidget> createState() {

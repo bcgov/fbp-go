@@ -30,10 +30,11 @@ class Coordinate {
   double longitude;
   double altitude;
 
-  Coordinate(
-      {required this.latitude,
-      required this.longitude,
-      required this.altitude});
+  Coordinate({
+    required this.latitude,
+    required this.longitude,
+    required this.altitude,
+  });
 
   @override
   String toString() {
@@ -43,9 +44,10 @@ class Coordinate {
 
 Coordinate createDefaultCoordinate() {
   return Coordinate(
-      latitude: defaultLatitude,
-      longitude: defaultLongitude,
-      altitude: defaultAltitude);
+    latitude: defaultLatitude,
+    longitude: defaultLongitude,
+    altitude: defaultAltitude,
+  );
 }
 
 class CoordinatePickerState extends State<CoordinatePicker> {
@@ -59,7 +61,8 @@ class CoordinatePickerState extends State<CoordinatePicker> {
     log('calling _getPosition');
     try {
       Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
+        desiredAccuracy: LocationAccuracy.high,
+      );
       log('got position $position');
       return position;
     } catch (e) {
@@ -67,21 +70,21 @@ class CoordinatePickerState extends State<CoordinatePicker> {
     }
   }
 
-  void _setLatitude(value) {
+  void _setLatitude(double value) {
     double latitude = pinLatitude(value);
     // Limit to 2 decimal places for consistent input.
     _coordinate.latitude = roundDouble(latitude, 2);
     persistSetting('latitude', _coordinate.latitude);
   }
 
-  void _setLongitude(value) {
+  void _setLongitude(double value) {
     double longitude = pinLongitude(value);
     // Limit to 2 decimal places for consistent input.
     _coordinate.longitude = roundDouble(longitude, 2);
     persistSetting('longitude', _coordinate.longitude);
   }
 
-  void _setAltitude(value) {
+  void _setAltitude(double value) {
     // We pin the altitude to acceptable ranges. The altitude could come back as a negative number,
     // WGS84 projection gives some locations on earth, that are above sea level, a negative number.
     double altitude = pinAltitude(value);
@@ -91,22 +94,24 @@ class CoordinatePickerState extends State<CoordinatePicker> {
   }
 
   void _updatePosition() {
-    Permission.location.request().then((request) => {
-          if (request.isGranted)
-            {
-              _getPosition().then((position) {
-                if (mounted) {
-                  setState(() {
-                    _setLatitude(position.latitude);
-                    _setLongitude(position.longitude);
-                    _setAltitude(position.altitude);
-                    widget.onChanged(_coordinate);
-                    _updateCoordinateControllers();
-                  });
-                }
-              })
-            }
-        });
+    Permission.location.request().then(
+      (request) => {
+        if (request.isGranted)
+          {
+            _getPosition().then((position) {
+              if (mounted) {
+                setState(() {
+                  _setLatitude(position.latitude);
+                  _setLongitude(position.longitude);
+                  _setAltitude(position.altitude);
+                  widget.onChanged(_coordinate);
+                  _updateCoordinateControllers();
+                });
+              }
+            }),
+          },
+      },
+    );
   }
 
   @override
@@ -142,17 +147,26 @@ class CoordinatePickerState extends State<CoordinatePicker> {
 
   String? get _elevationErrorText {
     return _generateErrorText(
-        _elevationController.text, minAltitude, maxAltitude);
+      _elevationController.text,
+      minAltitude,
+      maxAltitude,
+    );
   }
 
   String? get _longitudeErrorText {
     return _generateErrorText(
-        _longitudeController.text, minLongitude, maxLongitude);
+      _longitudeController.text,
+      minLongitude,
+      maxLongitude,
+    );
   }
 
   String? get _latitudeErrorText {
     return _generateErrorText(
-        _latitudeController.text, minLatitude, maxLatitude);
+      _latitudeController.text,
+      minLatitude,
+      maxLatitude,
+    );
   }
 
   @override
@@ -163,69 +177,83 @@ class CoordinatePickerState extends State<CoordinatePicker> {
       children: [
         // latitude Field
         Expanded(
-            child: TextField(
-          controller: _latitudeController,
-          decoration: InputDecoration(
+          child: TextField(
+            controller: _latitudeController,
+            decoration: InputDecoration(
               labelText: "Latitude",
               labelStyle: textStyle,
-              errorText: _latitudeErrorText),
-          keyboardType: const TextInputType.numberWithOptions(
-              signed: true, decimal: true),
-          onChanged: (value) {
-            if (double.tryParse(value) != null) {
-              double latitude = double.parse(value);
-              setState(() {
-                _setLatitude(latitude);
-              });
-            }
-            widget.onChanged(_coordinate);
-          },
-        )),
+              errorText: _latitudeErrorText,
+            ),
+            keyboardType: const TextInputType.numberWithOptions(
+              signed: true,
+              decimal: true,
+            ),
+            onChanged: (value) {
+              if (double.tryParse(value) != null) {
+                double latitude = double.parse(value);
+                setState(() {
+                  _setLatitude(latitude);
+                });
+              }
+              widget.onChanged(_coordinate);
+            },
+          ),
+        ),
         // longitude Field
         Expanded(
-            child: TextField(
-          controller: _longitudeController,
-          decoration: InputDecoration(
+          child: TextField(
+            controller: _longitudeController,
+            decoration: InputDecoration(
               labelText: "Longitude",
               labelStyle: textStyle,
-              errorText: _longitudeErrorText),
-          keyboardType: const TextInputType.numberWithOptions(
-              signed: true, decimal: true),
-          onChanged: (value) {
-            if (double.tryParse(value) != null) {
-              double longitude = double.parse(value);
-              setState(() {
-                _setLongitude(longitude);
-              });
-            }
-            widget.onChanged(_coordinate);
-          },
-        )),
+              errorText: _longitudeErrorText,
+            ),
+            keyboardType: const TextInputType.numberWithOptions(
+              signed: true,
+              decimal: true,
+            ),
+            onChanged: (value) {
+              if (double.tryParse(value) != null) {
+                double longitude = double.parse(value);
+                setState(() {
+                  _setLongitude(longitude);
+                });
+              }
+              widget.onChanged(_coordinate);
+            },
+          ),
+        ),
         Expanded(
-            child: TextField(
-          controller: _elevationController,
-          decoration: InputDecoration(
+          child: TextField(
+            controller: _elevationController,
+            decoration: InputDecoration(
               labelText: "Elevation (m)",
               labelStyle: textStyle,
-              errorText: _elevationErrorText),
-          keyboardType: const TextInputType.numberWithOptions(
-              signed: true, decimal: true),
-          onChanged: (value) {
-            if (double.tryParse(value) != null) {
-              var altitude = double.parse(value);
-              setState(() {
-                _setAltitude(altitude);
-              });
-            }
-            widget.onChanged(_coordinate);
-          },
-        )),
+              errorText: _elevationErrorText,
+            ),
+            keyboardType: const TextInputType.numberWithOptions(
+              signed: true,
+              decimal: true,
+            ),
+            onChanged: (value) {
+              if (double.tryParse(value) != null) {
+                var altitude = double.parse(value);
+                setState(() {
+                  _setAltitude(altitude);
+                });
+              }
+              widget.onChanged(_coordinate);
+            },
+          ),
+        ),
         Expanded(
-            child: IconButton(
-                icon: const Icon(Icons.my_location),
-                onPressed: () {
-                  _updatePosition();
-                }))
+          child: IconButton(
+            icon: const Icon(Icons.my_location),
+            onPressed: () {
+              _updatePosition();
+            },
+          ),
+        ),
       ],
     );
   }
@@ -235,9 +263,11 @@ class CoordinatePicker extends StatefulWidget {
   final Function onChanged;
   final Coordinate coordinate;
 
-  const CoordinatePicker(
-      {Key? key, required this.onChanged, required this.coordinate})
-      : super(key: key);
+  const CoordinatePicker({
+    super.key,
+    required this.onChanged,
+    required this.coordinate,
+  });
 
   @override
   State<StatefulWidget> createState() {

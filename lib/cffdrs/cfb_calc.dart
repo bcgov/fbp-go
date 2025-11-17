@@ -28,7 +28,6 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:math';
-import 'dart:developer' as developer;
 
 double criticalSurfaceIntensity(double FMC, double CBH) {
   // Eq. 56 (FCFDG 1992) Critical surface intensity

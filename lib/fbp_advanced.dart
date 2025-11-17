@@ -35,7 +35,7 @@ bool ignitionTypeToBool(IgnitionType type) {
 }
 
 class AdvancedFireBehaviourPredictionForm extends StatefulWidget {
-  const AdvancedFireBehaviourPredictionForm({Key? key}) : super(key: key);
+  const AdvancedFireBehaviourPredictionForm({super.key});
 
   @override
   AdvancedFireBehaviourPredictionFormState createState() {
@@ -126,6 +126,12 @@ class AdvancedFireBehaviourPredictionFormState
     });
   }
 
+  void _onCBHChanged(double cbh) {
+    setState(() {
+      _cbh = cbh;
+    });
+  }
+
   void _onPDFChanged(double pdf) {
     setState(() {
       _pdf = pdf;
@@ -196,38 +202,62 @@ class AdvancedFireBehaviourPredictionFormState
     super.dispose();
   }
 
-  Expanded makeLabel(String heading, String value, String unitOfMeasure,
-      TextStyle textStyle, TextStyle textStyleBold) {
+  Expanded makeLabel(
+    String heading,
+    String value,
+    String unitOfMeasure,
+    TextStyle textStyle,
+    TextStyle textStyleBold,
+  ) {
     const labelFlex = 4;
     return Expanded(
-        flex: labelFlex,
-        child: Column(children: [
-          Row(children: [
-            Text(heading, style: textStyle),
-            Text(':', style: textStyle)
-          ]),
-          Row(children: [
-            Text(value, style: textStyleBold),
-            Text(unitOfMeasure, style: textStyle)
-          ])
-        ]));
+      flex: labelFlex,
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Text(heading, style: textStyle),
+              Text(':', style: textStyle),
+            ],
+          ),
+          Row(
+            children: [
+              Text(value, style: textStyleBold),
+              Text(unitOfMeasure, style: textStyle),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
-  Expanded makeInputLabel(String heading, String value, String unitOfMeasure,
-      TextStyle textStyle, TextStyle textStyleBold) {
+  Expanded makeInputLabel(
+    String heading,
+    String value,
+    String unitOfMeasure,
+    TextStyle textStyle,
+    TextStyle textStyleBold,
+  ) {
     const labelFlex = 5;
     return Expanded(
-        flex: labelFlex,
-        child: Column(children: [
-          Row(children: [
-            Text(heading, style: textStyle),
-            Text(':', style: textStyle)
-          ]),
-          Row(children: [
-            Text(value, style: textStyleBold),
-            Text(unitOfMeasure, style: textStyle)
-          ])
-        ]));
+      flex: labelFlex,
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Text(heading, style: textStyle),
+              Text(':', style: textStyle),
+            ],
+          ),
+          Row(
+            children: [
+              Text(value, style: textStyleBold),
+              Text(unitOfMeasure, style: textStyle),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   Widget buildError(String? errorMessage) {
@@ -245,29 +275,30 @@ class AdvancedFireBehaviourPredictionFormState
     double? fireSize;
     final dayOfYear = getDayOfYear(_currentDate);
     final input = FireBehaviourPredictionInput(
-        FUELTYPE: _fuelTypePreset!.code.name,
-        LAT: _basicInput!.coordinate.latitude,
-        LONG: _basicInput!.coordinate.longitude,
-        ELV: _basicInput!.coordinate.altitude,
-        DJ: dayOfYear,
-        D0: null,
-        FMC: null,
-        FFMC: _basicInput!.ffmc,
-        BUI: _basicInput!.bui,
-        WS: _basicInput!.ws,
-        WD: _basicInput!.waz,
-        GS: _basicInput!.gs,
-        PC: _pc,
-        PDF: _pdf,
-        GFL: _gfl,
-        CC: _basicInput!.cc,
-        THETA: 0, // we don't use THETA - so just default to 0
-        ACCEL: ignitionTypeToBool(_ignitionType),
-        ASPECT: _basicInput!.aspect,
-        BUIEFF: true,
-        CBH: _cbh,
-        CFL: _cfl,
-        HR: _minutes / 60.0);
+      FUELTYPE: _fuelTypePreset!.code.name,
+      LAT: _basicInput!.coordinate.latitude,
+      LONG: _basicInput!.coordinate.longitude,
+      ELV: _basicInput!.coordinate.altitude,
+      DJ: dayOfYear,
+      D0: null,
+      FMC: null,
+      FFMC: _basicInput!.ffmc,
+      BUI: _basicInput!.bui,
+      WS: _basicInput!.ws,
+      WD: _basicInput!.waz,
+      GS: _basicInput!.gs,
+      PC: _pc,
+      PDF: _pdf,
+      GFL: _gfl,
+      CC: _basicInput!.cc,
+      THETA: 0, // we don't use THETA - so just default to 0
+      ACCEL: ignitionTypeToBool(_ignitionType),
+      ASPECT: _basicInput!.aspect,
+      BUIEFF: true,
+      CBH: _cbh,
+      CFL: _cfl,
+      HR: _minutes / 60.0,
+    );
 
     FireBehaviourPredictionPrimary? prediction;
     num surfaceFlameLength = 0;
@@ -278,12 +309,13 @@ class AdvancedFireBehaviourPredictionFormState
       prediction = fireBehaviourPrediction(input, output: "ALL");
       if (prediction.secondary != null) {
         fireSize = getFireSize(
-            _fuelTypePreset!.code.name,
-            prediction.ROS,
-            prediction.secondary!.BROS,
-            _minutes,
-            prediction.CFB,
-            prediction.secondary!.LB);
+          _fuelTypePreset!.code.name,
+          prediction.ROS,
+          prediction.secondary!.BROS,
+          _minutes,
+          prediction.CFB,
+          prediction.secondary!.LB,
+        );
       }
       surfaceFlameLength = calculateApproxFlameLength(prediction.HFI);
       intensityClass = getHeadFireIntensityClass(prediction.HFI);
@@ -294,63 +326,87 @@ class AdvancedFireBehaviourPredictionFormState
     final intensityClassTextColour = getIntensityClassTextColor(intensityClass);
     const sliderFlex = 10;
     const TextStyle textStyle = TextStyle(fontSize: fontSize);
-    const TextStyle textStyleBold =
-        TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold);
+    const TextStyle textStyleBold = TextStyle(
+      fontSize: fontSize,
+      fontWeight: FontWeight.bold,
+    );
     // Build a Form widget using the _formKey created above.
-    return Column(children: [
-      Form(
-        key: _formKey,
-        child: Column(
-          children: <Widget>[
-            Padding(
+    return Column(
+      children: [
+        Form(
+          key: _formKey,
+          child: Column(
+            children: <Widget>[
+              Padding(
                 padding: const EdgeInsets.only(
-                    bottom: 8.0), // Adjust the value as needed
-                child: Row(children: [
-                  Expanded(
+                  bottom: 8.0,
+                ), // Adjust the value as needed
+                child: Row(
+                  children: [
+                    Expanded(
                       child: DatePicker(
-                    onChanged: (DateTime? value) {
-                      _onDateChanged(value);
-                    },
-                    initialValue: _currentDate,
-                  ))
-                ])),
-            // Presets
-            Row(children: [
-              Expanded(
-                  child: FuelTypePresetDropdown(
-                onChanged: (FuelTypePreset? value) {
-                  _onPresetChanged(value);
-                },
-                initialValue: _fuelTypePreset!,
-              ))
-            ]),
-            if (isGrassFuelType(_fuelTypePreset!.code))
-              Row(children: [
-                // GFL field
-                makeInputLabel('GFL', _gfl.toStringAsFixed(2), ' kg/\u33A1',
-                    textStyle, textStyleBold),
-                Expanded(
-                    flex: sliderFlex,
-                    child: FancySliderWidget(
-                      value: _gfl,
-                      min: minGFL,
-                      max: maxGFL,
-                      divisions: ((maxGFL - minGFL) / 0.05).round(),
-                      activeColor: intensityClassColour,
-                      label:
-                          'Grass Fuel Load: ${_gfl.toStringAsFixed(2)} kg/\u33A1',
-                      onChanged: (value) {
-                        _onGFLChanged(value);
-                      },
-                    )),
-              ]),
-            // PDF field
-            if (canAdjustDeadFir(_fuelTypePreset!.code))
+                        onChanged: (DateTime? value) {
+                          _onDateChanged(value);
+                        },
+                        initialValue: _currentDate,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Presets
               Row(
                 children: [
-                  makeInputLabel('Dead Balsam', (_pdf ?? 0).toStringAsFixed(0),
-                      '%', textStyle, textStyleBold),
                   Expanded(
+                    child: FuelTypePresetDropdown(
+                      onChanged: (FuelTypePreset? value) {
+                        _onPresetChanged(value);
+                      },
+                      initialValue: _fuelTypePreset!,
+                    ),
+                  ),
+                ],
+              ),
+              if (isGrassFuelType(_fuelTypePreset!.code))
+                Row(
+                  children: [
+                    // GFL field
+                    makeInputLabel(
+                      'GFL',
+                      _gfl.toStringAsFixed(2),
+                      ' kg/\u33A1',
+                      textStyle,
+                      textStyleBold,
+                    ),
+                    Expanded(
+                      flex: sliderFlex,
+                      child: FancySliderWidget(
+                        value: _gfl,
+                        min: minGFL,
+                        max: maxGFL,
+                        divisions: ((maxGFL - minGFL) / 0.05).round(),
+                        activeColor: intensityClassColour,
+                        label:
+                            'Grass Fuel Load: ${_gfl.toStringAsFixed(2)} kg/\u33A1',
+                        onChanged: (value) {
+                          _onGFLChanged(value);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              // PDF field
+              if (canAdjustDeadFir(_fuelTypePreset!.code))
+                Row(
+                  children: [
+                    makeInputLabel(
+                      'Dead Balsam',
+                      (_pdf ?? 0).toStringAsFixed(0),
+                      '%',
+                      textStyle,
+                      textStyleBold,
+                    ),
+                    Expanded(
                       flex: sliderFlex,
                       child: FancySliderWidget(
                         value: _pdf ?? 0,
@@ -362,109 +418,155 @@ class AdvancedFireBehaviourPredictionFormState
                         onChanged: (value) {
                           _onPDFChanged(value.roundToDouble());
                         },
-                      ))
-                ],
-              ),
-            if (canAdjustConifer(_fuelTypePreset!.code))
-              Row(children: [
-                makeInputLabel('Conifer', (_pc ?? 0).toStringAsFixed(0), '%',
-                    textStyle, textStyleBold),
-                Expanded(
+                      ),
+                    ),
+                  ],
+                ),
+              if (canAdjustConifer(_fuelTypePreset!.code))
+                Row(
+                  children: [
+                    makeInputLabel(
+                      'Conifer',
+                      (_pc ?? 0).toStringAsFixed(0),
+                      '%',
+                      textStyle,
+                      textStyleBold,
+                    ),
+                    Expanded(
+                      flex: sliderFlex,
+                      child: FancySliderWidget(
+                        value: _pc ?? 0,
+                        min: 0,
+                        max: 100,
+                        divisions: 100,
+                        activeColor: intensityClassColour,
+                        label: '${(_pc ?? 0).toStringAsFixed(0)}%',
+                        onChanged: (value) {
+                          _onPCChanged(value.roundToDouble());
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              // Elapsed time
+              if (canAdjustCBH(_fuelTypePreset!.code))
+                Row(
+                  children: [
+                    makeInputLabel(
+                      'CBH',
+                      _cbh?.toStringAsFixed(1) ?? '0.0',
+                      ' m',
+                      textStyle,
+                      textStyleBold,
+                    ),
+                    Expanded(
+                      flex: sliderFlex,
+                      child: FancySliderWidget(
+                        value: _cbh ?? 1,
+                        min: 1,
+                        max: 15,
+                        divisions: 14,
+                        activeColor: intensityClassColour,
+                        label: _cbh!.toStringAsFixed(0),
+                        onChanged: (value) {
+                          _onCBHChanged(value.roundToDouble());
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              Row(
+                children: [
+                  makeInputLabel(
+                    'Time elapsed',
+                    '${_minutes.toInt()}',
+                    ' minutes',
+                    textStyle,
+                    textStyleBold,
+                  ),
+                  Expanded(
                     flex: sliderFlex,
                     child: FancySliderWidget(
-                      value: _pc ?? 0,
+                      value: _minutes,
                       min: 0,
-                      max: 100,
-                      divisions: 100,
+                      max: 120,
+                      divisions: 12,
                       activeColor: intensityClassColour,
-                      label: '${(_pc ?? 0).toStringAsFixed(0)}%',
+                      label: '${_minutes.toInt()} minutes',
                       onChanged: (value) {
-                        _onPCChanged(value.roundToDouble());
+                        _onTChanged(value.roundToDouble());
                       },
-                    ))
-              ]),
-            // Elapsed time
-            Row(children: [
-              makeInputLabel('Time elapsed', '${_minutes.toInt()}', ' minutes',
-                  textStyle, textStyleBold),
-              Expanded(
-                  flex: sliderFlex,
-                  child: FancySliderWidget(
-                    value: _minutes,
-                    min: 0,
-                    max: 120,
-                    divisions: 12,
-                    activeColor: intensityClassColour,
-                    label: '${_minutes.toInt()} minutes',
-                    onChanged: (value) {
-                      _onTChanged(value.roundToDouble());
+                    ),
+                  ),
+                ],
+              ),
+              // Ignition type
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Ignition Type:",
+                    style: TextStyle(fontSize: fontSize),
+                  ),
+                  const SizedBox(width: 16),
+                  RadioGroup<IgnitionType>(
+                    groupValue: _ignitionType,
+                    onChanged: (IgnitionType? value) {
+                      if (value != null) _onIgnitionTypeChanged(value);
                     },
-                  )),
-            ]),
-            // Ignition type
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text(
-                  "Ignition Type:",
-                  style: TextStyle(fontSize: fontSize),
-                ),
-                const SizedBox(width: 16),
-                RadioGroup<IgnitionType>(
-                  groupValue: _ignitionType,
-                  onChanged: (IgnitionType? value) {
-                    if (value != null) _onIgnitionTypeChanged(value);
-                  },
-                  child: Row(
-                    children: IgnitionType.values.map((type) {
-                      final label =
-                          type == IgnitionType.point ? 'Point' : 'Line';
-                      return InkWell(
-                        // InkWell allows the text to be clickable
-                        onTap: () {
-                          _onIgnitionTypeChanged(type);
-                        },
-                        borderRadius: BorderRadius.circular(8),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Row(
-                            children: [
-                              Radio<IgnitionType>(
+                    child: Row(
+                      children: IgnitionType.values.map((type) {
+                        final label = type == IgnitionType.point
+                            ? 'Point'
+                            : 'Line';
+                        return InkWell(
+                          // InkWell allows the text to be clickable
+                          onTap: () {
+                            _onIgnitionTypeChanged(type);
+                          },
+                          borderRadius: BorderRadius.circular(8),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Row(
+                              children: [
+                                Radio<IgnitionType>(
                                   value: type,
-                                  fillColor:
-                                      WidgetStateProperty.all(Colors.black)),
-                              Text(label),
-                            ],
+                                  fillColor: WidgetStateProperty.all(
+                                    Colors.black,
+                                  ),
+                                ),
+                                Text(label),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    }).toList(),
+                        );
+                      }).toList(),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: BasicInputWidget(
-                    basicInput: _basicInput!,
-                    prediction: prediction,
-                    fuelTypePreset: _fuelTypePreset!,
-                    onChanged: (BasicInput basicInput) {
-                      _onBasicInputChanged(basicInput);
-                    },
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: BasicInputWidget(
+                      basicInput: _basicInput!,
+                      prediction: prediction,
+                      fuelTypePreset: _fuelTypePreset!,
+                      onChanged: (BasicInput basicInput) {
+                        _onBasicInputChanged(basicInput);
+                      },
+                    ),
                   ),
-                )
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
-      ),
-      (prediction == null)
-          ? buildError(errorMessage)
-          : Padding(
-              padding: const EdgeInsets.only(top: 2.0),
-              child: ResultsStateWidget(
+        (prediction == null)
+            ? buildError(errorMessage)
+            : Padding(
+                padding: const EdgeInsets.only(top: 2.0),
+                child: ResultsStateWidget(
                   prediction: prediction,
                   minutes: _minutes,
                   fireSize: fireSize,
@@ -472,7 +574,10 @@ class AdvancedFireBehaviourPredictionFormState
                   input: input,
                   intensityClass: intensityClass,
                   intensityClassColour: intensityClassColour,
-                  intensityClassTextColor: intensityClassTextColour))
-    ]);
+                  intensityClassTextColor: intensityClassTextColour,
+                ),
+              ),
+      ],
+    );
   }
 }

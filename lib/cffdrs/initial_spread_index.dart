@@ -29,7 +29,7 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 import 'dart:math';
 import 'fine_fuel_moisture_code.dart';
 
-double initialSpreadIndex(ffmc, ws, {fbpMod = false}) {
+double initialSpreadIndex(double ffmc, double ws, {bool fbpMod = false}) {
   /*
   #############################################################################
   # Description:
