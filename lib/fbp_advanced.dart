@@ -462,10 +462,10 @@ class AdvancedFireBehaviourPredictionFormState
                     Expanded(
                       flex: sliderFlex,
                       child: FancySliderWidget(
-                        value: _cbh ?? 2,
-                        min: 2,
+                        value: _cbh ?? 1,
+                        min: 1,
                         max: 15,
-                        divisions: 13,
+                        divisions: 14,
                         activeColor: intensityClassColour,
                         label: _cbh!.toStringAsFixed(0),
                         onChanged: (value) {
