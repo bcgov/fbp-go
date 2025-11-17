@@ -164,12 +164,18 @@ class AdvancedFireBehaviourPredictionFormState
     persistIgnition('ignitionType', type);
   }
 
+  void _onCCChanged(double cc) {
+    setState(() {
+      _basicInput!.cc = cc;
+    });
+    _onBasicInputChanged(_basicInput!);
+    persistSetting('cc', cc);
+  }
+
   final ccController = TextEditingController();
   final cbhController = TextEditingController();
   final _cflController = TextEditingController();
   final _gflController = TextEditingController();
-
-  // double ros = _calculateRateOfSpread()
 
   @override
   void initState() {
@@ -493,6 +499,32 @@ class AdvancedFireBehaviourPredictionFormState
                             ),
                           ],
                         ),
+                      // Curing field
+                      Row(
+                        children: [
+                          makeInputLabel(
+                            'Curing',
+                            '${_basicInput!.cc.toInt()}',
+                            '%',
+                            textStyle,
+                            textStyleBold,
+                          ),
+                          Expanded(
+                            flex: sliderFlex,
+                            child: FancySliderWidget(
+                              value: _basicInput!.cc,
+                              min: 0,
+                              max: 100,
+                              divisions: 20,
+                              activeColor: intensityClassColour,
+                              label: '${_basicInput!.cc.toInt()}%',
+                              onChanged: (value) {
+                                _onCCChanged(value.roundToDouble());
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                       if (canAdjustDeadFir(_fuelTypePreset!.code))
                         Row(
                           children: [
