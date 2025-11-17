@@ -363,70 +363,72 @@ class ResultsState extends State<ResultsStateWidget> {
   Widget build(BuildContext context) {
     // Need to have a bunch of panels:
     // https://api.flutter.dev/flutter/material/ExpansionPanelList-class.html
-    return Container(
-      // color: intensityClassColour,
-      decoration: BoxDecoration(
-        border: Border.all(color: widget.intensityClassColour),
-        borderRadius: const BorderRadius.all(Radius.circular(5)),
-      ),
-      child: Column(
-        children: [
-          ExpansionPanelList(
-            expandedHeaderPadding: const EdgeInsets.all(0),
-            expansionCallback: (int index, bool isExpanded) {
-              setState(() {
-                _groups[index].isExpanded = isExpanded;
-              });
-              if (!isExpanded) {
-                // this doesn't seem perfect - we're waiting delaying
-                // by "kThemeAnimationDuration" (that's what
-                // ExpansionPanelList is using) - and then trying
-                // to make everything visible.
-                Future.delayed(kThemeAnimationDuration).then(
-                  (value) => {
-                    Scrollable.ensureVisible(
-                      context,
-                      duration: const Duration(milliseconds: 200),
-                    ),
-                  },
-                );
-              }
-            },
-            children: _groups.map<ExpansionPanel>((Group group) {
-              return ExpansionPanel(
-                backgroundColor: widget.intensityClassColour,
-                headerBuilder: (BuildContext context, bool isExpanded) {
-                  return Row(
-                    children: [
-                      // using spacers to centre text horizontally
-                      // const Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Text(
-                          group.heading,
-                          style: TextStyle(
-                            fontSize: fontSize,
-                            color: widget.intensityClassTextColor,
-                            fontWeight: FontWeight.bold,
+    return SafeArea(
+      child: Container(
+        // color: intensityClassColour,
+        decoration: BoxDecoration(
+          border: Border.all(color: widget.intensityClassColour),
+          borderRadius: const BorderRadius.all(Radius.circular(5)),
+        ),
+        child: Column(
+          children: [
+            ExpansionPanelList(
+              expandedHeaderPadding: const EdgeInsets.all(0),
+              expansionCallback: (int index, bool isExpanded) {
+                setState(() {
+                  _groups[index].isExpanded = isExpanded;
+                });
+                if (!isExpanded) {
+                  // this doesn't seem perfect - we're waiting delaying
+                  // by "kThemeAnimationDuration" (that's what
+                  // ExpansionPanelList is using) - and then trying
+                  // to make everything visible.
+                  Future.delayed(kThemeAnimationDuration).then(
+                    (value) => {
+                      Scrollable.ensureVisible(
+                        context,
+                        duration: const Duration(milliseconds: 200),
+                      ),
+                    },
+                  );
+                }
+              },
+              children: _groups.map<ExpansionPanel>((Group group) {
+                return ExpansionPanel(
+                  backgroundColor: widget.intensityClassColour,
+                  headerBuilder: (BuildContext context, bool isExpanded) {
+                    return Row(
+                      children: [
+                        // using spacers to centre text horizontally
+                        // const Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Text(
+                            group.heading,
+                            style: TextStyle(
+                              fontSize: fontSize,
+                              color: widget.intensityClassTextColor,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                      // const Spacer()
-                    ],
-                  );
-                },
-                body: group.buildBody(
-                  widget.input,
-                  widget.prediction,
-                  widget.minutes,
-                  widget.surfaceFlameLength,
-                ),
-                isExpanded: group.isExpanded,
-                canTapOnHeader: true,
-              );
-            }).toList(),
-          ),
-        ],
+                        // const Spacer()
+                      ],
+                    );
+                  },
+                  body: group.buildBody(
+                    widget.input,
+                    widget.prediction,
+                    widget.minutes,
+                    widget.surfaceFlameLength,
+                  ),
+                  isExpanded: group.isExpanded,
+                  canTapOnHeader: true,
+                );
+              }).toList(),
+            ),
+          ],
+        ),
       ),
     );
   }
