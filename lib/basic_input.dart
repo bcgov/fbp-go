@@ -56,13 +56,6 @@ class BasicInputState extends State<BasicInputWidget> {
     persistSetting('ws', ws);
   }
 
-  void _onCoordinateChanged(coordinate) {
-    setState(() {
-      _input.coordinate = coordinate;
-    });
-    widget.onChanged(_input);
-  }
-
   void _onWAZChanged(double waz) {
     setState(() {
       _input.waz = waz;
@@ -96,14 +89,6 @@ class BasicInputState extends State<BasicInputWidget> {
     persistSetting('bui', bui);
   }
 
-  void _onCCChanged(double cc) {
-    setState(() {
-      _input.cc = cc;
-    });
-    widget.onChanged(_input);
-    persistSetting('cc', cc);
-  }
-
   void _onFFMCChanged(double ffmc) {
     setState(() {
       _input.ffmc = ffmc;
@@ -116,37 +101,6 @@ class BasicInputState extends State<BasicInputWidget> {
   void initState() {
     _input = widget.basicInput;
     super.initState();
-  }
-
-  Row _buildCuringRow(textStyle, textStyleBold, sliderFlex, activeColor) {
-    return Row(
-      children: [
-        makeLabel(
-          'Curing',
-          '${_input.cc.toInt()}',
-          '%',
-          textStyle,
-          textStyleBold,
-        ),
-        Expanded(
-          flex: sliderFlex,
-          child: FancySliderWidget(
-            value: _input.cc,
-            min: 0,
-            max: 100,
-            divisions: 20,
-            label: '${_input.cc.toInt()}%',
-            activeColor: activeColor,
-            onChanged: (value) {
-              // We need to round the curing. The slider doesn't give
-              // us nice clean whole numbers! This way we ensure we get
-              // that.
-              _onCCChanged(value.roundToDouble());
-            },
-          ),
-        ),
-      ],
-    );
   }
 
   Expanded makeLabel(
@@ -193,13 +147,6 @@ class BasicInputState extends State<BasicInputWidget> {
     );
     return Column(
       children: [
-        // lat, long, elevation
-        CoordinatePicker(
-          coordinate: _input.coordinate,
-          onChanged: (coordinate) {
-            _onCoordinateChanged(coordinate);
-          },
-        ),
         // Wind Speed
         Row(
           children: [
@@ -374,9 +321,6 @@ class BasicInputState extends State<BasicInputWidget> {
             ),
           ],
         ),
-        // Curing
-        if (isGrassFuelType(widget.fuelTypePreset.code))
-          _buildCuringRow(textStyle, textStyleBold, sliderFlex, activeColor),
       ],
     );
   }
