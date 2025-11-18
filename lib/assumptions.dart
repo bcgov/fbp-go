@@ -22,8 +22,8 @@ class AssumptionsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.all(16.0),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -58,6 +58,16 @@ class AssumptionsPage extends StatelessWidget {
           BulletPoint(
             text:
                 'The effect of short-range spotting of firebrands on spread is taken into account.',
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 16.0),
+            child: Center(
+              child: Text(
+                'Taylor, S.W.; Alexander, M.E. 2018. Field guide to the Canadian Forest Fire Behavior Prediction (FBP) System. 3rd Ed. Natural Resources Canada',
+                style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
+                textAlign: TextAlign.left,
+              ),
+            ),
           ),
         ],
       ),
