@@ -164,7 +164,7 @@ class HomePageState extends State<HomePage> {
                     'FBP Go',
                     style: TextStyle(fontSize: 20, color: Colors.white),
                   ),
-                  SizedBox(height: 8), // Adjust spacing as needed
+                  SizedBox(height: 8),
                   Text(
                     'Fire Behaviour Prediction on the go',
                     style: TextStyle(fontSize: 14, color: Colors.white),
