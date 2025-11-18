@@ -23,6 +23,7 @@ import 'fbp_advanced.dart';
 import 'package:flutter/material.dart';
 import 'cffdrs/fire_behaviour_prediction.dart';
 import 'fmc.dart';
+import 'colors.dart';
 
 void main() => runApp(const MyApp());
 
@@ -144,7 +145,7 @@ class HomePageState extends State<HomePage> {
     }
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 53, 150, 243),
+        backgroundColor: primaryColour,
         foregroundColor: Color.fromARGB(255, 255, 255, 255),
         title: Text(_getSectionText()),
       ),

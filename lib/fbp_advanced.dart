@@ -26,6 +26,7 @@ import 'fbp_results.dart';
 import 'fire.dart';
 import 'fire_widgets.dart';
 import 'basic_input.dart';
+import 'colors.dart';
 import 'global.dart';
 import 'ignition_type.dart';
 import 'coordinate_picker.dart';
@@ -343,11 +344,29 @@ class AdvancedFireBehaviourPredictionFormState
       initialIndex: 0,
       child: Column(
         children: [
-          TabBar(
-            tabs: [
-              Tab(text: 'Inputs'),
-              Tab(text: 'Results'),
-            ],
+          Container(
+            color: tabBackgroundColour,
+            child: TabBar(
+              indicatorSize: TabBarIndicatorSize.tab,
+              indicatorColor: primaryColour,
+              labelColor: primaryColour,
+              unselectedLabelColor: Colors.black,
+              labelPadding: const EdgeInsets.symmetric(vertical: 8),
+              tabs: [
+                Tab(
+                  child: Text(
+                    'Inputs',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Tab(
+                  child: Text(
+                    'Results',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
           ),
           Expanded(
             child: TabBarView(
