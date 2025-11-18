@@ -18,6 +18,7 @@ FBP Go. If not, see <https://www.gnu.org/licenses/>.
 import 'package:flutter/services.dart';
 
 import 'about.dart';
+import 'assumptions.dart';
 import 'fbp_advanced.dart';
 import 'package:flutter/material.dart';
 import 'cffdrs/fire_behaviour_prediction.dart';
@@ -47,7 +48,7 @@ String getSecondaryText(FireBehaviourPredictionPrimary? prediction) {
   return '';
 }
 
-enum Section { advanced, fwi, about, fmc }
+enum Section { advanced, fwi, about, fmc, assumptions }
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -72,6 +73,8 @@ class HomePageState extends State<HomePage> {
         return 'About';
       case Section.fmc:
         return 'FMC';
+      case Section.assumptions:
+        return 'FBP System Assumptions';
       default:
         throw Exception('Unknown section');
     }
@@ -127,6 +130,11 @@ class HomePageState extends State<HomePage> {
           padding: const EdgeInsets.only(left: edgeInset, right: edgeInset),
           child: const FoliarMoistureContent(),
         );
+      case (Section.assumptions):
+        return SingleChildScrollView(
+          padding: EdgeInsets.only(left: edgeInset, right: edgeInset),
+          child: Column(children: [AssumptionsPage()]),
+        );
     }
   }
 
@@ -147,9 +155,22 @@ class HomePageState extends State<HomePage> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
+            DrawerHeader(
               decoration: BoxDecoration(color: Colors.blue),
-              child: Text('FBP Go\n\nFire Behaviour Prediction on the go'),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'FBP Go',
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Fire Behaviour Prediction on the go',
+                    style: TextStyle(fontSize: 14, color: Colors.white),
+                  ),
+                ],
+              ),
             ),
             ListTile(
               title: const Text('Fire Behaviour Prediction'),
@@ -163,6 +184,12 @@ class HomePageState extends State<HomePage> {
             //     onTap: () {
             //       _changeSection(Section.fwi);
             //     }),
+            ListTile(
+              title: const Text('FBP System Assumptions'),
+              onTap: () {
+                _changeSection(Section.assumptions);
+              },
+            ),
             ListTile(
               title: const Text('About'),
               onTap: () {
