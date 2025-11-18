@@ -155,9 +155,22 @@ class HomePageState extends State<HomePage> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
+            DrawerHeader(
               decoration: BoxDecoration(color: Colors.blue),
-              child: Text('FBP Go\n\nFire Behaviour Prediction on the go'),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'FBP Go',
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                  ),
+                  SizedBox(height: 8), // Adjust spacing as needed
+                  Text(
+                    'Fire Behaviour Prediction on the go',
+                    style: TextStyle(fontSize: 14, color: Colors.white),
+                  ),
+                ],
+              ),
             ),
             ListTile(
               title: const Text('Fire Behaviour Prediction'),
