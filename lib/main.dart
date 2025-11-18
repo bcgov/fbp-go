@@ -114,11 +114,9 @@ class HomePageState extends State<HomePage> {
           child: Column(children: [AboutPage()]),
         );
       case (Section.advanced):
-        return const Center(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.only(left: edgeInset, right: edgeInset),
-            child: Column(children: [AdvancedFireBehaviourPredictionForm()]),
-          ),
+        return Container(
+          padding: EdgeInsets.only(left: edgeInset, right: edgeInset),
+          child: const AdvancedFireBehaviourPredictionForm(),
         );
       case (Section.fwi):
         return Container(
