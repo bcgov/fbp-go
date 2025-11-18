@@ -28,6 +28,7 @@ import 'fire_widgets.dart';
 import 'basic_input.dart';
 import 'global.dart';
 import 'ignition_type.dart';
+import 'coordinate_picker.dart';
 
 bool ignitionTypeToBool(IgnitionType type) {
   // Point ignition should set ACCEL true
@@ -163,12 +164,18 @@ class AdvancedFireBehaviourPredictionFormState
     persistIgnition('ignitionType', type);
   }
 
+  void _onCCChanged(double cc) {
+    setState(() {
+      _basicInput!.cc = cc;
+    });
+    _onBasicInputChanged(_basicInput!);
+    persistSetting('cc', cc);
+  }
+
   final ccController = TextEditingController();
   final cbhController = TextEditingController();
   final _cflController = TextEditingController();
   final _gflController = TextEditingController();
-
-  // double ros = _calculateRateOfSpread()
 
   @override
   void initState() {
@@ -337,231 +344,298 @@ class AdvancedFireBehaviourPredictionFormState
           key: _formKey,
           child: Column(
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(
-                  bottom: 8.0,
-                ), // Adjust the value as needed
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: DatePicker(
-                        onChanged: (DateTime? value) {
-                          _onDateChanged(value);
-                        },
-                        initialValue: _currentDate,
+              Card(
+                margin: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      // Date
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: DatePicker(
+                                onChanged: (DateTime? value) {
+                                  _onDateChanged(value);
+                                },
+                                initialValue: _currentDate,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              // Presets
-              Row(
-                children: [
-                  Expanded(
-                    child: FuelTypePresetDropdown(
-                      onChanged: (FuelTypePreset? value) {
-                        _onPresetChanged(value);
-                      },
-                      initialValue: _fuelTypePreset!,
-                    ),
-                  ),
-                ],
-              ),
-              if (isGrassFuelType(_fuelTypePreset!.code))
-                Row(
-                  children: [
-                    // GFL field
-                    makeInputLabel(
-                      'GFL',
-                      _gfl.toStringAsFixed(2),
-                      ' kg/\u33A1',
-                      textStyle,
-                      textStyleBold,
-                    ),
-                    Expanded(
-                      flex: sliderFlex,
-                      child: FancySliderWidget(
-                        value: _gfl,
-                        min: minGFL,
-                        max: maxGFL,
-                        divisions: ((maxGFL - minGFL) / 0.05).round(),
-                        activeColor: intensityClassColour,
-                        label:
-                            'Grass Fuel Load: ${_gfl.toStringAsFixed(2)} kg/\u33A1',
-                        onChanged: (value) {
-                          _onGFLChanged(value);
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              // PDF field
-              if (canAdjustDeadFir(_fuelTypePreset!.code))
-                Row(
-                  children: [
-                    makeInputLabel(
-                      'Dead Balsam',
-                      (_pdf ?? 0).toStringAsFixed(0),
-                      '%',
-                      textStyle,
-                      textStyleBold,
-                    ),
-                    Expanded(
-                      flex: sliderFlex,
-                      child: FancySliderWidget(
-                        value: _pdf ?? 0,
-                        min: 0,
-                        max: 100,
-                        divisions: 100,
-                        activeColor: intensityClassColour,
-                        label: '${(_pdf ?? 0).toStringAsFixed(0)}%',
-                        onChanged: (value) {
-                          _onPDFChanged(value.roundToDouble());
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              if (canAdjustConifer(_fuelTypePreset!.code))
-                Row(
-                  children: [
-                    makeInputLabel(
-                      'Conifer',
-                      (_pc ?? 0).toStringAsFixed(0),
-                      '%',
-                      textStyle,
-                      textStyleBold,
-                    ),
-                    Expanded(
-                      flex: sliderFlex,
-                      child: FancySliderWidget(
-                        value: _pc ?? 0,
-                        min: 0,
-                        max: 100,
-                        divisions: 100,
-                        activeColor: intensityClassColour,
-                        label: '${(_pc ?? 0).toStringAsFixed(0)}%',
-                        onChanged: (value) {
-                          _onPCChanged(value.roundToDouble());
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              // Elapsed time
-              if (canAdjustCBH(_fuelTypePreset!.code))
-                Row(
-                  children: [
-                    makeInputLabel(
-                      'CBH',
-                      _cbh?.toStringAsFixed(1) ?? '0.0',
-                      ' m',
-                      textStyle,
-                      textStyleBold,
-                    ),
-                    Expanded(
-                      flex: sliderFlex,
-                      child: FancySliderWidget(
-                        value: _cbh ?? 1,
-                        min: 1,
-                        max: 15,
-                        divisions: 14,
-                        activeColor: intensityClassColour,
-                        label: _cbh!.toStringAsFixed(0),
-                        onChanged: (value) {
-                          _onCBHChanged(value.roundToDouble());
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              Row(
-                children: [
-                  makeInputLabel(
-                    'Time elapsed',
-                    '${_minutes.toInt()}',
-                    ' minutes',
-                    textStyle,
-                    textStyleBold,
-                  ),
-                  Expanded(
-                    flex: sliderFlex,
-                    child: FancySliderWidget(
-                      value: _minutes,
-                      min: 0,
-                      max: 120,
-                      divisions: 12,
-                      activeColor: intensityClassColour,
-                      label: '${_minutes.toInt()} minutes',
-                      onChanged: (value) {
-                        _onTChanged(value.roundToDouble());
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              // Ignition type
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Ignition Type:",
-                    style: TextStyle(fontSize: fontSize),
-                  ),
-                  const SizedBox(width: 16),
-                  RadioGroup<IgnitionType>(
-                    groupValue: _ignitionType,
-                    onChanged: (IgnitionType? value) {
-                      if (value != null) _onIgnitionTypeChanged(value);
-                    },
-                    child: Row(
-                      children: IgnitionType.values.map((type) {
-                        final label = type == IgnitionType.point
-                            ? 'Point'
-                            : 'Line';
-                        return InkWell(
-                          // InkWell allows the text to be clickable
-                          onTap: () {
-                            _onIgnitionTypeChanged(type);
-                          },
-                          borderRadius: BorderRadius.circular(8),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                      // Ignition type
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Text(
+                            "Ignition Type:",
+                            style: TextStyle(fontSize: fontSize),
+                          ),
+                          const SizedBox(width: 16),
+                          RadioGroup<IgnitionType>(
+                            groupValue: _ignitionType,
+                            onChanged: (IgnitionType? value) {
+                              if (value != null) _onIgnitionTypeChanged(value);
+                            },
                             child: Row(
-                              children: [
-                                Radio<IgnitionType>(
-                                  value: type,
-                                  fillColor: WidgetStateProperty.all(
-                                    Colors.black,
+                              children: IgnitionType.values.map((type) {
+                                final label = type == IgnitionType.point
+                                    ? 'Point'
+                                    : 'Line';
+                                return InkWell(
+                                  onTap: () {
+                                    _onIgnitionTypeChanged(type);
+                                  },
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Radio<IgnitionType>(
+                                          value: type,
+                                          fillColor: WidgetStateProperty.all(
+                                            Colors.black,
+                                          ),
+                                        ),
+                                        Text(label),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                Text(label),
-                              ],
+                                );
+                              }).toList(),
                             ),
                           ),
-                        );
-                      }).toList(),
-                    ),
+                        ],
+                      ),
+                      // Time elapsed
+                      Row(
+                        children: [
+                          makeInputLabel(
+                            'Time elapsed',
+                            '${_minutes.toInt()}',
+                            ' minutes',
+                            textStyle,
+                            textStyleBold,
+                          ),
+                          Expanded(
+                            flex: sliderFlex,
+                            child: FancySliderWidget(
+                              value: _minutes,
+                              min: 0,
+                              max: 120,
+                              divisions: 12,
+                              activeColor: intensityClassColour,
+                              label: '${_minutes.toInt()} minutes',
+                              onChanged: (value) {
+                                _onTChanged(value.roundToDouble());
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      // Coordinate picker
+                      CoordinatePicker(
+                        coordinate: _basicInput!.coordinate,
+                        onChanged: (coordinate) {
+                          _basicInput!.coordinate = coordinate;
+                          _onBasicInputChanged(_basicInput!);
+                        },
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-              Row(
-                children: [
-                  Expanded(
-                    child: BasicInputWidget(
-                      basicInput: _basicInput!,
-                      prediction: prediction,
-                      fuelTypePreset: _fuelTypePreset!,
-                      onChanged: (BasicInput basicInput) {
-                        _onBasicInputChanged(basicInput);
-                      },
-                    ),
+
+              Card(
+                margin: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      // Fuel type dropdown
+                      Row(
+                        children: [
+                          Expanded(
+                            child: FuelTypePresetDropdown(
+                              onChanged: (FuelTypePreset? value) {
+                                _onPresetChanged(value);
+                              },
+                              initialValue: _fuelTypePreset!,
+                            ),
+                          ),
+                        ],
+                      ),
+                      // Modifiers
+                      if (isGrassFuelType(_fuelTypePreset!.code)) ...[
+                        Row(
+                          children: [
+                            // GFL field
+                            makeInputLabel(
+                              'GFL',
+                              _gfl.toStringAsFixed(2),
+                              ' kg/\u33A1',
+                              textStyle,
+                              textStyleBold,
+                            ),
+                            Expanded(
+                              flex: sliderFlex,
+                              child: FancySliderWidget(
+                                value: _gfl,
+                                min: minGFL,
+                                max: maxGFL,
+                                divisions: ((maxGFL - minGFL) / 0.05).round(),
+                                activeColor: intensityClassColour,
+                                label:
+                                    'Grass Fuel Load: ${_gfl.toStringAsFixed(2)} kg/\u33A1',
+                                onChanged: (value) {
+                                  _onGFLChanged(value);
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            makeInputLabel(
+                              'Curing',
+                              '${_basicInput!.cc.toInt()}',
+                              '%',
+                              textStyle,
+                              textStyleBold,
+                            ),
+                            Expanded(
+                              flex: sliderFlex,
+                              child: FancySliderWidget(
+                                value: _basicInput!.cc,
+                                min: 0,
+                                max: 100,
+                                divisions: 20,
+                                activeColor: intensityClassColour,
+                                label: '${_basicInput!.cc.toInt()}%',
+                                onChanged: (value) {
+                                  _onCCChanged(value.roundToDouble());
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                      if (canAdjustDeadFir(_fuelTypePreset!.code))
+                        Row(
+                          children: [
+                            makeInputLabel(
+                              'Dead Balsam',
+                              (_pdf ?? 0).toStringAsFixed(0),
+                              '%',
+                              textStyle,
+                              textStyleBold,
+                            ),
+                            Expanded(
+                              flex: sliderFlex,
+                              child: FancySliderWidget(
+                                value: _pdf ?? 0,
+                                min: 0,
+                                max: 100,
+                                divisions: 100,
+                                activeColor: intensityClassColour,
+                                label: '${(_pdf ?? 0).toStringAsFixed(0)}%',
+                                onChanged: (value) {
+                                  _onPDFChanged(value.roundToDouble());
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      if (canAdjustConifer(_fuelTypePreset!.code))
+                        Row(
+                          children: [
+                            makeInputLabel(
+                              'Conifer',
+                              (_pc ?? 0).toStringAsFixed(0),
+                              '%',
+                              textStyle,
+                              textStyleBold,
+                            ),
+                            Expanded(
+                              flex: sliderFlex,
+                              child: FancySliderWidget(
+                                value: _pc ?? 0,
+                                min: 0,
+                                max: 100,
+                                divisions: 100,
+                                activeColor: intensityClassColour,
+                                label: '${(_pc ?? 0).toStringAsFixed(0)}%',
+                                onChanged: (value) {
+                                  _onPCChanged(value.roundToDouble());
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      if (canAdjustCBH(_fuelTypePreset!.code))
+                        Row(
+                          children: [
+                            makeInputLabel(
+                              'CBH',
+                              _cbh?.toStringAsFixed(1) ?? '0.0',
+                              ' m',
+                              textStyle,
+                              textStyleBold,
+                            ),
+                            Expanded(
+                              flex: sliderFlex,
+                              child: FancySliderWidget(
+                                value: _cbh ?? 1,
+                                min: 1,
+                                max: 15,
+                                divisions: 14,
+                                activeColor: intensityClassColour,
+                                label: _cbh!.toStringAsFixed(0),
+                                onChanged: (value) {
+                                  _onCBHChanged(value.roundToDouble());
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                    ],
                   ),
-                ],
+                ),
+              ),
+
+              Card(
+                margin: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: BasicInputWidget(
+                              basicInput: _basicInput!,
+                              prediction: prediction,
+                              fuelTypePreset: _fuelTypePreset!,
+                              onChanged: (BasicInput basicInput) {
+                                _onBasicInputChanged(basicInput);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
         ),
+
         (prediction == null)
             ? buildError(errorMessage)
             : Padding(
