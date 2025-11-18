@@ -27,11 +27,6 @@ class AssumptionsPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'The FBP System can be used to make predictions for a fire spreading during one burning period from a single point or line of fire, with the following assumptions:',
-            style: TextStyle(fontSize: 16),
-          ),
-          SizedBox(height: 16),
           BulletPoint(
             text:
                 'Fuel conditions are similar to one of the 18 benchmark fuel types.',
