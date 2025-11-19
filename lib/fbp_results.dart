@@ -103,7 +103,7 @@ abstract class Group {
 }
 
 class SecondaryFireBehaviourGroup extends Group {
-  SecondaryFireBehaviourGroup({required super.heading});
+  SecondaryFireBehaviourGroup({required super.heading, super.isExpanded});
 
   @override
   Widget buildBody(
@@ -248,8 +248,7 @@ class SecondaryFireBehaviourGroup extends Group {
 }
 
 class PrimaryFireBehaviourGroup extends Group {
-  PrimaryFireBehaviourGroup({required super.heading, isExpanded = false})
-    : super(isExpanded: isExpanded);
+  PrimaryFireBehaviourGroup({required super.heading, super.isExpanded});
 
   @override
   Widget buildBody(
@@ -330,7 +329,10 @@ List<Group> generateGroups() {
       heading: 'Basic Fire Behaviour Outputs',
       isExpanded: true,
     ),
-    SecondaryFireBehaviourGroup(heading: 'Advanced Fire Behaviour Outputs'),
+    SecondaryFireBehaviourGroup(
+      heading: 'Advanced Fire Behaviour Outputs',
+      isExpanded: true,
+    ),
   ];
   return groups;
 }
