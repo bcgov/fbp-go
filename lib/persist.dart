@@ -43,13 +43,18 @@ void persistIgnition(String key, IgnitionType value) {
   });
 }
 
-BasicSettings _loadBasic(SharedPreferences prefs) {
+FuelTypePreset _loadFuelTypePreset(SharedPreferences prefs) {
   final c2 = getC2BorealSpruce();
-
-  var fuelTypePresets = getFuelTypePresets();
-  var fuelTypePreset = fuelTypePresets.firstWhere(
-    (element) => element.id == (prefs.getInt('fuelTypePreset') ?? c2.id),
+  final savedId = prefs.getInt('fuelTypePreset');
+  final fuelTypePresets = getFuelTypePresets();
+  return fuelTypePresets.firstWhere(
+    (element) => element.id == savedId,
+    orElse: () => c2,
   );
+}
+
+BasicSettings _loadBasic(SharedPreferences prefs) {
+  final fuelTypePreset = _loadFuelTypePreset(prefs);
 
   BasicInput basicInput = BasicInput(
     ws: prefs.getDouble('ws') ?? 5,
