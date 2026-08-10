@@ -123,13 +123,13 @@ class SecondaryFireBehaviourGroup extends Group {
               _buildRow(
                 ((prediction.secondary!.FCFB * 100).toStringAsFixed(0)),
                 '%',
-                'Crown fraction burned - Flank',
+                'Crown fraction burned - flank',
                 textStyle.color,
               ),
               _buildRow(
                 ((prediction.secondary!.BCFB * 100).toStringAsFixed(0)),
                 '%',
-                'Crown fraction burned - Back',
+                'Crown fraction burned - back',
                 textStyle.color,
               ),
             ]
@@ -137,13 +137,13 @@ class SecondaryFireBehaviourGroup extends Group {
       _buildRow(
         ((prediction.secondary!.FROS).toStringAsFixed(0)),
         ' (m/min)',
-        'Rate of spread - Flank',
+        'Rate of spread - flank',
         textStyle.color,
       ),
       _buildRow(
         ((prediction.secondary!.BROS).toStringAsFixed(0)),
         ' (m/min)',
-        'Rate of spread - Back',
+        'Rate of spread - back',
         textStyle.color,
       ),
       _buildRow(
@@ -292,7 +292,7 @@ class PrimaryFireBehaviourGroup extends Group {
       _buildRow(
         ((prediction.ISI).toStringAsFixed(0)),
         '',
-        'Initial Spread Index',
+        'Initial spread index',
         textStyle.color,
       ),
       _buildRow(
@@ -314,9 +314,9 @@ class PrimaryFireBehaviourGroup extends Group {
         textStyle.color,
       ),
       _buildRow(
-        '${fireSize?.toStringAsFixed(1)}',
+        formatNumber(fireSize, digits: 1),
         ' (ha)',
-        '$minutes minute fire size',
+        '${minutes.toInt()} minute fire size',
         textStyle.color,
       ),
     ]);
@@ -381,18 +381,22 @@ class ResultsState extends State<ResultsStateWidget> {
                   _groups[index].isExpanded = isExpanded;
                 });
                 if (!isExpanded) {
+                  // Capture what we need up front, the context can't be used
+                  // after the delay.
+                  final BuildContext currentContext = context;
                   // this doesn't seem perfect - we're waiting delaying
                   // by "kThemeAnimationDuration" (that's what
                   // ExpansionPanelList is using) - and then trying
                   // to make everything visible.
-                  Future.delayed(kThemeAnimationDuration).then(
-                    (value) => {
-                      Scrollable.ensureVisible(
-                        context,
-                        duration: const Duration(milliseconds: 200),
-                      ),
-                    },
-                  );
+                  Future.delayed(kThemeAnimationDuration).then((value) {
+                    if (!currentContext.mounted) {
+                      return;
+                    }
+                    Scrollable.ensureVisible(
+                      currentContext,
+                      duration: const Duration(milliseconds: 200),
+                    );
+                  });
                 }
               },
               children: _groups.map<ExpansionPanel>((Group group) {

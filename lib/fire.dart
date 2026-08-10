@@ -413,14 +413,24 @@ String degreesToCompassPoint(double azimuth) {
     'WNW',
     'NW',
     'NNW',
-    'N',
   ];
-  return values[(azimuth / 22.5).floor()];
+  // Each compass point is centred on its azimuth, e.g. N covers 348.75 to
+  // 11.25 degrees, so we offset by half a sector before rounding down.
+  final normalized = azimuth % 360.0;
+  final index = ((normalized / 22.5) + 0.5).floor() % values.length;
+  return values[index];
 }
 
 int getDayOfYear(DateTime currentDate) {
-  final diff = currentDate.difference(DateTime(currentDate.year, 1, 1, 0, 0));
-  return diff.inDays;
+  // Using UTC to avoid daylight saving time shifting the result by a day.
+  // January 1st is day 1.
+  final date = DateTime.utc(
+    currentDate.year,
+    currentDate.month,
+    currentDate.day,
+  );
+  final startOfYear = DateTime.utc(currentDate.year, 1, 1);
+  return date.difference(startOfYear).inDays + 1;
 }
 
 double roundDouble(double value, int places) {
@@ -443,6 +453,18 @@ double pinGFL(double gfl) {
 
 double pinGS(double gs) {
   return pinValue(gs, minGS, maxGS);
+}
+
+double pinFFMC(double ffmc) {
+  return pinValue(ffmc, minFFMC, maxFFMC);
+}
+
+double pinCC(double cc) {
+  return pinValue(cc, minCC, maxCC);
+}
+
+double pinAzimuth(double azimuth) {
+  return pinValue(azimuth, minAzimuth, maxAzimuth);
 }
 
 double pinAltitude(double altitude) {
