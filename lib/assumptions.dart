@@ -37,7 +37,7 @@ class AssumptionsPage extends StatelessWidget {
           ),
           BulletPoint(
             text:
-                'Fuels are uniform and continuous, topography is simple and homogenous, and the wind is constant and unidirectional during the burning period.',
+                'Fuels are uniform and continuous, topography is simple and homogeneous, and the wind is constant and unidirectional during the burning period.',
           ),
           BulletPoint(
             text:

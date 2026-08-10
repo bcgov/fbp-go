@@ -45,7 +45,7 @@ BeaufortScale getBeaufortScale(double windSpeed) {
   }
   if (windSpeed >= 62 && windSpeed < 75) {
     return BeaufortScale('62-74', 'Moderate gale',
-        'Breaks twigs off tress, generally impedes progress.');
+        'Breaks twigs off trees;\ngenerally impedes progress.');
   }
   if (windSpeed >= 75 && windSpeed < 89) {
     return BeaufortScale(
@@ -53,7 +53,7 @@ BeaufortScale getBeaufortScale(double windSpeed) {
   }
   if (windSpeed >= 89 && windSpeed < 103) {
     return BeaufortScale('89-102', 'Whole gale',
-        'Seldom experienced inland, tree uprooted;\nconsiderable structural damage.');
+        'Seldom experienced inland;\ntrees uprooted;\nconsiderable structural damage.');
   }
   if (windSpeed >= 103 && windSpeed < 118) {
     return BeaufortScale(
