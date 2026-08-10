@@ -123,13 +123,13 @@ class SecondaryFireBehaviourGroup extends Group {
               _buildRow(
                 ((prediction.secondary!.FCFB * 100).toStringAsFixed(0)),
                 '%',
-                'Crown fraction burned - Flank',
+                'Crown fraction burned - flank',
                 textStyle.color,
               ),
               _buildRow(
                 ((prediction.secondary!.BCFB * 100).toStringAsFixed(0)),
                 '%',
-                'Crown fraction burned - Back',
+                'Crown fraction burned - back',
                 textStyle.color,
               ),
             ]
@@ -137,13 +137,13 @@ class SecondaryFireBehaviourGroup extends Group {
       _buildRow(
         ((prediction.secondary!.FROS).toStringAsFixed(0)),
         ' (m/min)',
-        'Rate of spread - Flank',
+        'Rate of spread - flank',
         textStyle.color,
       ),
       _buildRow(
         ((prediction.secondary!.BROS).toStringAsFixed(0)),
         ' (m/min)',
-        'Rate of spread - Back',
+        'Rate of spread - back',
         textStyle.color,
       ),
       _buildRow(
@@ -292,7 +292,7 @@ class PrimaryFireBehaviourGroup extends Group {
       _buildRow(
         ((prediction.ISI).toStringAsFixed(0)),
         '',
-        'Initial Spread Index',
+        'Initial spread index',
         textStyle.color,
       ),
       _buildRow(
@@ -314,9 +314,9 @@ class PrimaryFireBehaviourGroup extends Group {
         textStyle.color,
       ),
       _buildRow(
-        '${fireSize?.toStringAsFixed(1)}',
+        formatNumber(fireSize, digits: 1),
         ' (ha)',
-        '$minutes minute fire size',
+        '${minutes.toInt()} minute fire size',
         textStyle.color,
       ),
     ]);

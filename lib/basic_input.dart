@@ -182,7 +182,7 @@ class BasicInputState extends State<BasicInputWidget> {
           children: [
             makeLabel(
               'Wind Direction',
-              '${degreesToCompassPoint(_input.waz)} ${_input.waz.toString()}',
+              '${degreesToCompassPoint(_input.waz)} ${_input.waz.toStringAsFixed(1)}',
               '\u00B0',
               textStyle,
               textStyleBold,
@@ -196,7 +196,7 @@ class BasicInputState extends State<BasicInputWidget> {
                 divisions: 16,
                 activeColor: activeColor,
                 label:
-                    '${degreesToCompassPoint(_input.waz)} ${_input.waz}\u00B0',
+                    '${degreesToCompassPoint(_input.waz)} ${_input.waz.toStringAsFixed(1)}\u00B0',
                 onChanged: (value) {
                   print('_onWAZChanged: $value');
                   _onWAZChanged(value);
@@ -239,7 +239,7 @@ class BasicInputState extends State<BasicInputWidget> {
           children: [
             makeLabel(
               'Aspect',
-              '${degreesToCompassPoint(_input.aspect)} ${_input.aspect.toString()}',
+              '${degreesToCompassPoint(_input.aspect)} ${_input.aspect.toStringAsFixed(1)}',
               '\u00B0',
               textStyle,
               textStyleBold,
@@ -253,7 +253,7 @@ class BasicInputState extends State<BasicInputWidget> {
                 divisions: 16,
                 activeColor: activeColor,
                 label:
-                    '${degreesToCompassPoint(_input.aspect)} ${_input.aspect.toString()}\u00B0',
+                    '${degreesToCompassPoint(_input.aspect)} ${_input.aspect.toStringAsFixed(1)}\u00B0',
                 onChanged: (value) {
                   _onAspectChanged(roundDouble(value, 2));
                 },

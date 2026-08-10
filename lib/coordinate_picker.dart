@@ -249,6 +249,7 @@ class CoordinatePickerState extends State<CoordinatePicker> {
         Expanded(
           child: IconButton(
             icon: const Icon(Icons.my_location),
+            tooltip: 'Use my current location',
             onPressed: () {
               _updatePosition();
             },

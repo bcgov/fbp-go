@@ -102,7 +102,9 @@ class FoliarMoistureContentState extends State<FoliarMoistureContent> {
         ),
         Row(
           children: [
-            Expanded(child: Text('Elevation ${elevation.toStringAsFixed(2)}')),
+            Expanded(
+              child: Text('Elevation ${elevation.toStringAsFixed(2)} m'),
+            ),
             Expanded(
               child: Slider(
                 value: elevation,
@@ -151,7 +153,11 @@ class FoliarMoistureContentState extends State<FoliarMoistureContent> {
         ),
         Row(
           children: [
-            Expanded(child: Text('Foliar Moisture Content (FMC): $fmc')),
+            Expanded(
+              child: Text(
+                'Foliar Moisture Content (FMC): ${fmc.toStringAsFixed(1)}%',
+              ),
+            ),
           ],
         ),
       ],
