@@ -57,17 +57,20 @@ class CoordinatePickerState extends State<CoordinatePicker> {
 
   late Coordinate _coordinate;
 
-  _getPosition() async {
+  Future<Position?> _getPosition() async {
     log('calling _getPosition');
     try {
       Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
       );
       log('got position $position');
       return position;
     } catch (e) {
       log('error getting position $e');
     }
+    return null;
   }
 
   void _setLatitude(double value) {
@@ -99,7 +102,7 @@ class CoordinatePickerState extends State<CoordinatePicker> {
         if (request.isGranted)
           {
             _getPosition().then((position) {
-              if (mounted) {
+              if (mounted && position != null) {
                 setState(() {
                   _setLatitude(position.latitude);
                   _setLongitude(position.longitude);

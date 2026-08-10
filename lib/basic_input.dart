@@ -151,7 +151,7 @@ class BasicInputState extends State<BasicInputWidget> {
         Row(
           children: [
             makeLabel(
-              'Wind Speed',
+              'Wind speed',
               '${_input.ws.toInt()}',
               ' (km/h)',
               textStyle,
@@ -181,7 +181,7 @@ class BasicInputState extends State<BasicInputWidget> {
         Row(
           children: [
             makeLabel(
-              'Wind Direction',
+              'Wind direction',
               '${degreesToCompassPoint(_input.waz)} ${_input.waz.toStringAsFixed(1)}',
               '\u00B0',
               textStyle,
@@ -209,7 +209,7 @@ class BasicInputState extends State<BasicInputWidget> {
         Row(
           children: [
             makeLabel(
-              'Ground Slope',
+              'Ground slope',
               '${_input.gs.toInt()}',
               '%',
               textStyle,
@@ -265,7 +265,7 @@ class BasicInputState extends State<BasicInputWidget> {
         Row(
           children: [
             makeLabel(
-              'Buildup Index',
+              'Buildup index',
               '${_input.bui.toInt()}',
               '',
               textStyle,

@@ -75,13 +75,16 @@ class HomePageState extends State<HomePage> {
         return 'FMC';
       case Section.assumptions:
         return 'FBP System Assumptions';
-      default:
-        throw Exception('Unknown section');
     }
   }
 
-  Future<void> _showDisclaimer(BuildContext context) async {
+  Future<void> _showDisclaimer() async {
     String disclaimer = await rootBundle.loadString('assets/DISCLAIMER.txt');
+    // The bundle load is asynchronous, so the widget may have been disposed
+    // by the time we get here.
+    if (!mounted) {
+      return;
+    }
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -141,7 +144,7 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     if (showDisclaimer) {
-      Future.delayed(Duration.zero, () => _showDisclaimer(context));
+      Future.delayed(Duration.zero, _showDisclaimer);
       showDisclaimer = false;
     }
     return Scaffold(

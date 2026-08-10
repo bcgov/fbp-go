@@ -381,18 +381,22 @@ class ResultsState extends State<ResultsStateWidget> {
                   _groups[index].isExpanded = isExpanded;
                 });
                 if (!isExpanded) {
+                  // Capture what we need up front, the context can't be used
+                  // after the delay.
+                  final BuildContext currentContext = context;
                   // this doesn't seem perfect - we're waiting delaying
                   // by "kThemeAnimationDuration" (that's what
                   // ExpansionPanelList is using) - and then trying
                   // to make everything visible.
-                  Future.delayed(kThemeAnimationDuration).then(
-                    (value) => {
-                      Scrollable.ensureVisible(
-                        context,
-                        duration: const Duration(milliseconds: 200),
-                      ),
-                    },
-                  );
+                  Future.delayed(kThemeAnimationDuration).then((value) {
+                    if (!currentContext.mounted) {
+                      return;
+                    }
+                    Scrollable.ensureVisible(
+                      currentContext,
+                      duration: const Duration(milliseconds: 200),
+                    );
+                  });
                 }
               },
               children: _groups.map<ExpansionPanel>((Group group) {

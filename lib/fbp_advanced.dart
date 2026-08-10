@@ -371,7 +371,7 @@ class AdvancedFireBehaviourPredictionFormState
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           const Text(
-                            "Ignition Type:",
+                            "Ignition type:",
                             style: TextStyle(fontSize: fontSize),
                           ),
                           const SizedBox(width: 16),
@@ -491,7 +491,7 @@ class AdvancedFireBehaviourPredictionFormState
                                 divisions: ((maxGFL - minGFL) / 0.05).round(),
                                 activeColor: intensityClassColour,
                                 label:
-                                    'Grass Fuel Load: ${_gfl.toStringAsFixed(2)} kg/\u33A1',
+                                    'Grass fuel load: ${_gfl.toStringAsFixed(2)} kg/\u33A1',
                                 onChanged: (value) {
                                   _onGFLChanged(value);
                                 },
@@ -529,7 +529,7 @@ class AdvancedFireBehaviourPredictionFormState
                         Row(
                           children: [
                             makeInputLabel(
-                              'Dead Balsam',
+                              'Dead balsam',
                               (_pdf ?? 0).toStringAsFixed(0),
                               '%',
                               textStyle,
