@@ -425,6 +425,9 @@ class AdvancedFireBehaviourPredictionFormState
                           Expanded(
                             flex: sliderFlex,
                             child: FancySliderWidget(
+                              fieldName: 'Time elapsed',
+                              formatValue: (value) =>
+                                  '${value.round()} minutes',
                               value: _minutes,
                               min: 0,
                               max: 120,
@@ -485,13 +488,15 @@ class AdvancedFireBehaviourPredictionFormState
                             Expanded(
                               flex: sliderFlex,
                               child: FancySliderWidget(
+                                fieldName: 'GFL (Grass Fuel Load)',
+                                formatValue: (value) =>
+                                    '${value.toStringAsFixed(2)} kg/m\u00B2',
                                 value: _gfl,
                                 min: minGFL,
                                 max: maxGFL,
                                 divisions: ((maxGFL - minGFL) / 0.05).round(),
                                 activeColor: intensityClassColour,
-                                label:
-                                    'Grass Fuel Load: ${_gfl.toStringAsFixed(2)} kg/\u33A1',
+                                label: '${_gfl.toStringAsFixed(2)} kg/\u33A1',
                                 onChanged: (value) {
                                   _onGFLChanged(value);
                                 },
@@ -511,6 +516,8 @@ class AdvancedFireBehaviourPredictionFormState
                             Expanded(
                               flex: sliderFlex,
                               child: FancySliderWidget(
+                                fieldName: 'Curing',
+                                formatValue: (value) => '${value.round()}%',
                                 value: _basicInput!.cc,
                                 min: 0,
                                 max: 100,
@@ -538,6 +545,8 @@ class AdvancedFireBehaviourPredictionFormState
                             Expanded(
                               flex: sliderFlex,
                               child: FancySliderWidget(
+                                fieldName: 'Dead Balsam',
+                                formatValue: (value) => '${value.round()}%',
                                 value: _pdf ?? 0,
                                 min: 0,
                                 max: 100,
@@ -564,6 +573,8 @@ class AdvancedFireBehaviourPredictionFormState
                             Expanded(
                               flex: sliderFlex,
                               child: FancySliderWidget(
+                                fieldName: 'Conifer',
+                                formatValue: (value) => '${value.round()}%',
                                 value: _pc ?? 0,
                                 min: 0,
                                 max: 100,
@@ -590,6 +601,8 @@ class AdvancedFireBehaviourPredictionFormState
                             Expanded(
                               flex: sliderFlex,
                               child: FancySliderWidget(
+                                fieldName: 'CBH (Crown Base Height)',
+                                formatValue: (value) => '${value.round()} m',
                                 value: _cbh ?? 1,
                                 min: 1,
                                 max: 15,

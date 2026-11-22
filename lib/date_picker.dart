@@ -44,7 +44,7 @@ class _DatePickerState extends State<DatePicker> {
               "Date",
               style: TextStyle(
                 fontSize: fontSize,
-                color: Color.fromARGB(255, 53, 150, 243),
+                color: Color(0xFF1763A5),
               ),
             ),
           ],

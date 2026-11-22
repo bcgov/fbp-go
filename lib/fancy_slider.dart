@@ -32,11 +32,12 @@ class FancySliderState extends State<FancySliderWidget> {
                 constraints: const BoxConstraints(),
                 padding: const EdgeInsets.only(right: 10),
                 icon: const Icon(Icons.remove_circle_outline, size: iconSize),
-                onPressed: () {
-                  if (widget.value > widget.min) {
-                    widget.onChanged(widget.value - step);
-                  }
-                },
+                tooltip: 'Decrease ${widget.fieldName}',
+                onPressed: widget.value > widget.min
+                    ? () => widget.onChanged(
+                        (widget.value - step).clamp(widget.min, widget.max),
+                      )
+                    : null,
               ),
               Expanded(
                 child: SliderTheme(
@@ -51,7 +52,9 @@ class FancySliderState extends State<FancySliderWidget> {
                     max: widget.max,
                     divisions: widget.divisions,
                     activeColor: widget.activeColor,
-                    label: widget.label,
+                    label: '${widget.fieldName}: ${widget.label}',
+                    semanticFormatterCallback: (value) =>
+                        '${widget.fieldName}: ${widget.formatValue(value)}',
                     onChanged: (double value) {
                       widget.onChanged(value);
                     },
@@ -62,11 +65,12 @@ class FancySliderState extends State<FancySliderWidget> {
                 constraints: const BoxConstraints(),
                 padding: const EdgeInsets.only(left: 10, right: 5),
                 icon: const Icon(Icons.add_circle_outline, size: iconSize),
-                onPressed: () {
-                  if (widget.value < widget.max) {
-                    widget.onChanged(widget.value + step);
-                  }
-                },
+                tooltip: 'Increase ${widget.fieldName}',
+                onPressed: widget.value < widget.max
+                    ? () => widget.onChanged(
+                        (widget.value + step).clamp(widget.min, widget.max),
+                      )
+                    : null,
               ),
             ],
           ),
@@ -83,6 +87,8 @@ class FancySliderWidget extends StatefulWidget {
   final int divisions;
   final Color activeColor;
   final String label;
+  final String fieldName;
+  final SemanticFormatterCallback formatValue;
   final Function onChanged;
 
   const FancySliderWidget({
@@ -93,6 +99,8 @@ class FancySliderWidget extends StatefulWidget {
     required this.divisions,
     required this.activeColor,
     required this.label,
+    required this.fieldName,
+    required this.formatValue,
     required this.onChanged,
   });
   @override

@@ -92,7 +92,7 @@ class FuelTypePresetDropdownState extends State<FuelTypePresetDropdown> {
       decoration: const InputDecoration(
         labelText: "Fuel type",
         labelStyle: TextStyle(
-          color: Color.fromARGB(255, 53, 150, 243),
+          color: Color(0xFF1763A5),
           fontSize: labelFontSize,
         ),
       ),

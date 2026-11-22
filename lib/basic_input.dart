@@ -160,6 +160,8 @@ class BasicInputState extends State<BasicInputWidget> {
             Expanded(
               flex: sliderFlex,
               child: FancySliderWidget(
+                fieldName: 'Wind Speed',
+                formatValue: (value) => '${value.round()} km/h',
                 value: _input.ws,
                 min: 0,
                 max: 50,
@@ -190,6 +192,9 @@ class BasicInputState extends State<BasicInputWidget> {
             Expanded(
               flex: sliderFlex,
               child: FancySliderWidget(
+                fieldName: 'Wind Direction',
+                formatValue: (value) =>
+                    '${degreesToCompassPoint(value)} $value\u00B0',
                 value: _input.waz,
                 min: 0,
                 max: 360,
@@ -218,6 +223,8 @@ class BasicInputState extends State<BasicInputWidget> {
             Expanded(
               flex: sliderFlex,
               child: FancySliderWidget(
+                fieldName: 'Ground Slope',
+                formatValue: (value) => '${value.round()}%',
                 value: _input.gs,
                 min: minGS,
                 max: maxGS,
@@ -247,6 +254,9 @@ class BasicInputState extends State<BasicInputWidget> {
             Expanded(
               flex: sliderFlex,
               child: FancySliderWidget(
+                fieldName: 'Aspect',
+                formatValue: (value) =>
+                    '${degreesToCompassPoint(value)} $value\u00B0',
                 value: _input.aspect,
                 min: 0,
                 max: 360,
@@ -274,6 +284,8 @@ class BasicInputState extends State<BasicInputWidget> {
             Expanded(
               flex: sliderFlex,
               child: FancySliderWidget(
+                fieldName: 'Buildup Index',
+                formatValue: (value) => value.round().toString(),
                 value: _input.bui,
                 min: 0,
                 max: 200,
@@ -303,6 +315,8 @@ class BasicInputState extends State<BasicInputWidget> {
             Expanded(
               flex: sliderFlex,
               child: FancySliderWidget(
+                fieldName: 'FFMC',
+                formatValue: (value) => value.round().toString(),
                 value: _input.ffmc >= 80 && _input.ffmc <= 100
                     ? _input.ffmc
                     : 80,
