@@ -146,7 +146,7 @@ class HomePageState extends State<HomePage> {
     }
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 53, 150, 243),
+        backgroundColor: Color(0xFF1763A5),
         foregroundColor: Color.fromARGB(255, 255, 255, 255),
         title: Text(_getSectionText()),
       ),
@@ -156,7 +156,7 @@ class HomePageState extends State<HomePage> {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(color: Colors.blue),
+              decoration: BoxDecoration(color: Color(0xFF1763A5)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
