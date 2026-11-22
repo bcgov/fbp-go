@@ -5,7 +5,7 @@
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "Fire Behaviour Prediction using the The Canadian Forest Fire Danger Rating System.",
+    "description": "Estimate fire type, rate of spread and head fire intensity using the Canadian Forest Fire Behaviour Prediction System.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
