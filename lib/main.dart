@@ -89,6 +89,7 @@ class HomePageState extends State<HomePage> {
         return Semantics(
           label: 'Disclaimer dialog',
           child: AlertDialog(
+            constraints: const BoxConstraints(maxWidth: 560),
             title: const Text('Disclaimer'),
             content: SingleChildScrollView(child: Text(disclaimer)),
             actions: <Widget>[
@@ -114,10 +115,14 @@ class HomePageState extends State<HomePage> {
           child: Column(children: [AboutPage()]),
         );
       case (Section.advanced):
-        return const Center(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.only(left: edgeInset, right: edgeInset),
-            child: Column(children: [AdvancedFireBehaviourPredictionForm()]),
+        return SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 960),
+              child: const AdvancedFireBehaviourPredictionForm(),
+            ),
           ),
         );
       case (Section.fwi):

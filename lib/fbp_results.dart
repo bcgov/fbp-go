@@ -399,23 +399,19 @@ class ResultsState extends State<ResultsStateWidget> {
                 return ExpansionPanel(
                   backgroundColor: widget.intensityClassColour,
                   headerBuilder: (BuildContext context, bool isExpanded) {
-                    return Row(
-                      children: [
-                        // using spacers to centre text horizontally
-                        // const Spacer(),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: Text(
-                            group.heading,
-                            style: TextStyle(
-                              fontSize: fontSize,
-                              color: widget.intensityClassTextColor,
-                              fontWeight: FontWeight.bold,
-                            ),
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          group.heading,
+                          style: TextStyle(
+                            fontSize: fontSize,
+                            color: widget.intensityClassTextColor,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        // const Spacer()
-                      ],
+                      ),
                     );
                   },
                   body: group.buildBody(

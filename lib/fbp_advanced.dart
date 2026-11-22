@@ -249,18 +249,16 @@ class AdvancedFireBehaviourPredictionFormState
     return Expanded(
       flex: labelFlex,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Text(heading, style: textStyle),
-              Text(':', style: textStyle),
-            ],
-          ),
-          Row(
-            children: [
-              Text(value, style: textStyleBold),
-              Text(unitOfMeasure, style: textStyle),
-            ],
+          Text('$heading:', style: textStyle),
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(text: value, style: textStyleBold),
+                TextSpan(text: unitOfMeasure, style: textStyle),
+              ],
+            ),
           ),
         ],
       ),
@@ -367,20 +365,20 @@ class AdvancedFireBehaviourPredictionFormState
                         ),
                       ),
                       // Ignition type
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                      Wrap(
+                        spacing: 16,
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           const Text(
                             "Ignition Type:",
                             style: TextStyle(fontSize: fontSize),
                           ),
-                          const SizedBox(width: 16),
                           RadioGroup<IgnitionType>(
                             groupValue: _ignitionType,
                             onChanged: (IgnitionType? value) {
                               if (value != null) _onIgnitionTypeChanged(value);
                             },
-                            child: Row(
+                            child: Wrap(
                               children: IgnitionType.values.map((type) {
                                 final label = type == IgnitionType.point
                                     ? 'Point'
@@ -395,6 +393,7 @@ class AdvancedFireBehaviourPredictionFormState
                                       horizontal: 8,
                                     ),
                                     child: Row(
+                                      mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Radio<IgnitionType>(
                                           value: type,

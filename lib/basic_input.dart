@@ -114,18 +114,16 @@ class BasicInputState extends State<BasicInputWidget> {
     return Expanded(
       flex: labelFlex,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Text(heading, style: textStyle),
-              Text(':', style: textStyle),
-            ],
-          ),
-          Row(
-            children: [
-              Text(value, style: textStyleBold),
-              Text(unitOfMeasure, style: textStyle),
-            ],
+          Text('$heading:', style: textStyle),
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(text: value, style: textStyleBold),
+                TextSpan(text: unitOfMeasure, style: textStyle),
+              ],
+            ),
           ),
         ],
       ),
