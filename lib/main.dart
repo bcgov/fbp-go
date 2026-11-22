@@ -33,9 +33,23 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       label: 'FBP Go (Fire Behaviour Prediction) App',
-      child: const MaterialApp(
+      child: MaterialApp(
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color(0xFF1763A5),
+          ).copyWith(primary: const Color(0xFF175A90), surface: Colors.white),
+          scaffoldBackgroundColor: const Color(0xFFF4F6F8),
+          cardTheme: CardThemeData(
+            color: Colors.white,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              side: const BorderSide(color: Color(0xFFCFD9E1)),
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
         title: 'FBP Go (Fire Behaviour Prediction)',
-        home: HomePage(),
+        home: const HomePage(),
       ),
     );
   }
