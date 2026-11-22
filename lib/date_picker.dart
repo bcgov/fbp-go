@@ -64,7 +64,7 @@ class _DatePickerState extends State<DatePicker> {
               children: [
                 const Icon(Icons.calendar_today),
                 const SizedBox(width: 8),
-                Text(DateFormat('yyyy/MM/dd').format(date)),
+                Flexible(child: Text(DateFormat('yyyy/MM/dd').format(date))),
               ],
             ),
           ),

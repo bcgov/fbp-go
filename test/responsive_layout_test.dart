@@ -1,6 +1,7 @@
 import 'package:fire_behaviour_app/fbp_advanced.dart';
 import 'package:fire_behaviour_app/main.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,6 +50,26 @@ void main() {
         tester.getSize(find.byType(AdvancedFireBehaviourPredictionForm)).width,
         lessThanOrEqualTo(960),
       );
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      for (final scale in [1.0, 2.0]) {
+        tester.platformDispatcher.textScaleFactorTestValue = scale;
+        await tester.pumpAndSettle();
+        const title = 'Fire Behaviour Prediction';
+        final heading = tester.renderObject<RenderParagraph>(find.text(title));
+        final lastLetter = heading
+            .getBoxesForSelection(
+              TextSelection(
+                baseOffset: title.length - 1,
+                extentOffset: title.length,
+              ),
+            )
+            .single;
+        final appBar = tester.getRect(find.byType(AppBar));
+        expect(
+          appBar.contains(heading.localToGlobal(lastLetter.toRect().center)),
+          isTrue,
+        );
+      }
     });
   }
 }
