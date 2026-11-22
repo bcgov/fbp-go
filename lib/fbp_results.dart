@@ -19,7 +19,7 @@ import 'package:flutter/material.dart';
 
 import 'cffdrs/fire_behaviour_prediction.dart';
 import 'fire.dart';
-import 'global.dart';
+import 'disclosure_header.dart';
 
 String formatNumber(double? number, {int digits = 2}) {
   if (number == null) {
@@ -40,50 +40,40 @@ abstract class Group {
         fuelType == FuelType.D1);
   }
 
-  Row _buildRow(String value, String uom, String label, Color? color) {
-    const int valueFlex = 3;
-    const int labelFlex = 6;
-    const double textPadding = 1.0;
-    TextStyle valueStyle = TextStyle(
-      color: color,
-      fontWeight: FontWeight.bold,
-      fontSize: fontSize,
-    );
-    TextStyle labelStyle = TextStyle(color: color, fontSize: fontSize);
-    TextStyle uomStyle = valueStyle;
-    return Row(
-      children: [
-        Expanded(
-          flex: valueFlex,
-          child: Padding(
-            padding: const EdgeInsets.only(
-              right: 5.0,
-              top: textPadding,
-              bottom: textPadding,
+  Widget _buildRow(String value, String uom, String label, Color? color) {
+    return MergeSemantics(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+        decoration: const BoxDecoration(
+          border: Border(top: BorderSide(color: Color(0xFFE2E8ED))),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 3,
+              child: Text(
+                label,
+                style: const TextStyle(fontSize: 15, color: Color(0xFF304459)),
+              ),
             ),
-            child:
-                // Text(value, textAlign: TextAlign.right, style: valueStyle)
-                RichText(
-                  textAlign: TextAlign.right,
-                  text: TextSpan(
-                    text: value,
-                    style: valueStyle,
-                    children: [TextSpan(text: uom, style: uomStyle)],
-                  ),
+            const SizedBox(width: 8),
+            Flexible(
+              flex: 2,
+              fit: FlexFit.tight,
+              child: Text(
+                '$value$uom',
+                textAlign: TextAlign.end,
+                style: TextStyle(
+                  fontSize: 15,
+                  color: color,
+                  fontWeight: FontWeight.w600,
+                  fontFeatures: const [FontFeature.tabularFigures()],
                 ),
-          ),
-        ),
-        Expanded(
-          flex: labelFlex,
-          child: Padding(
-            padding: const EdgeInsets.only(
-              top: textPadding,
-              bottom: textPadding,
+              ),
             ),
-            child: Text(label, style: labelStyle),
-          ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
@@ -340,98 +330,34 @@ List<Group> generateGroups() {
 class ResultsState extends State<ResultsStateWidget> {
   final List<Group> _groups = generateGroups();
 
-  Row buildRow(String value, String label, Color? color) {
-    TextStyle valueStyle = TextStyle(
-      color: color,
-      fontWeight: FontWeight.bold,
-      fontSize: fontSize,
-    );
-    TextStyle labelStyle = TextStyle(color: color, fontSize: fontSize);
-    return Row(
-      children: [
-        Expanded(
-          flex: 5,
-          child: Padding(
-            padding: const EdgeInsets.only(right: 5.0),
-            child: Text(value, textAlign: TextAlign.right, style: valueStyle),
-          ),
-        ),
-        Expanded(flex: 6, child: Text(label, style: labelStyle)),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    // Need to have a bunch of panels:
-    // https://api.flutter.dev/flutter/material/ExpansionPanelList-class.html
-    return SafeArea(
-      child: Container(
-        // color: intensityClassColour,
-        decoration: BoxDecoration(
-          border: Border.all(color: widget.intensityClassColour),
-          borderRadius: const BorderRadius.all(Radius.circular(5)),
-        ),
-        child: Column(
-          children: [
-            ExpansionPanelList(
-              expandedHeaderPadding: const EdgeInsets.all(0),
-              expansionCallback: (int index, bool isExpanded) {
-                setState(() {
-                  _groups[index].isExpanded = isExpanded;
-                });
-                if (!isExpanded) {
-                  // this doesn't seem perfect - we're waiting delaying
-                  // by "kThemeAnimationDuration" (that's what
-                  // ExpansionPanelList is using) - and then trying
-                  // to make everything visible.
-                  Future.delayed(kThemeAnimationDuration).then(
-                    (value) => {
-                      Scrollable.ensureVisible(
-                        context,
-                        duration: const Duration(milliseconds: 200),
-                      ),
-                    },
-                  );
-                }
-              },
-              children: _groups.map<ExpansionPanel>((Group group) {
-                return ExpansionPanel(
-                  backgroundColor: widget.intensityClassColour,
-                  headerBuilder: (BuildContext context, bool isExpanded) {
-                    return Row(
-                      children: [
-                        // using spacers to centre text horizontally
-                        // const Spacer(),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: Text(
-                            group.heading,
-                            style: TextStyle(
-                              fontSize: fontSize,
-                              color: widget.intensityClassTextColor,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        // const Spacer()
-                      ],
-                    );
-                  },
-                  body: group.buildBody(
+    return Column(
+      children: [
+        for (final group in _groups)
+          Card(
+            clipBehavior: Clip.antiAlias,
+            margin: const EdgeInsets.only(bottom: 12),
+            child: Column(
+              children: [
+                DisclosureHeader(
+                  title: group.heading,
+                  accent: widget.intensityClassColour,
+                  expanded: group.isExpanded,
+                  onPressed: () =>
+                      setState(() => group.isExpanded = !group.isExpanded),
+                ),
+                if (group.isExpanded)
+                  group.buildBody(
                     widget.input,
                     widget.prediction,
                     widget.minutes,
                     widget.surfaceFlameLength,
                   ),
-                  isExpanded: group.isExpanded,
-                  canTapOnHeader: true,
-                );
-              }).toList(),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+      ],
     );
   }
 }
