@@ -172,89 +172,94 @@ class CoordinatePickerState extends State<CoordinatePicker> {
   @override
   Widget build(BuildContext context) {
     const TextStyle textStyle = TextStyle(fontSize: fontSize);
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // latitude Field
-        Expanded(
-          child: TextField(
-            controller: _latitudeController,
-            decoration: InputDecoration(
-              labelText: "Latitude",
-              labelStyle: textStyle,
-              errorText: _latitudeErrorText,
-            ),
-            keyboardType: const TextInputType.numberWithOptions(
-              signed: true,
-              decimal: true,
-            ),
-            onChanged: (value) {
-              if (double.tryParse(value) != null) {
-                double latitude = double.parse(value);
-                setState(() {
-                  _setLatitude(latitude);
-                });
-              }
-              widget.onChanged(_coordinate);
-            },
-          ),
+    final controls = <Widget>[
+      // latitude Field
+      TextField(
+        controller: _latitudeController,
+        decoration: InputDecoration(
+          labelText: "Latitude",
+          labelStyle: textStyle,
+          errorText: _latitudeErrorText,
         ),
-        // longitude Field
-        Expanded(
-          child: TextField(
-            controller: _longitudeController,
-            decoration: InputDecoration(
-              labelText: "Longitude",
-              labelStyle: textStyle,
-              errorText: _longitudeErrorText,
-            ),
-            keyboardType: const TextInputType.numberWithOptions(
-              signed: true,
-              decimal: true,
-            ),
-            onChanged: (value) {
-              if (double.tryParse(value) != null) {
-                double longitude = double.parse(value);
-                setState(() {
-                  _setLongitude(longitude);
-                });
-              }
-              widget.onChanged(_coordinate);
-            },
-          ),
+        keyboardType: const TextInputType.numberWithOptions(
+          signed: true,
+          decimal: true,
         ),
-        Expanded(
-          child: TextField(
-            controller: _elevationController,
-            decoration: InputDecoration(
-              labelText: "Elevation (m)",
-              labelStyle: textStyle,
-              errorText: _elevationErrorText,
-            ),
-            keyboardType: const TextInputType.numberWithOptions(
-              signed: true,
-              decimal: true,
-            ),
-            onChanged: (value) {
-              if (double.tryParse(value) != null) {
-                var altitude = double.parse(value);
-                setState(() {
-                  _setAltitude(altitude);
-                });
-              }
-              widget.onChanged(_coordinate);
-            },
-          ),
+        onChanged: (value) {
+          if (double.tryParse(value) != null) {
+            double latitude = double.parse(value);
+            setState(() {
+              _setLatitude(latitude);
+            });
+          }
+          widget.onChanged(_coordinate);
+        },
+      ),
+      // longitude Field
+      TextField(
+        controller: _longitudeController,
+        decoration: InputDecoration(
+          labelText: "Longitude",
+          labelStyle: textStyle,
+          errorText: _longitudeErrorText,
         ),
-        Expanded(
-          child: IconButton(
-            icon: const Icon(Icons.my_location),
-            onPressed: () {
-              _updatePosition();
-            },
-          ),
+        keyboardType: const TextInputType.numberWithOptions(
+          signed: true,
+          decimal: true,
         ),
-      ],
+        onChanged: (value) {
+          if (double.tryParse(value) != null) {
+            double longitude = double.parse(value);
+            setState(() {
+              _setLongitude(longitude);
+            });
+          }
+          widget.onChanged(_coordinate);
+        },
+      ),
+      TextField(
+        controller: _elevationController,
+        decoration: InputDecoration(
+          labelText: "Elevation (m)",
+          labelStyle: textStyle,
+          errorText: _elevationErrorText,
+        ),
+        keyboardType: const TextInputType.numberWithOptions(
+          signed: true,
+          decimal: true,
+        ),
+        onChanged: (value) {
+          if (double.tryParse(value) != null) {
+            var altitude = double.parse(value);
+            setState(() {
+              _setAltitude(altitude);
+            });
+          }
+          widget.onChanged(_coordinate);
+        },
+      ),
+      IconButton(
+        icon: const Icon(Icons.my_location),
+        onPressed: () {
+          _updatePosition();
+        },
+      ),
+    ];
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        const spacing = 8.0;
+        final columns = constraints.maxWidth < 480 ? 2 : 4;
+        final width =
+            (constraints.maxWidth - spacing * (columns - 1)) / columns;
+        return Wrap(
+          spacing: spacing,
+          runSpacing: spacing,
+          children: [
+            for (final control in controls)
+              SizedBox(width: width, child: control),
+          ],
+        );
+      },
     );
   }
 }

@@ -15,6 +15,8 @@ A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with 
 FBP Go. If not, see <https://www.gnu.org/licenses/>.
 */
+import 'dart:math' as math;
+
 import 'package:flutter/services.dart';
 
 import 'about.dart';
@@ -89,6 +91,7 @@ class HomePageState extends State<HomePage> {
         return Semantics(
           label: 'Disclaimer dialog',
           child: AlertDialog(
+            constraints: const BoxConstraints(maxWidth: 560),
             title: const Text('Disclaimer'),
             content: SingleChildScrollView(child: Text(disclaimer)),
             actions: <Widget>[
@@ -114,10 +117,14 @@ class HomePageState extends State<HomePage> {
           child: Column(children: [AboutPage()]),
         );
       case (Section.advanced):
-        return const Center(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.only(left: edgeInset, right: edgeInset),
-            child: Column(children: [AdvancedFireBehaviourPredictionForm()]),
+        return SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 960),
+              child: const AdvancedFireBehaviourPredictionForm(),
+            ),
           ),
         );
       case (Section.fwi):
@@ -144,11 +151,36 @@ class HomePageState extends State<HomePage> {
       Future.delayed(Duration.zero, () => _showDisclaimer(context));
       showDisclaimer = false;
     }
+    final sectionTitle = _getSectionText();
+    final textScaler = MediaQuery.textScalerOf(context);
+    final titleWidth =
+        MediaQuery.sizeOf(context).width -
+        MediaQuery.paddingOf(context).horizontal -
+        kToolbarHeight -
+        2 * NavigationToolbar.kMiddleSpacing;
+    final titleLayout = TextPainter(
+      text: TextSpan(
+        text: sectionTitle,
+        style: Theme.of(context).textTheme.titleLarge,
+      ),
+      textDirection: Directionality.of(context),
+      textScaler: textScaler,
+    )..layout(maxWidth: math.max(0, titleWidth));
+    final toolbarHeight = math.max(kToolbarHeight, titleLayout.height + 8);
+    titleLayout.dispose();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 53, 150, 243),
         foregroundColor: Color.fromARGB(255, 255, 255, 255),
-        title: Text(_getSectionText()),
+        leadingWidth: kToolbarHeight,
+        titleSpacing: NavigationToolbar.kMiddleSpacing,
+        toolbarHeight: toolbarHeight,
+        title: Text(
+          sectionTitle,
+          softWrap: true,
+          overflow: TextOverflow.visible,
+          textScaler: textScaler,
+        ),
       ),
       body: _getSelectedSection(_selectedSection),
       drawer: Drawer(
